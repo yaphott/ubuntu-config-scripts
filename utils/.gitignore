@@ -1,0 +1,10 @@
+# Ignore everything
+*
+
+# Except
+!add_keyring.sh
+!add_repository.sh
+
+!.gitignore
+!.git/
+!.git/*
