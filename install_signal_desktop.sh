@@ -2,6 +2,10 @@
 
 # Install Signal Desktop
 
+# Required packages
+sudo apt-get update
+sudo apt-get install -y apt-transport-https
+
 key_url='https://updates.signal.org/desktop/apt/keys.asc'
 key_filename='signal-desktop-keyring.gpg'
 key_directory='/usr/share/keyrings'

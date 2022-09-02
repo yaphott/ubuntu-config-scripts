@@ -17,6 +17,7 @@
 !install_visual_studio_code.sh
 !install_oracle_virtualbox.sh
 !configure_oracle_virtualbox.sh
+!install_vagrant.sh
 
 !utils/
 !utils/*

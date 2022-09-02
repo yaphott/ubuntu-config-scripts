@@ -77,6 +77,8 @@ bash install_signal_desktop.sh
 bash install_oracle_virtualbox.sh
 # Configure Oracle VirtualBox
 bash configure_oracle_virtualbox.sh
+# Install Vagrant
+bash install_vagrant.sh
 
 # Install Google Chrome
 bash install_google_chrome.sh

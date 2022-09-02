@@ -2,6 +2,10 @@
 
 # Install Google Chrome
 
+# Required packages
+sudo apt-get update
+sudo apt-get install -y apt-transport-https
+
 key_url='https://dl-ssl.google.com/linux/linux_signing_key.pub'
 key_filename='google-chrome-keyring.gpg'
 key_directory='/usr/share/keyrings'
