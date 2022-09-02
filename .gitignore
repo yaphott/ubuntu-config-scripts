@@ -15,6 +15,8 @@
 !install_signal_desktop.sh
 !install_sublime_text.sh
 !install_visual_studio_code.sh
+!install_oracle_virtualbox.sh
+!configure_oracle_virtualbox.sh
 
 !utils/
 !utils/*

@@ -4,6 +4,7 @@
 # Except
 !add_keyring.sh
 !add_repository.sh
+!lsb_release_codename.sh
 
 !.gitignore
 !.git/

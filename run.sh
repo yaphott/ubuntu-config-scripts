@@ -73,6 +73,11 @@ bash install_signal_desktop.sh
 # Install Spotify
 # sudo snap install spotify
 
+# Install Oracle VirtualBox
+bash install_oracle_virtualbox.sh
+# Configure Oracle VirtualBox
+bash configure_oracle_virtualbox.sh
+
 # Install Google Chrome
 bash install_google_chrome.sh
 
@@ -148,3 +153,7 @@ sudo sed 's|AutoEnable=true|AutoEnable=false|' -i /etc/bluetooth/main.conf
 # ~/.bash_history and ~/.ssh
 
 # Geckdriver and Chromedriver
+
+# Firefox
+
+# NOTE: Should add check for existing keys, ask for overriding, etc.
