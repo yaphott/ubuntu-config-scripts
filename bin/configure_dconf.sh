@@ -1,6 +1,13 @@
 #!/bin/bash -xe
 
+if [[ ! $INSIDE_SCRIPT ]]; then
+    echo "Please run with the installer script"
+    exit
+fi
+
 # Configure dconf
+echo 'Configuring dconf'
+
 # https://www.freedesktop.org/software/gstreamer-sdk/data/docs/2012.5/glib/gvariant-text.html
 # 
 # To monitor changes in dconf, run command:
@@ -15,12 +22,13 @@
 
 #### Dock
 # Favorites
-dconf write /org/gnome/shell/favorite-apps "['org.gnome.Nautilus.desktop', 'google-chrome.desktop', 'firefox_firefox.desktop', 'code.desktop', 'sublime_text.desktop', 'org.gnome.Terminal.desktop', 'gnome-system-monitor.desktop', 'signal-desktop.desktop', 'gparted.desktop', 'gnome-control-center.desktop']"
+dconf write /org/gnome/shell/favorite-apps "['org.gnome.Nautilus.desktop', 'google-chrome.desktop', 'firefox_firefox.desktop', 'code.desktop', 'sublime_text.desktop', 'org.gnome.Terminal.desktop', 'gnome-system-monitor.desktop', 'signal-desktop.desktop', 'gparted.desktop', 'synaptic.desktop', 'gnome-control-center.desktop']"
 # Fixed (does not auto-hide)
 dconf write /org/gnome/shell/extensions/dash-to-dock/dock-fixed 'false'
 # Show on all displays
 dconf write /org/gnome/shell/extensions/dash-to-dock/multi-monitor 'true'
-
+# Change icon size
+dconf write /org/gnome/shell/extensions/dash-to-dock/dash-max-icon-size '36'
 #### Desktop
 # Location of new desktop icons
 # dconf write '/org/gnome/shell/extensions/ding/start-corner' "top-left"
@@ -69,6 +77,6 @@ dconf write /org/gnome/desktop/session/idle-delay '900'
 # dconf write /org/gnome/terminal/legacy/profiles:/:<ID_IS_HERE>/cursor-shape 'ibeam'
 # # Number of rows
 # /org/gnome/terminal/legacy/profiles:/:<ID_IS_HERE>/default-size-rows '12'
-# # Dark there
+# # Dark theme
 # # NOTE: Might want to move to other dark-mode changes
 # dconf write /org/gnome/terminal/legacy/theme-variant 'dark'

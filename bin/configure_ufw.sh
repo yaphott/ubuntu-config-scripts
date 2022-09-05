@@ -1,6 +1,13 @@
 #!/bin/bash -xe
 
+if [[ ! $INSIDE_SCRIPT ]]; then
+    echo "Please run with the installer script"
+    exit
+fi
+
 # Configure Firewall (UFW)
+echo 'Configuring UFW'
+
 # https://wiki.ubuntu.com/UncomplicatedFirewall
 # The user may achieve a more advanced configuration by editing the following files:
 #   /etc/default/ufw: high level configuration, such as default policies, IPv6 support and kernel modules to use

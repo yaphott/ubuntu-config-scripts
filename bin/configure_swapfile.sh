@@ -1,6 +1,12 @@
 #!/bin/bash -xe
 
+if [[ ! $INSIDE_SCRIPT ]]; then
+    echo "Please run with the installer script"
+    exit
+fi
+
 # Configure swapfile
+echo 'Configuring swapfile'
 
 swap_file='/swapfile'
 swap_size='12g'
@@ -13,12 +19,13 @@ swap_swappiness='90'
 # Disable swap
 sudo swapoff "$swap_file"
 # Remove swap
-sudo rm "$swap_file"
+sudo rm -f "$swap_file"
 
 # Create swap
 sudo fallocate -l "$swap_size" "$swap_file"
 sudo chmod 600 "$swap_file"
 sudo mkswap "$swap_file"
+
 # Enable swap
 sudo swapon $swap_file
 
