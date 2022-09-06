@@ -17,7 +17,7 @@ repo_filename='hashicorp.list'
 bash "$REPO_UTILS_PATH"'/add_keyring.sh' "$key_url" "$key_filename"
 
 # Add to list of repositories
-bash "$REPO_UTILS_PATH"'/add_repository.sh' 'deb [signed-by='"$KEYRINGS_PATH"'/'"$key_filename"'] https://apt.releases.hashicorp.com '"$( lsb_release -cs )"' main' \
+bash "$REPO_UTILS_PATH"'/add_repository.sh' 'deb [signed-by='"$KEYRINGS_PATH"'/'"$key_filename"'] https://apt.releases.hashicorp.com '"$LSB_RELEASE_CODENAME"' main' \
                                             "$repo_filename"
 
 # Update package database and install
