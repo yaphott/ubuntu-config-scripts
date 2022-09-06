@@ -11,7 +11,7 @@ echo 'Installing Signal Desktop'
 key_url='https://updates.signal.org/desktop/apt/keys.asc'
 key_filename='signal-desktop-keyring.gpg'
 
-repo_filename='signal-xenial.list'
+repo_filename='signal-desktop.list'
 
 # Insert public software signing key
 bash "$REPO_UTILS_PATH"'/add_keyring.sh' "$key_url" "$key_filename"
