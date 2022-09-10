@@ -2,7 +2,6 @@
 *
 
 # Except
-!flags.sh
 !configure_dconf.sh
 !configure_livepatch.sh
 !configure_swapfile.sh
@@ -11,12 +10,15 @@
 !install_google_chrome.sh
 !install_nodejs.sh
 !install_python3.sh
+!configure_python3.sh
 !install_signal_desktop.sh
 !install_sublime_text.sh
 !install_visual_studio_code.sh
 !install_oracle_virtualbox.sh
 !configure_oracle_virtualbox.sh
 !install_vagrant.sh
+!configure_vagrant.sh
+!configure_mozilla_firefox.sh
 
 !utils/
 !utils/*

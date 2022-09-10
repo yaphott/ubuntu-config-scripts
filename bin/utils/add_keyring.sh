@@ -10,13 +10,16 @@ fi
 #   (1) URL of key to download
 #   (2) Filename alias to use
 
-echo 'Adding keyring in '"$KEYRINGS_PATH"'/'"$2"
+temp_keyring_path='./tmp/'"$2"
+repo_keyring_path='/usr/share/keyrings/'"$2"
+
+echo 'Adding keyring --> '"$repo_keyring_path"
 
 # Download
-wget -qO - "$1" | gpg --dearmor > "$REPO_TMP_PATH"'/'"$2"
+wget -qO - "$1" | gpg --dearmor > "$temp_keyring_path"
 
 # Install
-sudo install -D -o root -g root -m 644 "$REPO_TMP_PATH"'/'"$2" "$KEYRINGS_PATH"'/'"$2"
+sudo install -D -o root -g root -m 644 "$temp_keyring_path" "$repo_keyring_path"
 
 # Clean up
-rm -f "$REPO_TMP_PATH"'/'"$2"
+rm -f "$temp_keyring_path"

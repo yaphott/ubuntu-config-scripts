@@ -10,14 +10,13 @@ echo 'Installing Sublime Text'
 
 key_url='https://download.sublimetext.com/sublimehq-pub.gpg'
 key_filename='sublime-text-keyring.gpg'
-
 repo_filename='sublime-text.list'
 
 # Insert public software signing key
-bash "$REPO_UTILS_PATH"'/add_keyring.sh' "$key_url" "$key_filename"
+bash ./bin/utils/add_keyring.sh "$key_url" "$key_filename"
 
 # Add to list of repositories
-bash "$REPO_UTILS_PATH"'/add_repository.sh' 'deb [arch=amd64 signed-by='"$KEYRINGS_PATH"'/'"$key_filename"'] https://download.sublimetext.com/ apt/stable/' \
+bash ./bin/utils/add_repository.sh 'deb [arch=amd64 signed-by=/usr/share/keyrings/'"$key_filename"'] https://download.sublimetext.com/ apt/stable/' \
                                             "$repo_filename"
 
 # Update package database and install

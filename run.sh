@@ -1,10 +1,9 @@
 #!/bin/bash -xe
 
-if [ "$EUID" -ne 0 ]
-    then echo "Please run with sudo"
+if [ "$EUID" -eq 0 ]
+    then echo "Please run without sudo"
     exit
 fi
-
 # User-configured variables
 livepatch_key='LIVEPATCH_KEY_GOES_HERE'
 
@@ -16,81 +15,91 @@ livepatch_key='LIVEPATCH_KEY_GOES_HERE'
 #   inotifywatch -e modify,create,delete -r /etc/default
 #   dconf watch /
 
-function clear_tmp () {
-    echo 'Emptying temporary working directory '"$REPO_TMP_PATH"
-    rm -rf "$REPO_TMP_PATH"'/'*
-}
-
 # TODO: Add waypoint check here to resume script at startup
 # apt-get update
 # apt-get dist-upgrade -y
 # shutdown -r now
 
-apt-get update
-apt-get install -y linux-generic
-apt-get install -y build-essential
+sudo apt-get update
+
+sudo apt-get install -y linux-generic
+sudo apt-get install -y build-essential
 # Required for APT with HTTPS
-apt-get install -y apt-transport-https
+sudo apt-get install -y apt-transport-https
 # Required for fetching files and installing keys
-apt-get install -y gpg wget curl
+sudo apt-get install -y gpg wget curl
 # Required for release codename
-apt-get install -y lsb-core
-
-# Clear Temporary Files
-clear_tmp
-
+sudo apt-get install -y lsb-core
 # Install General Packages
-apt-get update
-apt-get install -y protobuf-compiler usb-creator-gtk imagemagick bzip2 \
+sudo apt-get install -y protobuf-compiler usb-creator-gtk imagemagick bzip2 \
                    net-tools         nmap whois      unzip       zstd \
                    awscli            htop tmux       jq          exfatprogs \
                    synaptic          gparted         vlc         gimp \
-                   git               nomacs          handbrake   filezilla
+                   git               nomacs          handbrake   filezilla \
+                   ssh-askpass
 
 # Flags
 export INSIDE_SCRIPT=true
-source "$REPO_BIN_PATH"'/flags.sh'
+# User executing script
+if [ $SUDO_USER ]; then
+    export USER=$SUDO_USER;
+else
+    export USER=$LOGNAME;
+fi
+if [[ $USER == 'root' ]]; then
+    echo 'Must run as non-root user!'
+    exit
+fi
 
 # Install Python 3.X
-bash "$REPO_BIN_PATH"'/install_python3.sh'
+bash ./bin/install_python3.sh
+# TODO: Configure Python 3.X
+# bash ./bin/configure_python3.sh
 
 # Install Node.js
-bash "$REPO_BIN_PATH"'/install_nodejs.sh'
+bash ./bin/install_nodejs.sh
 
 # Install FiraCode Font
-bash "$REPO_BIN_PATH"'/install_firacode_font.sh'
+bash ./bin/install_firacode_font.sh
 
 # Install Sublime Text
-bash "$REPO_BIN_PATH"'/install_sublime_text.sh'
+bash ./bin/install_sublime_text.sh
 
 # Install Visual Studio Code
-bash "$REPO_BIN_PATH"'/install_visual_studio_code.sh'
+bash ./bin/install_visual_studio_code.sh
 
 # TODO: Install GCloud
+# bash ./bin/install_gcloud.sh
 
 # Install Signal Desktop
-bash "$REPO_BIN_PATH"'/install_signal_desktop.sh'
+bash ./bin/install_signal_desktop.sh
 
-# Install Spotify
+# TODO: Install Spotify
 # sudo snap install spotify
 
 # Install Oracle VirtualBox
-bash "$REPO_BIN_PATH"'/install_oracle_virtualbox.sh'
+bash ./bin/install_oracle_virtualbox.sh
 # Configure Oracle VirtualBox
-bash "$REPO_BIN_PATH"'/configure_oracle_virtualbox.sh'
+bash ./bin/configure_oracle_virtualbox.sh
+
 # Install Vagrant
-bash "$REPO_BIN_PATH"'/install_vagrant.sh'
+bash ./bin/install_vagrant.sh
 # Configure Vagrant
-echo 'vagrant plugin install vagrant-disksize' | bash -
+bash ./bin/configure_vagrant.sh
 
 # Install Google Chrome
-bash "$REPO_BIN_PATH"'/install_google_chrome.sh'
+bash ./bin/install_google_chrome.sh
+# TODO: Configure Google Chrome
+# bash ./bin/configure_google_chrome.sh
+
+# TODO: Configure Mozilla Firefox
+# bash ./bin/configure_mozilla_firefox.sh
 
 # Configure Canonical Livepatch
-bash "$REPO_BIN_PATH"'/configure_livepatch.sh' "$livepatch_key"
+bash ./bin/configure_livepatch.sh "$livepatch_key"
 
 # Configure Firewall (UFW)
-bash "$REPO_BIN_PATH"'/configure_ufw.sh'
+bash ./bin/configure_ufw.sh
 
 #### Configure SSH
 # sudo sed -i -e "s|^#PermitRootLogin yes|PermitRootLogin no|" \
@@ -101,13 +110,16 @@ bash "$REPO_BIN_PATH"'/configure_ufw.sh'
 # -e "s|^#MaxAuthTries 6|MaxAuthTries 6|" \
 # -e "s|^#MaxSessions 10|MaxSessions 10|" /etc/ssh/sshd_config
 
+# Add github to known hosts
+# ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
+
 # Configure Swapfile
-bash "$REPO_BIN_PATH"'/configure_swapfile.sh'
+bash ./bin/configure_swapfile.sh
 
 # Configure dconf
-bash "$REPO_BIN_PATH"'/configure_dconf.sh'
+bash ./bin/configure_dconf.sh
 
-# Change power mode to "Performance"
+# Change power mode to "performance"
 powerprofilesctl set performance
 
 # Change processor governors to "Performance"
@@ -117,14 +129,27 @@ powerprofilesctl set performance
 #   View current:
 #     cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
 #   Change setting:
-# echo performance | sudo # tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor
+# echo performance | sudo tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor
 
 # Disable bluetooth
 # https://unix.stackexchange.com/questions/387502/disable-bluetooth-at-boot
 #   Modify the file located at /etc/bluetooth/main.conf
-sed 's|AutoEnable=true|AutoEnable=false|' -i /etc/bluetooth/main.conf
+sudo sed 's|AutoEnable=true|AutoEnable=false|' -i /etc/bluetooth/main.conf
 
-apt-get autoremove -y
+# miniconda3
+# AWS settings and creds
+# Disable watchdog in streamlit/config.toml
+# cmdstan located in ~/.cmdstan/cmdstan-2.29.1
+# Deepface weights
+# Download, extract, and rename mujoco210 situation
+# Custom cspell dictionary
+# ~/.cspell/custom-dictionary-user.txt
+# Github credentials
+# ~/.gitconfig
+# Pypi credentials ~/.pypirc
+# ~/.bash_history and ~/.ssh
+# Geckdriver and Chromedriver
+# NOTE: Should add check for existing keys, ask for overriding, etc.
+# Assign default DNS servers
 
-# Clear Temporary Files
-clear_tmp
+sudo apt-get autoremove -y

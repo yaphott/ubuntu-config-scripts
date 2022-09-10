@@ -10,6 +10,8 @@ fi
 #   (1) Entry to add
 #   (2) Filename to use
 
-echo 'Adding repository in '"$SOURCES_LIST_PATH"'/'"$2"
+repo_source_path='/etc/apt/sources.list.d/'"$2"
 
-echo "$1" | sudo tee -a "$SOURCES_LIST_PATH"'/'"$2" > /dev/null
+echo 'Adding repository --> '"$repo_source_path"
+
+echo "$1" | sudo tee -a "$repo_source_path" > /dev/null
