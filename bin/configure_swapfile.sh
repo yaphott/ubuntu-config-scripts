@@ -1,36 +1,41 @@
 #!/bin/bash -xe
 
 if [[ ! $INSIDE_SCRIPT ]]; then
-    echo "Please run with the installer script"
+    echo 'Please run with the installer script. Exiting ...'
     exit
 fi
 
-# Configure swapfile
-echo 'Configuring swapfile'
+# Validate input parameters
+#   (1) File path for swapfile
+#   (2) Maximum size of swapfile
+#   (2) Swappiness (default is 60 for most Linux distros)
+if [[ (! "$1") || (! "$2") || (! "$3") ]]; then
+    echo 'Missing expected input parameter(s). Exiting ...'
+    exit
+fi
 
-swap_file='/swapfile'
-swap_size='12g'
-swap_swappiness='90'
+# Configure Swapfile
+echo 'Configuring Swapfile'
 
 # View current swaps
 # cat /proc/swaps
 # grep swap /etc/fstab
 
-# Disable swap
-sudo swapoff "$swap_file"
-# Remove swap
-sudo rm -f "$swap_file"
+# Disable current swap
+sudo swapoff "$1"
+# Remove current swap
+sudo rm -f "$1"
 
-# Create swap
-sudo fallocate -l "$swap_size" "$swap_file"
-sudo chmod 600 "$swap_file"
-sudo mkswap "$swap_file"
+# Create new swap
+sudo fallocate -l "$2" "$1"
+sudo chmod 600 "$1"
+sudo mkswap "$1"
 
-# Enable swap
-sudo swapon $swap_file
+# Enable new swap
+sudo swapon "$1"
 
 # View current swapiness
 # cat /proc/sys/vm/swappiness
 
 # Update swappiness
-sudo sysctl 'vm.swappiness='"$swap_swappiness"
+sudo sysctl 'vm.swappiness='"$3"

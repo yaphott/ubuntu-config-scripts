@@ -1,19 +1,23 @@
 #!/bin/bash -xe
 
 if [[ ! $INSIDE_SCRIPT ]]; then
-    echo "Please run with the installer script"
+    echo 'Please run with the installer script. Exiting ...'
     exit
 fi
 
-#### Insert Public Software Signing Key
-# Parameters:
+# Validate input parameters
 #   (1) URL of key to download
-#   (2) Filename alias to use
+#   (2) Alias name for key file
+if [[ (! "$1") || (! "$2") ]]; then
+    echo 'Missing expected input parameter(s). Exiting ...'
+    exit
+fi
+
+# Insert Public Software Signing Key
+echo 'Adding keyring --> '"$repo_keyring_path"
 
 temp_keyring_path='./tmp/'"$2"
 repo_keyring_path='/usr/share/keyrings/'"$2"
-
-echo 'Adding keyring --> '"$repo_keyring_path"
 
 # Download
 wget -qO - "$1" | gpg --dearmor > "$temp_keyring_path"
@@ -22,4 +26,4 @@ wget -qO - "$1" | gpg --dearmor > "$temp_keyring_path"
 sudo install -D -o root -g root -m 644 "$temp_keyring_path" "$repo_keyring_path"
 
 # Clean up
-rm -f "$temp_keyring_path"
+rm "$temp_keyring_path"

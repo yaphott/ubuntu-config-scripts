@@ -1,12 +1,12 @@
 #!/bin/bash -xe
 
 if [[ ! $INSIDE_SCRIPT ]]; then
-    echo "Please run with the installer script"
+    echo 'Please run with the installer script. Exiting ...'
     exit
 fi
 
-# Install Python 3.X
-echo 'Installing Python 3.X'
+# Install Python 3.x
+echo 'Installing Python 3.x'
 
 # Update package database and install
 sudo apt-get update

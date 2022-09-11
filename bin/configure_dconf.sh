@@ -1,7 +1,7 @@
 #!/bin/bash -xe
 
 if [[ ! $INSIDE_SCRIPT ]]; then
-    echo "Please run with the installer script"
+    echo 'Please run with the installer script. Exiting ...'
     exit
 fi
 
@@ -21,53 +21,57 @@ echo 'Configuring dconf'
 #     ['org.gnome.Nautilus.desktop', 'snap-store_ubuntu-software.desktop', 'yelp.desktop', 'firefox_firefox.desktop']
 
 #### Dock
+
 # Favorites
 dconf write /org/gnome/shell/favorite-apps "['org.gnome.Nautilus.desktop', 'google-chrome.desktop', 'firefox_firefox.desktop', 'code.desktop', 'sublime_text.desktop', 'org.gnome.Terminal.desktop', 'gnome-system-monitor.desktop', 'signal-desktop.desktop', 'gparted.desktop', 'synaptic.desktop', 'gnome-control-center.desktop']"
 # Fixed (does not auto-hide)
 dconf write /org/gnome/shell/extensions/dash-to-dock/dock-fixed 'false'
 # Show on all displays
 dconf write /org/gnome/shell/extensions/dash-to-dock/multi-monitor 'true'
-# Change icon size
+# Icon size
 dconf write /org/gnome/shell/extensions/dash-to-dock/dash-max-icon-size '36'
-#### Desktop
-# Location of new desktop icons
-# dconf write '/org/gnome/shell/extensions/ding/start-corner' "top-left"
+
+#### Color Scheme
 
 # Dark/light mode
+#   'prefer-light' is light, 'prefer-dark' is dark
 dconf write /org/gnome/desktop/interface/color-scheme "'prefer-dark'"
 #   'Yaru' is light, 'Yaru-dark' is dark
 dconf write /org/gnome/desktop/interface/gtk-theme "'Yaru-dark'"
+# Gedit
+#   'Yaru' is light, 'Yaru-dark' is dark
 dconf write /org/gnome/gedit/preferences/editor/scheme "'Yaru-dark'"
 
+#### UI
 
+# Location of new desktop icons
+dconf write '/org/gnome/shell/extensions/ding/start-corner' "'top-left'"
+# Show battery percentage
+dconf write /org/gnome/desktop/interface/show-battery-percentage 'true'
 
-# Blank screen delay
-#   Period (seconds) of inactivity after which the screen will go blank
-#   Value of 0 is "Never"
-dconf write /org/gnome/desktop/session/idle-delay '0'
+#### Hardware
 
 # Disable tap-to-click
 dconf write /org/gnome/desktop/peripherals/touchpad/tap-to-click 'false'
 
-# Show battery percentage
-dconf write /org/gnome/desktop/interface/show-battery-percentage 'true'
+#### Sleep/Inactivity
 
-# Enable suspending after inactivity (on battery)
+# Period (seconds) of inactivity after which the screen will go blank
+#   '0' is "Never"
+dconf write /org/gnome/desktop/session/idle-delay '900'
+# Suspend after inactivity (on battery)
 #   'suspend' is Enabled, 'nothing' is Disabled
 dconf write /org/gnome/settings-daemon/plugins/power/sleep-inactive-battery-type "'suspend'"
 
 # Period (seconds) of inactivity (on battery) before suspending
+#   '0' is "Never"
 dconf write /org/gnome/settings-daemon/plugins/power/sleep-inactive-battery-timeout '2700'
-
-# Disable suspending after inactivity (plugged-in)
+# Suspend after inactivity (plugged-in) before suspending
 #   'suspend' is Enabled, 'nothing' is Disabled
 dconf write /org/gnome/settings-daemon/plugins/power/sleep-inactive-ac-type "'nothing'"
 
+#### Terminal
 
-# Period (seconds) of inactivity until showing blank screen
-dconf write /org/gnome/desktop/session/idle-delay '900'
-
-# #### Terminal
 # # TODO: Need to parse profile ID
 # # Enable using custom font
 # dconf write /org/gnome/terminal/legacy/profiles:/:<ID_IS_HERE>/use-system-font 'false'
