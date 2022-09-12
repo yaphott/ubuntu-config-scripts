@@ -18,7 +18,7 @@ SWAPFILE_PATH='/swapfile'
 echo 'Using swapfile path: '"$SWAPFILE_PATH"
 SWAPFILE_SIZE='12g'
 echo 'Using swapfile size: '"$SWAPFILE_SIZE"
-SWAPFILE_SWAPINESS='90'
+SWAPFILE_SWAPINESS='10'
 echo 'Using system swappiness: '"$SWAPFILE_SWAPINESS"
 
 # Helpful file/config watching commands
