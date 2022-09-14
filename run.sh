@@ -209,10 +209,10 @@ bash ./bin/configure_bluetooth.sh
 # NOTE: Should add check for existing keys, ask for overriding, etc.
 # Assign default DNS servers
 
+# Uninstall packages that are no longer dependencies (previously installed automatically)
+sudo apt-get autoremove -y
 # Remove retrieved packages that have a newer version
 sudo apt-get autoclean
-# Uninstall packages that are no longer dependencies (previously installed automatically)
-sudo apt-get autoremove
 
 # Delete startpoint file, signaling the script has ended
 echo 'Removing startpoint'
