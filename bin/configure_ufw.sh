@@ -6,7 +6,7 @@ if [[ ! $INSIDE_SCRIPT ]]; then
 fi
 
 # Configure Firewall (UFW)
-echo 'Configuring UFW'
+echo '~~~ Configuring UFW'
 
 # https://wiki.ubuntu.com/UncomplicatedFirewall
 # The user may achieve a more advanced configuration by editing the following files:

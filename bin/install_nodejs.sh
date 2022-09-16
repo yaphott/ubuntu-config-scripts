@@ -6,7 +6,7 @@ if [[ ! $INSIDE_SCRIPT ]]; then
 fi
 
 # Install Node.js
-echo 'Installing Node.js'
+echo '+++ Installing Node.js'
 
 # Insert public software signing key and add to list of repositories
 curl -fsSL https://deb.nodesource.com/setup_current.x | sudo -E bash -

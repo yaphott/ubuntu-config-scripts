@@ -7,7 +7,7 @@ fi
 
 # Configure SSH
 # NOTE: THIS IS INCOMPLETE
-echo 'Configuring SSH'
+echo '~~~ Configuring SSH'
 
 #### Add github to known hosts - Needs sudo?
 

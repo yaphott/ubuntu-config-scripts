@@ -6,7 +6,7 @@ if [[ ! $INSIDE_SCRIPT ]]; then
 fi
 
 # Install Python 3.x
-echo 'Installing Python 3.x'
+echo '+++ Installing Python 3.x'
 
 # Update package database and install
 sudo apt-get update

@@ -13,7 +13,7 @@ if [[ ! "$1" ]]; then
 fi
 
 # Configure Canonical Livepatch
-echo 'Configuring Canonical Livepatch'
+echo '~~~ Configuring Canonical Livepatch'
 
 # Install
 sudo snap install canonical-livepatch

@@ -6,7 +6,7 @@ if [[ ! $INSIDE_SCRIPT ]]; then
 fi
 
 # Configure Python 3.x
-echo 'Configuring Python 3.x'
+echo '~~~ Configuring Python 3.x'
 
 #### Update pip
 

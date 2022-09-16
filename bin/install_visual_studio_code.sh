@@ -6,7 +6,7 @@ if [[ ! $INSIDE_SCRIPT ]]; then
 fi
 
 # Install Visual Studio Code
-echo 'Installing Visual Studio Code'
+echo '+++ Installing Visual Studio Code'
 
 key_url='https://packages.microsoft.com/keys/microsoft.asc'
 key_filename='packages.microsoft.gpg'

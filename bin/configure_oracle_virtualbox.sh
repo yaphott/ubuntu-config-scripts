@@ -6,7 +6,7 @@ if [[ ! $INSIDE_SCRIPT ]]; then
 fi
 
 # Configure Oracle VirtualBox
-echo 'Configuring Oracle VirtualBox'
+echo '~~~ Configuring Oracle VirtualBox'
 
 #### Install Extension Pack
 

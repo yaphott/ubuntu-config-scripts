@@ -6,7 +6,7 @@ if [[ ! $INSIDE_SCRIPT ]]; then
 fi
 
 # Install Sublime Text
-echo 'Installing Sublime Text'
+echo '+++ Installing Sublime Text'
 
 key_url='https://download.sublimetext.com/sublimehq-pub.gpg'
 key_filename='sublime-text-keyring.gpg'

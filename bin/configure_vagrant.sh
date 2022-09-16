@@ -6,7 +6,7 @@ if [[ ! $INSIDE_SCRIPT ]]; then
 fi
 
 # Configure Vagrant
-echo 'Configuring Vagrant'
+echo '~~~ Configuring Vagrant'
 
 #### Install Plugins
 

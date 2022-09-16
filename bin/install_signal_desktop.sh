@@ -6,7 +6,7 @@ if [[ ! $INSIDE_SCRIPT ]]; then
 fi
 
 # Install Signal Desktop
-echo 'Installing Signal Desktop'
+echo '+++ Installing Signal Desktop'
 
 key_url='https://updates.signal.org/desktop/apt/keys.asc'
 key_filename='signal-desktop-keyring.gpg'

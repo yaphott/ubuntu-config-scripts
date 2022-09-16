@@ -6,7 +6,7 @@ if [[ ! $INSIDE_SCRIPT ]]; then
 fi
 
 # Install Oracle VirtualBox
-echo 'Installing Oracle VirtualBox'
+echo '+++ Installing Oracle VirtualBox'
 
 key_url='https://www.virtualbox.org/download/oracle_vbox_2016.asc'
 key_filename='oracle-virtualbox-2016.gpg'

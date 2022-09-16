@@ -6,7 +6,7 @@ if [[ ! $INSIDE_SCRIPT ]]; then
 fi
 
 # Install Google Chrome
-echo 'Installing Google Chrome'
+echo '+++ Installing Google Chrome'
 
 key_url='https://dl-ssl.google.com/linux/linux_signing_key.pub'
 key_filename='google-chrome-keyring.gpg'

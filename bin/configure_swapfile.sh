@@ -15,7 +15,7 @@ if [[ (! "$1") || (! "$2") || (! "$3") ]]; then
 fi
 
 # Configure Swapfile
-echo 'Configuring Swapfile'
+echo '~~~ Configuring Swapfile'
 
 # View current swaps
 # cat /proc/swaps

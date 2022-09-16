@@ -6,7 +6,7 @@ if [[ ! $INSIDE_SCRIPT ]]; then
 fi
 
 # Install Vagrant
-echo 'Installing Vagrant'
+echo '+++ Installing Vagrant'
 
 key_url='https://apt.releases.hashicorp.com/gpg'
 key_filename='hashicorp-archive-keyring.gpg'
