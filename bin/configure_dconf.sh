@@ -6,7 +6,7 @@ if [[ ! $INSIDE_SCRIPT ]]; then
 fi
 
 # Configure dconf
-echo 'Configuring dconf'
+echo '~~~ Configuring dconf'
 
 # https://www.freedesktop.org/software/gstreamer-sdk/data/docs/2012.5/glib/gvariant-text.html
 # 
@@ -20,12 +20,20 @@ echo 'Configuring dconf'
 #   Output:
 #     ['org.gnome.Nautilus.desktop', 'snap-store_ubuntu-software.desktop', 'yelp.desktop', 'firefox_firefox.desktop']
 
+# Parse IDs of profiles
+# NOTE: The last two items are the word 'list' and a newline, so we skip them
+# terminal_profile_ids=($( dconf list '/org/gnome/terminal/legacy/profiles:/' ))
+# for (( i=0; i<=${#terminal_profile_ids[@]}-2; i++ )); do
+#      echo "${terminal_profile_ids[$i]}"
+# done
+
+
 #### Dock
 
 # Favorites
 dconf write /org/gnome/shell/favorite-apps "['org.gnome.Nautilus.desktop', 'google-chrome.desktop', 'firefox_firefox.desktop', 'code.desktop', 'sublime_text.desktop', 'org.gnome.Terminal.desktop', 'gnome-system-monitor.desktop', 'signal-desktop.desktop', 'gparted.desktop', 'synaptic.desktop', 'gnome-control-center.desktop']"
 # Fixed (does not auto-hide)
-dconf write /org/gnome/shell/extensions/dash-to-dock/dock-fixed 'false'
+# dconf write /org/gnome/shell/extensions/dash-to-dock/dock-fixed 'false'
 # Show on all displays
 dconf write /org/gnome/shell/extensions/dash-to-dock/multi-monitor 'true'
 # Icon size
@@ -45,7 +53,7 @@ dconf write /org/gnome/gedit/preferences/editor/scheme "'Yaru-dark'"
 #### UI
 
 # Location of new desktop icons
-dconf write '/org/gnome/shell/extensions/ding/start-corner' "'top-left'"
+dconf write /org/gnome/shell/extensions/ding/start-corner "'top-left'"
 # Show battery percentage
 dconf write /org/gnome/desktop/interface/show-battery-percentage 'true'
 

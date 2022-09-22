@@ -15,6 +15,10 @@ fi
 # Configure Canonical Livepatch
 echo '~~~ Configuring Canonical Livepatch'
 
+# TODO: Update to latest
+# New command for attaching livepatch token?
+# sudo ua attach "$1"
+
 # Install
 sudo snap install canonical-livepatch
 

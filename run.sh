@@ -91,11 +91,11 @@ sudo apt-get install -y gpg wget curl
 # Required for release codename
 sudo apt-get install -y lsb-core
 # Install General Packages
-sudo apt-get install -y git        synaptic    htop             tmux         awscli \
-                        net-tools  nmap        whois            ssh-askpass  filezilla \
-                        nomacs     gimp        imagemagick      vlc          handbrake \
-                        bzip2      unzip       zstd             jq           protobuf-compiler \
-                        gparted    exfatprogs  usb-creator-gtk
+sudo apt-get install -y git        synaptic    htop             tmux               awscli \
+                        net-tools  nmap        whois            ssh-askpass        filezilla \
+                        nomacs     gimp        imagemagick      vlc                handbrake \
+                        bzip2      unzip       zstd             file-roller        jq \
+                        gparted    exfatprogs  usb-creator-gtk  protobuf-compiler
 
 # Flag stating the script is running
 export INSIDE_SCRIPT=true
