@@ -13,11 +13,12 @@ if [[ (! "$1") || (! "$2") ]]; then
     exit
 fi
 
-# Insert Public Software Signing Key
-echo 'Adding keyring --> '"$repo_keyring_path"
-
 temp_keyring_path='./tmp/'"$2"
 repo_keyring_path='/usr/share/keyrings/'"$2"
+
+# Insert Public Software Signing Key
+# TODO: Check for existing gpg keys before adding
+echo 'Adding keyring --> '"$repo_keyring_path"
 
 # Download
 wget -qO - "$1" | gpg --dearmor > "$temp_keyring_path"

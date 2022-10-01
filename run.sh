@@ -1,8 +1,10 @@
 #!/bin/bash -xe
 
+# TODO: Change DNS servers
+
 # Prevent running with sudo
-if [ "$EUID" -eq 0 ]
-    then echo 'Please run without sudo. Exiting ...'
+if [ "$EUID" -eq 0 ]; then
+    echo 'Please run without sudo. Exiting ...'
     exit
 fi
 
@@ -12,6 +14,7 @@ while [ ! "$LIVEPATCH_KEY" ]; do
     read LIVEPATCH_KEY
 done
 echo 'Using Canonical Livepatch key: '"$LIVEPATCH_KEY"
+
 # TODO: Check for exported user variables before overriding
 # NOTE: Could add prompt for user input?
 SWAPFILE_PATH='/swapfile'
@@ -73,9 +76,10 @@ if [[ ! -f './tmp/waypoint.temp' ]]; then
     touch './tmp/waypoint.temp'
 
     # Instruct user for reboot
-    echo 'Restart is needed to continue. RE-RUN THIS INSTALLER AFTER PC RESTARTS!'
+    echo 'Restart is needed to continue'
+    echo 'IMPORTANT: Re-run the program from the same directory after restarting!'
     echo -n 'Press any key to restart now'
-    pause
+    read
     sudo shutdown -r now
 fi
 
@@ -95,7 +99,7 @@ sudo apt-get install -y git        synaptic    htop             tmux            
                         net-tools  nmap        whois            ssh-askpass        filezilla \
                         nomacs     gimp        imagemagick      vlc                handbrake \
                         bzip2      unzip       zstd             file-roller        jq \
-                        gparted    exfatprogs  usb-creator-gtk  protobuf-compiler
+                        gparted    exfatprogs  usb-creator-gtk  protobuf-compiler  libreoffice
 
 # Flag stating the script is running
 export INSIDE_SCRIPT=true
@@ -113,10 +117,25 @@ if [[ $USER == 'root' ]]; then
     exit
 fi
 
+# Configure HTop
+bash ./bin/configure_htop.sh
+
 # Install Python 3.x
 bash ./bin/install_python3.sh
 # Configure Python 3.x
 bash ./bin/configure_python3.sh
+
+# TODO: Install CmdStan
+#       ~/.cmdstan/cmdstan-2.29.1
+# bash ./bin/install_cmdstan.sh
+
+# TODO: Install Mujoco
+#       ~/.mujoco/mujoco210
+# bash ./bin/install_mujoco.sh
+
+# TODO: Configure Streamlit (e.g. disable watchdog)
+#       ~/.streamlit/config.toml
+# bash ./bin/configure_streamlit
 
 # Install Node.js
 bash ./bin/install_nodejs.sh
@@ -133,14 +152,14 @@ bash ./bin/install_visual_studio_code.sh
 # TODO: Install GCloud
 # bash ./bin/install_gcloud.sh
 
+# Install Signal Desktop
+bash ./bin/install_signal_desktop.sh
+
 # Install Bitwarden
 sudo snap install bitwarden
 
 # Install Telegram Desktop
 sudo snap install telegram-desktop
-
-# Install Signal Desktop
-bash ./bin/install_signal_desktop.sh
 
 # Install Spotify
 sudo snap install spotify
@@ -155,16 +174,23 @@ bash ./bin/install_vagrant.sh
 # Configure Vagrant
 bash ./bin/configure_vagrant.sh
 
+# TODO: Configure Mozilla Firefox
+# bash ./bin/configure_mozilla_firefox.sh
+
 # Install Google Chrome
 bash ./bin/install_google_chrome.sh
 # TODO: Configure Google Chrome
 # bash ./bin/configure_google_chrome.sh
 
-# TODO: Configure Mozilla Firefox
-# bash ./bin/configure_mozilla_firefox.sh
+# TODO: Install Geckdriver
+# bash ./bin/install_geckodriver.sh
 
+# TODO: Install Chromedriver
+# bash ./bin/install_chromedriver.sh
+
+# TODO: Update to latest suggested method
 # Configure Canonical Livepatch
-bash ./bin/configure_livepatch.sh "$LIVEPATCH_KEY"
+# bash ./bin/configure_livepatch.sh "$LIVEPATCH_KEY"
 
 # Configure Firewall (UFW)
 bash ./bin/configure_ufw.sh
@@ -183,31 +209,18 @@ powerprofilesctl set performance
 
 # Change processor governors to "Performance"
 # https://askubuntu.com/questions/604720/setting-to-high-performance
-#   View available:
-#     cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_governors 
-#   View current:
-#     cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
-#   Change setting:
-# echo performance | sudo tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor
+# View available:
+#   cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_governors
+# View current:
+#   cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+# Change setting:
+#   echo performance | sudo tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor
 
 # Configure bluetooth
 bash ./bin/configure_bluetooth.sh
 
-# miniconda3
-# AWS settings and creds
-# Disable watchdog in streamlit/config.toml
-# cmdstan located in ~/.cmdstan/cmdstan-2.29.1
-# Deepface weights
-# Download, extract, and rename mujoco210 situation
-# Custom cspell dictionary
-# ~/.cspell/custom-dictionary-user.txt
-# Github credentials
-# ~/.gitconfig
-# Pypi credentials ~/.pypirc
-# ~/.bash_history and ~/.ssh
-# Geckdriver and Chromedriver
-# NOTE: Should add check for existing keys, ask for overriding, etc.
-# Assign default DNS servers
+# TODO: Install Anaconda
+# bash ./bin/install_anaconda.sh
 
 # Uninstall packages that are no longer dependencies (previously installed automatically)
 sudo apt-get autoremove -y
@@ -221,3 +234,5 @@ rm './tmp/startpoint.temp'
 # Delete waypoint file from last run
 echo 'Removing waypoint'
 rm './tmp/waypoint.temp'
+
+echo 'Done!'

@@ -1,18 +1,22 @@
 #!/bin/bash -xe
 
 if [[ ! $INSIDE_SCRIPT ]]; then
-    echo "Please run with the installer script"
+    echo 'Please run with the installer script. Exiting ...'
     exit
 fi
 
-# NOTE: THIS IS INCOMPLETE
-
 # Configure Mozilla Firefox
-# TODO: Add value check onto user input
-echo 'Configuring Mozilla Firefox'
+# NOTE: THIS IS INCOMPLETE
+echo '~~~ Configuring Mozilla Firefox'
 
-# Initialize Firefox if not done already
-if ![[ -d '/home/'"$USER"'/snap/firefox' ]]; then
+function ensure_param () {
+    if [[ ! $2 ]]; then
+        echo 'Missing expected parameter: '"$1"
+    fi
+
+# TODO: Change this match HTop configuration script
+# Run Firefox for a brief moment (generates configurations)
+if [[ ! -d "$HOME"'/snap/firefox' ]]; then
     # Start Firefox in thread
     firefox &
     # TODO: Add loop that checks for process, and then a add a pause
@@ -20,10 +24,9 @@ if ![[ -d '/home/'"$USER"'/snap/firefox' ]]; then
 fi
 
 # inotifywatch -e modify,create,delete -r ~/snap/firefox/common/.mozilla
-for file_dir in '/home/'"$USER"'/snap/firefox/common/.mozilla/firefox/'*'.default'
+# TODO: Resolve the user directory prior to this to ensure it is correct
+for file_dir in "$HOME"'/snap/firefox/common/.mozilla/firefox/'*'.default'
 do
     [ -d "$file_dir" ] || break
     echo "$file_dir"
 done
-
-

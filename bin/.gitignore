@@ -4,6 +4,7 @@
 # Except
 !configure_bluetooth.sh
 !configure_dconf.sh
+!configure_htop.sh
 !configure_livepatch.sh
 !configure_mozilla_firefox.sh
 !configure_nvidia.sh
