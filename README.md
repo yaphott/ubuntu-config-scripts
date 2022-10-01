@@ -1,5 +1,5 @@
 # ubuntu-config-scripts
 
-Configuration scripts for the current LTS release of Ubuntu Linux.
+Configuration scripts for the current LTS release of Ubuntu.
 
-**Not intended for production use. Use at your own risk!**
+**Not intended for production. Use at your own risk!**

@@ -10,10 +10,10 @@ fi
 
 # User-defined variables (if not set prior to executing)
 while [ ! "$LIVEPATCH_KEY" ]; do
+    echo 'Visit https://ubuntu.com/advantage and create a key'
     echo -n 'Enter your Canonical Livepatch key: '
     read LIVEPATCH_KEY
 done
-echo 'Using Canonical Livepatch key: '"$LIVEPATCH_KEY"
 
 # TODO: Check for exported user variables before overriding
 # NOTE: Could add prompt for user input?
@@ -188,9 +188,8 @@ bash ./bin/install_google_chrome.sh
 # TODO: Install Chromedriver
 # bash ./bin/install_chromedriver.sh
 
-# TODO: Update to latest suggested method
 # Configure Canonical Livepatch
-# bash ./bin/configure_livepatch.sh "$LIVEPATCH_KEY"
+sudo ua attach "$LIVEPATCH_KEY"
 
 # Configure Firewall (UFW)
 bash ./bin/configure_ufw.sh
