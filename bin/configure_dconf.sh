@@ -27,7 +27,6 @@ echo '~~~ Configuring dconf'
 #      echo "${terminal_profile_ids[$i]}"
 # done
 
-
 #### Dock
 
 # Favorites
@@ -52,6 +51,10 @@ dconf write /org/gnome/gedit/preferences/editor/scheme "'Yaru-dark'"
 
 #### UI
 
+# List view in file browser
+dconf write /org/gnome/nautilus/preferences/default-folder-viewer "'list-view'"
+# Smallest list in file browser
+dconf write /org/gnome/nautilus/list-view/default-zoom-level "'small'"
 # Location of new desktop icons
 dconf write /org/gnome/shell/extensions/ding/start-corner "'top-left'"
 # Show battery percentage
@@ -77,6 +80,24 @@ dconf write /org/gnome/settings-daemon/plugins/power/sleep-inactive-battery-time
 # Suspend after inactivity (plugged-in) before suspending
 #   'suspend' is Enabled, 'nothing' is Disabled
 dconf write /org/gnome/settings-daemon/plugins/power/sleep-inactive-ac-type "'nothing'"
+
+#### Gedit
+
+gsettings set 'org.gnome.gedit.preferences.editor' 'tabs-size' '4'
+# Display right margin column
+gsettings set 'org.gnome.gedit.preferences.editor' 'display-right-margin' 'true'
+# Set right margin column
+gsettings set 'org.gnome.gedit.preferences.editor' 'right-margin-position' '80'
+# Background pattern
+gsettings set 'org.gnome.gedit.preferences.editor' 'background-pattern' "'grid'"
+# Indent size
+gsettings set 'org.gnome.gedit.preferences.editor' 'tabs-size' '4'
+# Indent using spaces
+gsettings set 'org.gnome.gedit.preferences.editor' 'insert-spaces' 'true'
+# Use default font
+gsettings set 'org.gnome.gedit.preferences.editor' 'use-default-font' 'false'
+# Custom font and size
+gsettings set 'org.gnome.gedit.preferences.editor' 'editor-font' "'Fira Code 10'"
 
 #### Terminal
 
