@@ -19,7 +19,7 @@ if [[ ! -f "$configuration_path" ]]; then
     htop &
     sleep 3
     # Find PID of htop process
-    htop_pid="$( ps -ef | awk '$8=="htop" {print $2}' )"
+    htop_pid=$( ps -ef | awk '$8=="htop" {print $2}' )
     # Send SIGTERM
     kill -15 "$htop_pid"
     # Same as:
