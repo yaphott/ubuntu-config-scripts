@@ -8,22 +8,6 @@ if [ "$EUID" -eq 0 ]; then
     exit
 fi
 
-# User-defined variables (if not set prior to executing)
-while [ ! "$LIVEPATCH_KEY" ]; do
-    echo 'Visit https://ubuntu.com/advantage and create a key'
-    echo -n 'Enter your Canonical Livepatch key: '
-    read LIVEPATCH_KEY
-done
-
-# TODO: Check for exported user variables before overriding
-# NOTE: Could add prompt for user input?
-SWAPFILE_PATH='/swapfile'
-echo 'Using swapfile path: '"$SWAPFILE_PATH"
-SWAPFILE_SIZE='12g'
-echo 'Using swapfile size: '"$SWAPFILE_SIZE"
-SWAPFILE_SWAPINESS='10'
-echo 'Using system swappiness: '"$SWAPFILE_SWAPINESS"
-
 # Helpful file/config watching commands
 # (Requires inotify-tools)
 #   inotifywatch -e modify,create,delete -r ~/.config
@@ -103,6 +87,22 @@ sudo apt-get install -y git        synaptic    htop             tmux            
 
 # Flag stating the script is running
 export INSIDE_SCRIPT=true
+
+# User-defined variables (if not set prior to executing)
+while [ ! "$LIVEPATCH_KEY" ]; do
+    echo 'Visit https://ubuntu.com/advantage and create a key'
+    echo -n 'Enter your Canonical Livepatch key: '
+    read LIVEPATCH_KEY
+done
+
+# TODO: Check for exported user variables before overriding
+# NOTE: Could add prompt for user input?
+SWAPFILE_PATH='/swapfile'
+echo 'Using swapfile path: '"$SWAPFILE_PATH"
+SWAPFILE_SIZE='12g'
+echo 'Using swapfile size: '"$SWAPFILE_SIZE"
+SWAPFILE_SWAPINESS='10'
+echo 'Using system swappiness: '"$SWAPFILE_SWAPINESS"
 
 # Resolve name of current user
 if [ $SUDO_USER ]; then
