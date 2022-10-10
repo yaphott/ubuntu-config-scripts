@@ -140,6 +140,9 @@ bash ./bin/configure_python3.sh
 # Install Node.js
 bash ./bin/install_nodejs.sh
 
+# Install Yarn
+bash ./bin/install_yarn.sh
+
 # Install FiraCode Font
 bash ./bin/install_firacode_font.sh
 
