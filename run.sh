@@ -120,10 +120,15 @@ fi
 # Configure HTop
 bash ./bin/configure_htop.sh
 
-# Install Python 3.x
+# Install Latest Python
 bash ./bin/install_python3.sh
-# Configure Python 3.x
+# Configure Latest Python
 bash ./bin/configure_python3.sh
+
+# TODO: Install Python 3.9
+# bash ./bin/install_python39.sh
+# TODO: Configure Python 3.9
+# bash ./bin/configure_python39.sh
 
 # TODO: Install CmdStan
 #       ~/.cmdstan/cmdstan-2.29.1
@@ -223,6 +228,10 @@ bash ./bin/configure_bluetooth.sh
 
 # TODO: Install Anaconda
 # bash ./bin/install_anaconda.sh
+
+# Install NVIDIA CUDA 11.3
+# (check comment in install script for 11.6)
+bash ./bin/install_nvidia_cuda.sh
 
 # Uninstall packages that are no longer dependencies (previously installed automatically)
 sudo apt-get autoremove -y
