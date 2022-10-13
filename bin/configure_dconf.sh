@@ -67,6 +67,11 @@ gsettings set org.gnome.shell.extensions.ding start-corner top-left
 # Show battery percentage
 gsettings set org.gnome.desktop.interface show-battery-percentage true
 
+#### Image View
+
+# Smooth images when zoomed in
+gsettings set org.gnome.eog.view extrapolate false
+
 #### Hardware
 
 # Disable middle-click paste
