@@ -1,12 +1,15 @@
-#!/bin/bash -xe
+#!/bin/bash -e
+
+################ TODO: Check if evaluating the success of a command is the same if piping e.g. echo 'y' | mycommand
+function exit_with_failure () { echo 'Failed to configure Universal Firewall (UFW).'; exit 1; }
 
 if [[ ! $INSIDE_SCRIPT ]]; then
-    echo 'Please run with the installer script. Exiting ...'
-    exit
+    echo 'Please run with the installer script.'
+    exit 1
 fi
 
 # Configure Firewall (UFW)
-echo '~~~ Configuring UFW'
+echo '~~~ Configuring Universal Firewall (UFW)'
 
 # https://wiki.ubuntu.com/UncomplicatedFirewall
 # The user may achieve a more advanced configuration by editing the following files:
@@ -28,15 +31,20 @@ echo '~~~ Configuring UFW'
 
 # Disable and reset
 # NOTE: Disabling and resetting should not be necessary
-sudo ufw disable
-echo 'y' | sudo ufw reset
+sudo ufw disable \
+|| exit_with_failure
+
+( echo 'y' | sudo ufw reset ) \
+|| exit_with_failure
 
 # Configure
-sudo ufw default allow outgoing
-sudo ufw default deny incoming
-# sudo ufw allow 2222/tcp comment 'SSH access'
+( sudo ufw default allow outgoing \
+  && sudo ufw default deny incoming
+) || exit_with_failure
+# && sudo ufw allow 2222/tcp comment 'SSH access'
 
 # Enable
-sudo ufw enable
+sudo ufw enable \
+|| exit_with_failure
 
 # TODO: Verify successful firewall configuration using UFW status
