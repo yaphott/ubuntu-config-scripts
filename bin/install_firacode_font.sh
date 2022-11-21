@@ -10,7 +10,7 @@ fi
 # Install FiraCode Font
 echo '+++ Installing FiraCode Font'
 
-# Local variables#####################
+# Local variables
 github_user='tonsky'
 github_project='FiraCode'
 github_api_url='https://api.github.com/repos/'"$github_user"'/'"$github_project"
@@ -18,7 +18,8 @@ github_std_url='https://github.com/'"$github_user"'/'"$github_project"
 
 # Fetch the version of the latest release
 #   https://fabianlee.org/2021/02/16/bash-determining-latest-github-release-tag-and-version/
-latest_release_ver=$( curl -s "$github_api_url"'/releases/latest' | jq -r ".tag_name" )
+latest_release_ver=$( curl -s "$github_api_url"'/releases/latest' | jq -r ".tag_name" ) \
+|| exit_with_failure
 
 # Validate release version
 #   Allows for unlimited number/period combinations, and unlimited letters at the end
@@ -36,7 +37,7 @@ print(is_valid_str)\
 ' )
 if [ $is_valid_release_ver = false ]; then
     echo 'Failed to fetch version for latest release of '"$github_project"' by '"$github_user"'.'
-    exit 1
+    exit_with_failure
 fi
 
 # Download a ZIP file containing the latest release
@@ -56,7 +57,7 @@ fi
 # Delete output folder if already exists
 if [[ -d './tmp/'"$latest_release_name" ]]; then
     echo 'Folder already exists: ./tmp/'"$latest_release_name"'. Deleting ...'
-    rm -r './tmp/'"$latest_release_name"
+    rm -r './tmp/'"$latest_release_name" || exit_with_failure
 fi
 
 # Create output folder and extract
@@ -66,13 +67,13 @@ fi
 
 # Create user fonts directory if missing
 if [[ ! -d "$HOME"'/.fonts' ]]; then
-    mkdir "$HOME"'/.fonts'
+    mkdir "$HOME"'/.fonts' || exit_with_failure
 fi
 
 # Sometimes the uuid file needs deleting and regenerating
 #   So we'll do it either way if it exists
 if [[ -f "$HOME"'/.fonts/uuid' ]]; then
-    rm "$HOME"'/.fonts/uuid'
+    rm "$HOME"'/.fonts/uuid' || exit_with_failure
 fi
 
 # Copy into fonts and rebuild font cache
