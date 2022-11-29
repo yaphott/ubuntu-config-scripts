@@ -7,8 +7,8 @@ if [[ ! $INSIDE_SCRIPT ]]; then
     exit_with_failure
 fi
 
-# Install NVIDIA CUDA 11.3
-echo '+++ Installing NVIDIA CUDA 11.3'
+# Install NVIDIA CUDA 11.2
+echo '+++ Installing NVIDIA CUDA 11.2'
 
 # Local variables
 # TODO: Parse together expected ubuntu version
@@ -32,7 +32,7 @@ bash ./bin/utils/add_repository.sh 'deb [signed-by=/usr/share/keyrings/'"$key_fi
 
 # Update package database and install
 ( sudo apt-get update && \
-  sudo apt-get install -y cuda-toolkit-11-6
+  sudo apt-get install -y cuda-toolkit-11-2
 ) || exit_with_failure
 # or for 11.3
 # sudo apt-get install -y cuda-toolkit-11-3
