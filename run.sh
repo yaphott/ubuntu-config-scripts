@@ -166,8 +166,11 @@ bash ./bin/install_sublime_text.sh || prompt_to_exit 1
 # Install Visual Studio Code
 bash ./bin/install_visual_studio_code.sh || prompt_to_exit 1
 
-# TODO: Install GCloud
-# bash ./bin/install_gcloud.sh || prompt_to_exit 1
+# Install Google Cloud CLI
+bash ./bin/install_google_cloud_cli.sh || prompt_to_exit 1
+
+# Install Google Firebase CLI
+bash ./bin/install_google_firebase_cli.sh || prompt_to_exit 1
 
 # Install Signal Desktop
 bash ./bin/install_signal_desktop.sh || prompt_to_exit 1
@@ -185,6 +188,9 @@ sudo snap install spotify || prompt_to_exit 1
 bash ./bin/install_oracle_virtualbox.sh || prompt_to_exit 1
 # Configure Oracle VirtualBox
 bash ./bin/configure_oracle_virtualbox.sh || prompt_to_exit 1
+
+# Install Docker
+bash ./bin/install_docker.sh || prompt_to_exit 1
 
 # Install Vagrant
 bash ./bin/install_vagrant.sh || prompt_to_exit 1
@@ -254,4 +260,8 @@ delete_marker 'startpoint'
 delete_marker 'waypoint'
 
 echo 'Done!'
+echo 'Notice:'
+echo '  To configure GCloud, run '"'"'gcloud init'"'"' in a new window'
+echo '  To update GCloud, run '"'"'gcloud components update'"'"' in a new window'
+
 exit 0

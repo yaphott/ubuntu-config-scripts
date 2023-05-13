@@ -1,11 +1,7 @@
 #!/bin/bash -e
 
 function exit_with_failure () { echo 'Failed to install FiraCode Font.'; exit 1; }
-
-if [[ ! $INSIDE_SCRIPT ]]; then
-    echo 'Please run with the installer script.'
-    exit_with_failure
-fi
+[[ $INSIDE_SCRIPT ]] || (echo 'Please run with the installer script.'; exit_with_failure)
 
 # Install FiraCode Font
 echo '+++ Installing FiraCode Font'
@@ -19,7 +15,7 @@ github_std_url='https://github.com/'"$github_user"'/'"$github_project"
 # Fetch the version of the latest release
 #   https://fabianlee.org/2021/02/16/bash-determining-latest-github-release-tag-and-version/
 latest_release_ver=$( curl -s "$github_api_url"'/releases/latest' | jq -r ".tag_name" ) \
-|| exit_with_failure
+    || exit_with_failure
 
 # Validate release version
 #   Allows for unlimited number/period combinations, and unlimited letters at the end
@@ -46,12 +42,12 @@ latest_release_file="$latest_release_name"'.zip'
 latest_release_file_url="$github_std_url"'/releases/download/'"$latest_release_ver"'/'"$latest_release_file"
 
 wget "$latest_release_file_url" -O './tmp/'"$latest_release_file" \
-|| exit_with_failure
+    || exit_with_failure
 
 # Verify download
 if [[ ! -f './tmp/'"$latest_release_file" ]]; then
     echo 'Failed to download '"$github_project"' by '"$github_user"' from '"$latest_release_file_url"'.'
-    exit 1
+    exit_with_failure
 fi
 
 # Delete output folder if already exists
@@ -62,7 +58,7 @@ fi
 
 # Create output folder and extract
 ( mkdir './tmp/'"$latest_release_name" \
-  && unzip './tmp/'"$latest_release_name"'.zip' -d './tmp/'"$latest_release_name"
+    && unzip './tmp/'"$latest_release_file" -d './tmp/'"$latest_release_name"
 ) || exit_with_failure
 
 # Create user fonts directory if missing
@@ -78,10 +74,10 @@ fi
 
 # Copy into fonts and rebuild font cache
 ( cp './tmp/'"$latest_release_name"'/ttf/'*'.ttf' -t "$HOME"'/.fonts' \
-  && fc-cache -f -v
+    && fc-cache -f -v
 ) || exit_with_failure
 
 # Clean up
-( rm './tmp/'"$latest_release_name"'.zip' \
-  && rm -r './tmp/'"$latest_release_name"
+( rm './tmp/'"$latest_release_file" \
+    && rm -r './tmp/'"$latest_release_name"
 ) || exit_with_failure

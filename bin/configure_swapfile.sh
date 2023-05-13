@@ -1,11 +1,7 @@
 #!/bin/bash -e
 
 function exit_with_failure () { echo 'Failed to configure Swapfile.'; exit 1; }
-
-if [[ ! $INSIDE_SCRIPT ]]; then
-    echo 'Please run with the installer script.'
-    exit_with_failure
-fi
+[[ $INSIDE_SCRIPT ]] || (echo 'Please run with the installer script.'; exit_with_failure)
 
 # Validate input parameters
 #   (1) File path for swapfile
@@ -25,22 +21,22 @@ echo '~~~ Configuring Swapfile'
 
 # Disable current swap and remove the file
 ( sudo swapoff "$1" \
-  && sudo rm -f "$1"
+    && sudo rm -f "$1"
 ) || exit_with_failure
 
 # Create new swap
 ( sudo fallocate -l "$2" "$1" \
-  && sudo chmod 600 "$1" \
-  && sudo mkswap "$1"
+    && sudo chmod 600 "$1" \
+    && sudo mkswap "$1"
 ) || exit_with_failure
 
 # Enable new swap
 sudo swapon "$1" \
-|| exit_with_failure
+    || exit_with_failure
 
 # View current swapiness
 # cat /proc/sys/vm/swappiness
 
 # Update swappiness
 sudo sysctl 'vm.swappiness='"$3" \
-|| exit_with_failure
+    || exit_with_failure

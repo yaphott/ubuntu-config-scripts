@@ -1,5 +1,5 @@
 # ubuntu-config-scripts
 
-Configuration scripts for the current LTS release of Ubuntu Desktop (22+).
+Development environment configuration scripts for Ubuntu Desktop (22.04).
 
 **Not intended for production. Use at your own risk!**

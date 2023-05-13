@@ -17,10 +17,13 @@ configure_nvidia.sh
 install_anaconda.sh
 !install_chromedriver.sh
 !install_dependencies.sh
+!install_docker.sh
 !install_firacode_font.sh
 !install_general.sh
 install_go.sh
 !install_google_chrome.sh
+!install_google_cloud_cli.sh
+!install_google_firebase_cli.sh
 !install_nodejs.sh
 !install_nvidia_cuda.sh
 !install_signal_desktop.sh

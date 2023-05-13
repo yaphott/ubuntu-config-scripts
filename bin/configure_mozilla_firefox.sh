@@ -1,9 +1,7 @@
-#!/bin/bash -xe
+#!/bin/bash -e
 
-if [[ ! $INSIDE_SCRIPT ]]; then
-    echo 'Please run with the installer script. Exiting ...'
-    exit
-fi
+function exit_with_failure () { echo 'Failed to configure Firefox.'; exit 1; }
+[[ $INSIDE_SCRIPT ]] || (echo 'Please run with the installer script.'; exit_with_failure)
 
 # Configure Mozilla Firefox
 # NOTE: THIS IS INCOMPLETE
@@ -13,6 +11,7 @@ function ensure_param () {
     if [[ ! $2 ]]; then
         echo 'Missing expected parameter: '"$1"
     fi
+}
 
 # TODO: Change this match HTop configuration script
 # Run Firefox for a brief moment (generates configurations)

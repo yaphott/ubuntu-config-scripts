@@ -1,11 +1,7 @@
 #!/bin/bash -e
 
 function exit_with_failure () { echo 'Failed to configure SSH.'; exit 1; }
-
-if [[ ! $INSIDE_SCRIPT ]]; then
-    echo 'Please run with the installer script.'
-    exit_with_failure
-fi
+[[ $INSIDE_SCRIPT ]] || (echo 'Please run with the installer script.'; exit_with_failure)
 
 # Configure SSH
 # NOTE: THIS IS INCOMPLETE

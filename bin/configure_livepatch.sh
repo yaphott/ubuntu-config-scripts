@@ -1,11 +1,7 @@
 #!/bin/bash -e
 
 function exit_with_failure () { echo 'Failed to configure Canonical Livepatch.'; exit 1; }
-
-if [[ ! $INSIDE_SCRIPT ]]; then
-    echo 'Please run with the installer script.'
-    exit_with_failure
-fi
+[[ $INSIDE_SCRIPT ]] || (echo 'Please run with the installer script.'; exit_with_failure)
 
 # Validate input parameters
 #   (1) Canonical Livepatch key
