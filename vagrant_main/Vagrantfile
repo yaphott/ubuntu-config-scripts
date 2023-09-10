@@ -19,6 +19,8 @@ Vagrant.configure("2") do |config|
     config.vm.provision "file", source: "ubuntu-config-scripts", destination: "/home/#{username}/ubuntu-config-scripts"
 
     config.vm.provision "shell", privileged: false, inline: <<-SHELL
+        sudo chmod +x -R '/home/#{username}/ubuntu-config-scripts'
+
         mkdir -p '/home/#{username}/.config/autostart'
         echo "\
         [Desktop Entry]
