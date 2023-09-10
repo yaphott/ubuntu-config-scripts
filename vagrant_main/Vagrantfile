@@ -1,19 +1,30 @@
+username = "vagrant"
+
 Vagrant.configure("2") do |config|
     config.vm.box = "ubuntu_config_scripts_base"
 
     config.vm.provider "virtualbox" do |vb|
         vb.gui = true
+        vb.memory = "4096"
+        vb.cpus = "2"
+        vb.customize ["modifyvm", :id, "--vram", "128"]
+        vb.customize ["modifyvm", :id, "--graphicscontroller", "vmsvga"]
+        vb.customize ["modifyvm", :id, "--accelerate3d", "on"]
+        vb.customize ["modifyvm", :id, "--accelerate2dvideo", "on"]
+        vb.customize ["modifyvm", :id, "--audio", "none"]
+        vb.customize ["modifyvm", :id, "--clipboard", "bidirectional"]
+        vb.customize ["modifyvm", :id, "--draganddrop", "bidirectional"]
     end
 
-    config.vm.provision "file", source: "ubuntu-config-scripts", destination: "~/ubuntu-config-scripts"
+    config.vm.provision "file", source: "ubuntu-config-scripts", destination: "/home/#{username}/ubuntu-config-scripts"
 
     config.vm.provision "shell", privileged: false, inline: <<-SHELL
-        mkdir -p "$HOME/.config/autostart"
+        mkdir -p '/home/#{username}/.config/autostart'
         echo "\
         [Desktop Entry]
         Name=UbuntuConfigScripts
-        Exec=gnome-terminal -- $HOME/ubuntu-config-scripts/run_in_vagrant.sh
+        Exec=gnome-terminal -- /home/#{username}/ubuntu-config-scripts/run_in_vagrant.sh
         Type=Application
-        " | tee "$HOME/.config/autostart/ubuntu_config_scripts.desktop" > /dev/null
+        " | tee '/home/#{username}/.config/autostart/UbuntuConfigScripts.desktop' > /dev/null
     SHELL
 end
