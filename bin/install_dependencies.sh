@@ -19,10 +19,10 @@ echo '+++ Dependencies'
 # | gnupg               | Fetching files and installing keys. |
 # +---------------------+-------------------------------------+
 ( sudo apt-get update \
-  && sudo apt-get install -y linux-generic \
-                          build-essential \
-                          apt-transport-https \
-                          gpg wget curl \
-                          lsb-core ca-certificates \
-                          gnupg
+    && sudo apt-get install -y linux-generic \
+        build-essential \
+        apt-transport-https \
+        gpg wget curl \
+        lsb-core ca-certificates \
+        gnupg
 ) || exit_with_failure

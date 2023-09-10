@@ -15,7 +15,7 @@ echo '~~~ Configuring Canonical Livepatch'
 
 # Install
 sudo snap install canonical-livepatch \
-|| exit_with_failure
+    || exit_with_failure
 
 # Configure and enable
 # Ubuntu Advantage
@@ -23,11 +23,11 @@ sudo snap install canonical-livepatch \
 # Ubuntu Pro
 # sudo pro attach "$1"
 sudo canonical-livepatch enable "$1" \
-|| exit_with_failure
+    || exit_with_failure
 
 # Reload
 sudo canonical-livepatch refresh \
-|| exit_with_failure
+    || exit_with_failure
 
 # Check current status of livepatch
 # sudo canonical-livepatch status

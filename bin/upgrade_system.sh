@@ -6,6 +6,5 @@ function exit_with_failure () { echo 'Failed to install System Upgrades.'; exit 
 # Install System Upgrades
 echo '+++ System Upgrades'
 
-( sudo apt-get update \
-  && sudo apt-get dist-upgrade -y
-) || exit_with_failure
+( sudo apt-get update && sudo apt-get dist-upgrade -y ) \
+    || exit_with_failure

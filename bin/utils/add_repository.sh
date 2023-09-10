@@ -51,6 +51,7 @@ echo 'Adding repository --> '"$repo_source_path"
 #     echo 'Overwriting file.'
 # fi
 
-echo '# Added by the Ubuntu-Config-Scripts installer.' | sudo tee "$repo_source_path" > /dev/null
-echo "deb [$repo_options] $repo_uri $repo_suite $repo_components" | sudo tee -a "$repo_source_path" > /dev/null
-echo '' | sudo tee -a "$repo_source_path" > /dev/null
+echo "\
+# Added by the Ubuntu-Config-Scripts installer.
+deb [$repo_options] $repo_uri $repo_suite $repo_components
+" | sudo tee -a "$repo_source_path" > /dev/null
