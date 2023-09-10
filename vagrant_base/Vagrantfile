@@ -1,0 +1,17 @@
+Vagrant.configure("2") do |config|
+    config.vm.box = "ubuntu/jammy64"
+
+    config.vm.provider "virtualbox" do |vb|
+        vb.gui = true
+    end
+
+    config.vm.provision "shell", inline: <<-SHELL
+        sudo apt-get update
+        sudo apt-get install -y ubuntu-desktop
+
+        sudo sed -e '/\[Daemon\]/a AutomaticLoginEnable=true' \
+                 -e '/\[Daemon\]/a AutomaticLogin=vagrant' \
+                 -i /etc/gdm3/custom.conf
+        sudo service gdm3 restart
+    SHELL
+end

@@ -1,0 +1,19 @@
+Vagrant.configure("2") do |config|
+    config.vm.box = "ubuntu_config_scripts_base"
+
+    config.vm.provider "virtualbox" do |vb|
+        vb.gui = true
+    end
+
+    config.vm.provision "file", source: "ubuntu-config-scripts", destination: "~/ubuntu-config-scripts"
+
+    config.vm.provision "shell", privileged: false, inline: <<-SHELL
+        mkdir -p "$HOME/.config/autostart"
+        echo "\
+        [Desktop Entry]
+        Name=UbuntuConfigScripts
+        Exec=gnome-terminal -- $HOME/ubuntu-config-scripts/run_in_vagrant.sh
+        Type=Application
+        " | tee "$HOME/.config/autostart/ubuntu_config_scripts.desktop" > /dev/null
+    SHELL
+end

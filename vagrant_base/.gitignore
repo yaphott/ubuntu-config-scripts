@@ -1,0 +1,8 @@
+# Ignore everything
+*
+
+# Except
+!prepare_box.sh
+!Vagrantfile
+
+!.gitignore
