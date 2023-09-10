@@ -125,14 +125,14 @@ function execute_tasks () {
 
 register_task 'DNS'                 configure 'bash ./bin/configure_dns.sh' 1
 register_task 'Firewall (UFW)'      configure 'bash ./bin/configure_ufw.sh' 1
-register_task 'SSH'                 configure 'bash ./bin/configure_ssh.sh' 1
 register_task 'Canonical Livepatch' configure "bash ./bin/configure_livepatch.sh '$LIVEPATCH_KEY'" 0
-
-register_task 'Dependencies'        install   'bash ./bin/install_dependencies.sh' 1
-register_task 'General Packages'    install   'bash ./bin/install_general.sh' 1
 register_task 'Bluetooth'           configure 'bash ./bin/configure_bluetooth.sh' 1
 # (check comment in install script for 11.3)
 # register_task 'NVIDIA CUDA'         install 'bash ./bin/install_nvidia_cuda.sh' 1
+
+register_task 'Dependencies'        install   'bash ./bin/install_dependencies.sh' 1
+register_task 'General Packages'    install   'bash ./bin/install_general.sh' 1
+register_task 'SSH'                 configure 'bash ./bin/configure_ssh.sh' 1
 
 register_task 'Swapfile'            configure "bash ./bin/configure_swapfile.sh '$SWAPFILE_PATH' '$SWAPFILE_SIZE' '$SWAPFILE_SWAPINESS'" 1
 register_task 'dconf'               configure 'bash ./bin/configure_dconf.sh' 1
