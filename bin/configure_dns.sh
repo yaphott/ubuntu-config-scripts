@@ -6,6 +6,7 @@ function exit_with_failure () { echo 'Failed to configure DNS.'; exit 1; }
 # Configure DNS
 echo '~~~ Configuring DNS'
 
+# TODO: Accept user input for DNS servers
 echo "\
 nameserver 1.1.1.1
 nameserver 8.8.8.8

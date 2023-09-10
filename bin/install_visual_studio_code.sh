@@ -22,6 +22,5 @@ bash ./bin/utils/add_repository.sh 'deb [arch=amd64,arm64,armhf signed-by=/usr/s
 
 # Update package database and install
 # or code-insiders
-( sudo apt-get update \
-    && sudo apt-get install code
-) || exit_with_failure
+( sudo apt-get update && sudo apt-get install code ) \
+    || exit_with_failure

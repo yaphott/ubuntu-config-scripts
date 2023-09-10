@@ -9,4 +9,4 @@ echo '+++ Google Firebase CLI'
 
 # Run install script
 curl -sL https://firebase.tools | bash \
-   || exit_with_failure
+    || exit_with_failure

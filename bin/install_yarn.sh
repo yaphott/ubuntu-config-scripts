@@ -21,6 +21,5 @@ bash ./bin/utils/add_repository.sh 'deb [signed-by=/usr/share/keyrings/'"$key_fi
     || exit_with_failure
 
 # Update package database and install
-( sudo apt-get update \
-    && sudo apt-get install -y yarn
-) || exit_with_failure
+( sudo apt-get update && sudo apt-get install -y yarn ) \
+    || exit_with_failure

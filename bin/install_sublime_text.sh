@@ -21,6 +21,5 @@ bash ./bin/utils/add_repository.sh 'deb [arch=amd64 signed-by=/usr/share/keyring
     || exit_with_failure
 
 # Update package database and install
-( sudo apt-get update \
-    && sudo apt-get install -y sublime-text
-) || exit_with_failure
+( sudo apt-get update && sudo apt-get install -y sublime-text ) \
+    || exit_with_failure

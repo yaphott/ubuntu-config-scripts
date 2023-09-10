@@ -32,9 +32,8 @@ bash ./bin/utils/add_repository.sh 'deb [signed-by=/usr/share/keyrings/'"$key_fi
     || exit_with_failure
 
 # Update package database and install
-( sudo apt-get update && \
-    sudo apt-get install -y cuda-toolkit-11-2
-) || exit_with_failure
+( sudo apt-get update && sudo apt-get install -y cuda-toolkit-11-2 ) \
+    || exit_with_failure
 # or for 11.3
 # sudo apt-get install -y cuda-toolkit-11-3
 
