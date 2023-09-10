@@ -5,6 +5,7 @@
 !_exports.sh
 !configure_bluetooth.sh
 !configure_dconf.sh
+!configure_dns.sh
 configure_firefox.sh
 configure_google_chrome.sh
 !configure_htop.sh

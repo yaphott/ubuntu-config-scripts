@@ -1,11 +1,7 @@
 #!/bin/bash -e
 
 function exit_with_failure () { echo 'Failed to install Python 3.x.'; exit 1; }
-
-if [[ ! $INSIDE_SCRIPT ]]; then
-    echo 'Please run with the installer script.'
-    exit_with_failure
-fi
+[[ $INSIDE_SCRIPT ]] || (echo 'Please run with the installer script.'; exit_with_failure)
 
 # Install Python 3.x
 echo '+++ Installing Python 3.x'
