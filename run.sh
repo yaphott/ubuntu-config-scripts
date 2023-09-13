@@ -8,8 +8,8 @@
 #   dconf watch /
 # 
 # TODO:
-#   - Add user to specify which installations/configurations will be run 
-#   - Related to the previous; iterate functions or their exit codes instead of hardcoding '|| prompt_to_exit' after each task.
+# - Add user to specify which installations/configurations will be run.
+# - Related to the previous; iterate functions or their exit codes instead of hardcoding '|| prompt_to_exit' after each task.
 
 # Prevent running with sudo
 if [ "$EUID" -eq 0 ]; then
@@ -123,54 +123,53 @@ function execute_tasks () {
 #   echo performance | sudo tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor
 # Register tasks
 
-register_task 'DNS'                 configure 'bash ./bin/configure_dns.sh' 1
-register_task 'Firewall (UFW)'      configure 'bash ./bin/configure_ufw.sh' 1
-register_task 'Canonical Livepatch' configure "bash ./bin/configure_livepatch.sh '$LIVEPATCH_KEY'" 0
-register_task 'Bluetooth'           configure 'bash ./bin/configure_bluetooth.sh' 1
+register_task 'DNS'                  configure  'bash ./bin/configure_dns.sh' 1
+register_task 'Firewall (UFW)'       configure  'bash ./bin/configure_ufw.sh' 1
+register_task 'Canonical Livepatch'  configure  "bash ./bin/configure_livepatch.sh '$LIVEPATCH_KEY'" 0
+register_task 'Bluetooth'            configure  'bash ./bin/configure_bluetooth.sh' 1
 # (check comment in install script for 11.3)
-# register_task 'NVIDIA CUDA'         install 'bash ./bin/install_nvidia_cuda.sh' 1
+# register_task 'NVIDIA CUDA'          install    'bash ./bin/install_nvidia_cuda.sh' 1
 
-register_task 'Dependencies'        install   'bash ./bin/install_dependencies.sh' 1
-register_task 'General Packages'    install   'bash ./bin/install_general.sh' 1
-register_task 'SSH'                 configure 'bash ./bin/configure_ssh.sh' 1
-
-register_task 'Swapfile'            configure "bash ./bin/configure_swapfile.sh '$SWAPFILE_PATH' '$SWAPFILE_SIZE' '$SWAPFILE_SWAPINESS'" 1
-register_task 'dconf'               configure 'bash ./bin/configure_dconf.sh' 1
-register_task 'Power Mode'          configure 'powerprofilesctl set performance' 1
-
-register_task 'HTop'                configure 'bash ./bin/configure_htop.sh' 0
-register_task 'Python'              install   'bash ./bin/install_python3.sh' 1
-register_task 'Python'              configure 'bash ./bin/configure_python3.sh' 1
-# register_task 'Python 3.9'          install   'bash ./bin/install_python39.sh' 1
-# register_task 'Python 3.9'          configure 'bash ./bin/configure_python39.sh' 1
+register_task 'Dependencies'         install    'bash ./bin/install_dependencies.sh' 1
+register_task 'General Packages'     install    'bash ./bin/install_general.sh' 1
+register_task 'SSH'                  configure  'bash ./bin/configure_ssh.sh' 1
+register_task 'HTop'                 configure  'bash ./bin/configure_htop.sh' 0
+register_task 'Python'               install    'bash ./bin/install_python3.sh' 1
+register_task 'Python'               configure  'bash ./bin/configure_python3.sh' 1
+# register_task 'Python 3.9'           install    'bash ./bin/install_python39.sh' 1
+# register_task 'Python 3.9'           configure  'bash ./bin/configure_python39.sh' 1
 #       ~/.cmdstan/cmdstan-2.29.1
-# register_task 'CmdStan'             install 'bash ./bin/install_cmdstan.sh' 1
+# register_task 'CmdStan'              install  'bash ./bin/install_cmdstan.sh' 1
 #       ~/.mujoco/mujoco210
-# register_task 'MuJoCo'              install 'bash ./bin/install_mujoco.sh' 1
+# register_task 'MuJoCo'               install  'bash ./bin/install_mujoco.sh' 1
 #       ~/.streamlit/config.toml
-# register_task 'Streamlit'           configure 'bash ./bin/configure_streamlit.sh' 1
-register_task 'Node.js'             install   'bash ./bin/install_nodejs.sh' 1
-register_task 'Yarn'                install   'bash ./bin/install_yarn.sh' 1
-register_task 'FiraCode Font'       install   'bash ./bin/install_firacode_font.sh' 1
-register_task 'Sublime Text'        install   'bash ./bin/install_sublime_text.sh' 1
-register_task 'Visual Studio Code'  install   'bash ./bin/install_visual_studio_code.sh' 1
-register_task 'Google Cloud CLI'    install   'bash ./bin/install_google_cloud_cli.sh' 1
-register_task 'Google Firebase CLI' install   'bash ./bin/install_google_firebase_cli.sh' 1
-register_task 'Signal Desktop'      install   'bash ./bin/install_signal_desktop.sh' 1
-register_task 'Bitwarden'           install   'sudo snap install bitwarden' 1
-register_task 'Telegram Desktop'    install   'sudo snap install telegram-desktop' 1
-register_task 'Spotify'             install   'sudo snap install spotify' 1
-register_task 'Oracle VirtualBox'   install   'bash ./bin/install_oracle_virtualbox.sh' 1
-register_task 'Oracle VirtualBox'   configure 'bash ./bin/configure_oracle_virtualbox.sh' 1
-register_task 'Docker'              install   'bash ./bin/install_docker.sh' 1
-register_task 'Vagrant'             install   'bash ./bin/install_vagrant.sh' 1
-register_task 'Vagrant'             configure 'bash ./bin/configure_vagrant.sh' 1
-# register_task 'Mozilla Firefox'     configure 'bash ./bin/configure_mozilla_firefox.sh' 1
-register_task 'Google Chrome'                                           install 'bash ./bin/install_google_chrome.sh' 1
-# register_task 'Google Chrome'       configure 'bash ./bin/configure_google_chrome.sh' 1
-# register_task 'Geckodriver'         install 'bash ./bin/install_geckodriver.sh' 1
-# register_task 'Chromedriver'        install 'bash ./bin/install_chromedriver.sh' 1
-# register_task 'Anaconda'            install 'bash ./bin/install_anaconda.sh' 1
+# register_task 'Streamlit'            configure  'bash ./bin/configure_streamlit.sh' 1
+register_task 'Node.js'              install    'bash ./bin/install_nodejs.sh' 1
+register_task 'Yarn'                 install    'bash ./bin/install_yarn.sh' 1
+register_task 'FiraCode Font'        install    'bash ./bin/install_firacode_font.sh' 1
+register_task 'Sublime Text'         install    'bash ./bin/install_sublime_text.sh' 1
+register_task 'Visual Studio Code'   install    'bash ./bin/install_visual_studio_code.sh' 1
+register_task 'Google Cloud CLI'     install    'bash ./bin/install_google_cloud_cli.sh' 1
+register_task 'Google Firebase CLI'  install    'bash ./bin/install_google_firebase_cli.sh' 1
+register_task 'Signal Desktop'       install    'bash ./bin/install_signal_desktop.sh' 1
+register_task 'Bitwarden'            install    'sudo snap install bitwarden' 1
+register_task 'Telegram Desktop'     install    'sudo snap install telegram-desktop' 1
+register_task 'Spotify'              install    'sudo snap install spotify' 1
+register_task 'Oracle VirtualBox'    install    'bash ./bin/install_oracle_virtualbox.sh' 1
+register_task 'Oracle VirtualBox'    configure  'bash ./bin/configure_oracle_virtualbox.sh' 1
+register_task 'Docker'               install    'bash ./bin/install_docker.sh' 1
+register_task 'Vagrant'              install    'bash ./bin/install_vagrant.sh' 1
+register_task 'Vagrant'              configure  'bash ./bin/configure_vagrant.sh' 1
+# register_task 'Mozilla Firefox'      configure 'bash ./bin/configure_mozilla_firefox.sh' 1
+register_task 'Google Chrome'        install  'bash ./bin/install_google_chrome.sh' 1
+# register_task 'Google Chrome'        configure  'bash ./bin/configure_google_chrome.sh' 1
+# register_task 'Geckodriver'          install  'bash ./bin/install_geckodriver.sh' 1
+# register_task 'Chromedriver'         install  'bash ./bin/install_chromedriver.sh' 1
+# register_task 'Anaconda'             install  'bash ./bin/install_anaconda.sh' 1
+
+register_task 'dconf'                configure  'bash ./bin/configure_dconf.sh' 1
+register_task 'Swapfile'             configure  "bash ./bin/configure_swapfile.sh '$SWAPFILE_PATH' '$SWAPFILE_SIZE' '$SWAPFILE_SWAPINESS'" 1
+register_task 'Power Mode'           configure  'powerprofilesctl set performance' 1
 
 # Execute tasks
 execute_tasks

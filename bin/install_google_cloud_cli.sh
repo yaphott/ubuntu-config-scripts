@@ -15,10 +15,18 @@ latest_release_name='google-cloud-cli-'"$google_cli_version"'-linux-x86_64'
 latest_release_file="$latest_release_name"'.tar.gz'
 latest_release_file_url='https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/'"$latest_release_file"
 
-# Download a the latest installer
-wget "$latest_release_file_url" -O './tmp/'"$latest_release_file" 
-    || exit_with_failure
+# Delete output folder if already exists
+if [[ -d './tmp/'"$latest_release_name" ]]; then
+    echo 'Folder already exists: ./tmp/'"$latest_release_name"'. Deleting ...'
+    rm -r './tmp/'"$latest_release_name" || exit_with_failure
+fi
 
+# Create output folder
+mkdir './tmp/'"$latest_release_name" || exit_with_failure
+
+# Download the latest installer
+wget "$latest_release_file_url" -O './tmp/'"$latest_release_file" \
+    || exit_with_failure
 
 # Verify download
 if [[ ! -f './tmp/'"$latest_release_file" ]]; then
@@ -26,16 +34,9 @@ if [[ ! -f './tmp/'"$latest_release_file" ]]; then
     exit_with_failure
 fi
 
-# Delete output folder if already exists
-if [[ -d './tmp/'"$latest_release_name" ]]; then
-    echo 'Folder already exists: ./tmp/'"$latest_release_name"'. Deleting ...'
-    rm -r './tmp/'"$latest_release_name" || exit_with_failure
-fi
-
-# Create output folder and extract
-( mkdir './tmp/'"$latest_release_name" \
-    && tar -xf './tmp/'"$latest_release_file" -C './tmp/'"$latest_release_name"
-) || exit_with_failure
+# Extract
+tar -xf './tmp/'"$latest_release_file" -C './tmp/'"$latest_release_name" \
+    || exit_with_failure
 
 # Install
 './tmp/'"$latest_release_name"'/google-cloud-sdk/install.sh' || exit_with_failure

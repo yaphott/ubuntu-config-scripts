@@ -1,4 +1,4 @@
 #!/bin/bash
 
-cd ~/ubuntu-config-scripts
+cd "$HOME"'/ubuntu-config-scripts'
 bash run.sh

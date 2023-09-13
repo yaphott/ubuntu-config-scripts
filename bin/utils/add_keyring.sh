@@ -1,48 +1,44 @@
 #!/bin/bash -e
 
-if [[ ! $INSIDE_SCRIPT ]]; then
-    echo 'Please run with the installer script.'
-    exit 1
-fi
+# [[ $INSIDE_SCRIPT ]] || ( echo 'Please run with the installer script.'; exit 1; )
 
 # Validate input parameters
-# 1. Key URL (e.g. https://updates.signal.org/desktop/apt/keys.asc)
-# 2. Key filename to write to (e.g. signal-desktop-keyring.gpg)
 if [[ (! "$1") || (! "$2") ]]; then
     echo 'Missing expected input parameters:'
-    echo '    key_url: Key URL (e.g. https://updates.signal.org/desktop/apt/keys.asc)'
-    echo '    key_filename: Key filename to write to (e.g. signal-desktop-keyring.gpg)'
+    echo '    key_url: URL to the public software signing key (e.g. https://example.com/apt/keys.asc)'
+    echo '    key_filepath: Complete path to write the key to locally (e.g. /etc/apt/keyrings/example-keyring.gpg)'
     echo ''
-    echo 'Example:'
-    echo '    bash ./bin/utils/add_keyring.sh https://updates.signal.org/desktop/apt/keys.asc signal-desktop-keyring.gpg'
+    echo 'Example usage inside of script:'
+    echo '    bash ./bin/utils/add_keyring.sh https://example.com/apt/keys.asc \'
+    echo '        /etc/apt/keyrings/example-keyring.gpg'
+    echo ''
+    echo 'Example usage outside of script:'
+    echo '    sudo bash ./bin/utils/add_keyring.sh https://example.com/apt/keys.asc \'
+    echo '        /etc/apt/keyrings/example-keyring.gpg'
     exit 1
 fi
 
 key_url="$1"
-key_filename="$2"
+key_filepath="$2"
 
-temp_keyring_path='./tmp/'"$key_filename"
-repo_keyring_path='/etc/apt/keyrings/'"$key_filename"
+key_filename="$( basename "$key_filepath" )"
+temp_key_filepath='./tmp/'"$key_filename"
 
-echo 'Adding keyring --> '"$repo_keyring_path"
-# if [ -f "$repo_keyring_path" ]; then
-#     echo 'Keyring already exists. Would you like to overwrite it?'
-#     while true; do
-#         read -p 'Overwrite? [y/n] ' yn
-#         case $yn in
-#             [Yy][Ee][Ss] | [Yy] ) break;;
-#             [Nn][Oo] | [Nn] ) exit 1;;
-#             * ) echo 'Please answer yes or no.';;
-#         esac
-#     done
-#     echo 'Overwriting keyring.'
-# fi
+echo 'Adding keyring --> '"$key_filepath"
+if [ -f "$key_filepath" ]; then
+    yes_or_no 'File already exists. Would you like to overwrite it?' || exit 1
+    echo 'Overwriting file.'
+fi
 
 # Download, decrypt, and write to temporary file
-wget -qO - "$key_url" | gpg --dearmor > "$temp_keyring_path"
+# wget -qO - "$key_url" | gpg --dearmor > "$temp_key_filepath"
+curl -fsSL "$key_url" | sudo gpg --dearmor -o "$temp_key_filepath"
 
 # Install keyring
-sudo install -D -o root -g root -m 644 "$temp_keyring_path" "$repo_keyring_path"
+sudo install -D -o root -g root -m 644 "$temp_key_filepath" "$key_filepath"
 
 # Clean up
-rm "$temp_keyring_path"
+if [ -f "$temp_key_filepath" ]; then
+    echo 'Removing temporary file --> '"$temp_key_filepath"
+    rm -f "$temp_key_filepath"
+fi
