@@ -1,20 +1,21 @@
-#!/usr/bin/bash
+#!/usr/bin/env bash
 
-VAGRANT_BOX_NAME="ubuntu_config_scripts_base"
+box_name="ubuntu_config_scripts_base"
+box_filepath='/tmp/'"$box_name.box"
 
 # Remove any existing box
 vagrant destroy -f
-rm -f "$VAGRANT_BOX_NAME.box"
+rm -f "$box_filepath"
 
 # Create new box
 vagrant up
 vagrant halt
-vagrant package --output "$VAGRANT_BOX_NAME.box"
+vagrant package --output "$box_filepath"
 
 # Add box to Vagrant
-vagrant box remove "$VAGRANT_BOX_NAME" --force
-vagrant box add "$VAGRANT_BOX_NAME" "$VAGRANT_BOX_NAME.box"
+vagrant box remove "$box_name" --force
+vagrant box add "$box_name" "$box_filepath"
 
 # Clean up
 vagrant destroy -f
-rm -f "$VAGRANT_BOX_NAME.box"
+rm -f "$box_filepath"
