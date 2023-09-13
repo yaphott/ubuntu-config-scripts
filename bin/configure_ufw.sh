@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/usr/bin/env bash -e
 
 ################ TODO: Check if evaluating the success of a command is the same if piping e.g. echo 'y' | mycommand
 function exit_with_failure () { echo 'Failed to configure Universal Firewall (UFW).'; exit 1; }

@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/usr/bin/env bash -e
 
 # Helpful file/config watching commands (requires inotify-tools)
 #   inotifywatch -e modify,create,delete -r ~/.config

@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/usr/bin/env bash -e
 
 function exit_with_failure () { echo 'Failed to install NVIDIA CUDA 11.3.'; exit 1; }
 

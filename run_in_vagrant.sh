@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash -e
 
-cd "$HOME"'/ubuntu-config-scripts'
+cd ~/ubuntu-config-scripts
 bash run.sh
