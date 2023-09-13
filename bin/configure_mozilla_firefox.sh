@@ -3,7 +3,6 @@
 function exit_with_failure () { echo 'Failed to configure Firefox.'; exit 1; }
 [[ $INSIDE_SCRIPT ]] || (echo 'Please run with the installer script.'; exit_with_failure)
 
-# Configure Mozilla Firefox
 # NOTE: THIS IS INCOMPLETE
 echo '~~~ Configuring Mozilla Firefox'
 

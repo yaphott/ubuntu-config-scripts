@@ -16,7 +16,7 @@ repo_components='main'
 repo_filepath='/etc/apt/sources.list.d/yarn.list'
 
 # Insert public software signing key
-bash ./bin/utils/add_keyring.sh "${key_url}" "${key_filename}" \
+bash ./bin/utils/add_keyring.sh "${key_url}" "${key_filepath}" \
     || exit_with_failure
 
 # Add to list of repositories

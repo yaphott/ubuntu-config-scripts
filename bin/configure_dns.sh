@@ -3,7 +3,6 @@
 function exit_with_failure () { echo 'Failed to configure DNS.'; exit 1; }
 [[ $INSIDE_SCRIPT ]] || (echo 'Please run with the installer script.'; exit_with_failure)
 
-# Configure DNS
 echo '~~~ Configuring DNS'
 
 # TODO: Accept user input for DNS servers

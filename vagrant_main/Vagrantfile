@@ -22,11 +22,10 @@ Vagrant.configure("2") do |config|
         sudo chmod +x -R '/home/#{username}/ubuntu-config-scripts'
 
         mkdir -p '/home/#{username}/.config/autostart'
-        echo "\
-        [Desktop Entry]
-        Name=UbuntuConfigScripts
-        Exec=gnome-terminal -- /home/#{username}/ubuntu-config-scripts/run_in_vagrant.sh
-        Type=Application
-        " | tee '/home/#{username}/.config/autostart/UbuntuConfigScripts.desktop' > /dev/null
+        echo '[Desktop Entry]'                                                                  | tee -a '/home/#{username}/.config/autostart/UbuntuConfigScripts.desktop' > /dev/null
+        echo 'Name=UbuntuConfigScripts'                                                         | tee -a '/home/#{username}/.config/autostart/UbuntuConfigScripts.desktop' > /dev/null
+        echo 'Exec=gnome-terminal -- /home/#{username}/ubuntu-config-scripts/run_in_vagrant.sh' | tee -a '/home/#{username}/.config/autostart/UbuntuConfigScripts.desktop' > /dev/null
+        echo 'Type=Application'                                                                 | tee -a '/home/#{username}/.config/autostart/UbuntuConfigScripts.desktop' > /dev/null
+        echo ''                                                                                 | tee -a '/home/#{username}/.config/autostart/UbuntuConfigScripts.desktop' > /dev/null
     SHELL
 end

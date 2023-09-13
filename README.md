@@ -69,9 +69,9 @@ sudo add_repository.sh "arch=amd64 signed-by=/etc/apt/keyrings/example-keyring.g
 
 Easily install and configure the following:
 
-- | Dependencies  |                 |                     |               |                          |       |
-  | :------------ | :-------------- | :------------------ | :------------ | :----------------------- | :---- |
-  | linux-generic | build-essential | apt-transport-https | gpg wget curl | lsb-core ca-certificates | gnupg |
+- | Dependencies  |                 |                     |     |      |      |          |                 |       |
+  | :------------ | :-------------- | :------------------ | :-- | :--- | :--- | :------- | :-------------- | :---- |
+  | linux-generic | build-essential | apt-transport-https | gpg | wget | curl | lsb-core | ca-certificates | gnupg |
 - | Packages  |            |                 |                   |             |
   | :-------- | :--------- | :-------------- | :---------------- | :---------- |
   | git       | synaptic   | htop            | tmux              | awscli      |
@@ -85,7 +85,7 @@ Easily install and configure the following:
 - [x] Configure Firewall (UFW)
 - [x] Configure Canonical Livepatch
 - [x] Configure Bluetooth
-- [ ] Install NVIDIA CUDA
+- [-] Install NVIDIA CUDA
 - [x] Configure SSH
 - [ ] Install HTop
 - [x] Install Python 3
@@ -95,6 +95,8 @@ Easily install and configure the following:
 - [ ] Configure Streamlit
 - [x] Install Node.js
 - [x] Install Yarn
+- [-] Install Scala
+- [-] Install Rust
 - [x] Install FiraCode Font
 - [x] Install Sublime Text
 - [x] Install Visual Studio Code

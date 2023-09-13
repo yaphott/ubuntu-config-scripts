@@ -40,15 +40,15 @@ function yes_or_no () {
         # Display message
         echo -n "$1"' (y/n) '
         # Receive and validate user input
-        read Y_OR_N
-        case "$Y_OR_N" in
+        read y_or_n_input
+        case "$y_or_n_input" in
             y | yes | Y | YES)
                 # Valid input. User answered yes.
-                return
+                return 0
                 ;;
             n | no | N | NO)
                 # Valid input. User answered no.
-                exit 1
+                return 1
                 ;;
             *)
                 # Invalid input (loop)

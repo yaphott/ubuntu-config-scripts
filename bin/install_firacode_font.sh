@@ -3,7 +3,6 @@
 function exit_with_failure () { echo 'Failed to install FiraCode Font.'; exit 1; }
 [[ $INSIDE_SCRIPT ]] || (echo 'Please run with the installer script.'; exit_with_failure)
 
-# Install FiraCode Font
 echo '+++ Installing FiraCode Font'
 
 # Local variables

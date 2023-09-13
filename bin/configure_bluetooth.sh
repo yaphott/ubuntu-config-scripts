@@ -3,7 +3,6 @@
 function exit_with_failure () { echo 'Failed to configure Bluetooth.'; exit 1; }
 [[ $INSIDE_SCRIPT ]] || (echo 'Please run with the installer script.'; exit_with_failure)
 
-# Configure Bluetooth
 echo '~~~ Configuring Bluetooth'
 
 #### Disable auto-enabling bluetooth at boot

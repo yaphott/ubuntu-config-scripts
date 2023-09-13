@@ -3,7 +3,6 @@
 function exit_with_failure () { echo 'Failed to configure Dconf.'; exit 1; }
 [[ $INSIDE_SCRIPT ]] || (echo 'Please run with the installer script.'; exit_with_failure)
 
-# Configure dconf
 echo '~~~ Configuring Dconf'
 
 # https://www.freedesktop.org/software/gstreamer-sdk/data/docs/2012.5/glib/gvariant-text.html

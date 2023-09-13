@@ -12,7 +12,6 @@ if [[ (! "$1") || (! "$2") || (! "$3") ]]; then
     exit_with_failure
 fi
 
-# Configure Swapfile
 echo '~~~ Configuring Swapfile'
 
 # View current swaps
@@ -31,12 +30,10 @@ echo '~~~ Configuring Swapfile'
 ) || exit_with_failure
 
 # Enable new swap
-sudo swapon "$1" \
-    || exit_with_failure
+sudo swapon "$1" || exit_with_failure
 
 # View current swapiness
 # cat /proc/sys/vm/swappiness
 
 # Update swappiness
-sudo sysctl 'vm.swappiness='"$3" \
-    || exit_with_failure
+sudo sysctl 'vm.swappiness='"$3" || exit_with_failure

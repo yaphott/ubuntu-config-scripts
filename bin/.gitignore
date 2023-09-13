@@ -27,6 +27,8 @@ install_go.sh
 !install_google_firebase_cli.sh
 !install_nodejs.sh
 !install_nvidia_cuda.sh
+!install_rust.sh
+!install_scala.sh
 !install_signal_desktop.sh
 !install_sublime_text.sh
 install_ta-lib.sh

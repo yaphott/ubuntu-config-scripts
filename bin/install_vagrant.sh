@@ -24,7 +24,7 @@ bash ./bin/utils/add_repository.sh "${repo_options}" "${repo_uri}" "${repo_suite
     || exit_with_failure
 
 # Update package database and install
-( sudo apt-get update && sudo apt-get install -y google-chrome-stable ) \
+( sudo apt-get update && sudo apt-get install -y vagrant ) \
     || exit_with_failure
 
 echo 'Vagrant installed successfully.'

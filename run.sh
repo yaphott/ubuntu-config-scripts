@@ -6,8 +6,9 @@
 #   inotifywatch -e modify,create,delete -r ~/.local
 #   inotifywatch -e modify,create,delete -r /etc/default
 #   dconf watch /
-# 
+
 # TODO:
+# - Place a hidden file in the home directory after the entire install finishes sucessfully?
 # - Add user to specify which installations/configurations will be run.
 # - Related to the previous; iterate functions or their exit codes instead of hardcoding '|| prompt_to_exit' after each task.
 
@@ -146,6 +147,8 @@ register_task 'Python'               configure  'bash ./bin/configure_python3.sh
 # register_task 'Streamlit'            configure  'bash ./bin/configure_streamlit.sh' 1
 register_task 'Node.js'              install    'bash ./bin/install_nodejs.sh' 1
 register_task 'Yarn'                 install    'bash ./bin/install_yarn.sh' 1
+register_task 'Scala'                install    'bash ./bin/install_scala.sh' 1
+register_task 'Rust'                 install    'bash ./bin/install_rust.sh' 1
 register_task 'FiraCode Font'        install    'bash ./bin/install_firacode_font.sh' 1
 register_task 'Sublime Text'         install    'bash ./bin/install_sublime_text.sh' 1
 register_task 'Visual Studio Code'   install    'bash ./bin/install_visual_studio_code.sh' 1

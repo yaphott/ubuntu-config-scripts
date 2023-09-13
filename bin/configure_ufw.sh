@@ -8,7 +8,6 @@ if [[ ! $INSIDE_SCRIPT ]]; then
     exit 1
 fi
 
-# Configure Firewall (UFW)
 echo '~~~ Configuring Universal Firewall (UFW)'
 
 # https://wiki.ubuntu.com/UncomplicatedFirewall

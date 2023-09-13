@@ -10,7 +10,6 @@ if [[ ! "$1" ]]; then
     exit_with_failure
 fi
 
-# Configure Canonical Livepatch
 echo '~~~ Configuring Canonical Livepatch'
 
 # Install

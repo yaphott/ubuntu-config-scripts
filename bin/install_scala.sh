@@ -1,18 +1,14 @@
-
 #!/usr/bin/env bash -e
 
-function exit_with_failure () { echo 'Failed to install Google Cloud CLI.'; exit 1; }
+function exit_with_failure () { echo 'Failed to install Scala.'; exit 1; }
 [[ $INSIDE_SCRIPT ]] || (echo 'Please run with the installer script.'; exit_with_failure)
 
-echo '+++ Google Cloud CLI'
-
-# TODO: Should determine latest version and download that instead of hard-coded.
-google_cli_version='410.0.0'
+echo '+++ Installing Scala'
 
 # Local variables
-latest_release_name='google-cloud-cli-'"$google_cli_version"'-linux-x86_64'
-latest_release_file="$latest_release_name"'.tar.gz'
-latest_release_file_url='https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/'"$latest_release_file"
+latest_releast_name='coursier'
+latest_release_file='cs-x86_64-pc-linux.gz'
+latest_release_file_url='https://github.com/coursier/coursier/releases/latest/download/'"$latest_release_file"
 
 # Delete output folder if already exists
 if [[ -d './tmp/'"$latest_release_name" ]]; then
@@ -24,7 +20,7 @@ fi
 mkdir './tmp/'"$latest_release_name" || exit_with_failure
 
 # Download the latest installer
-wget "$latest_release_file_url" -O './tmp/'"$latest_release_file" \
+wget "$latest_release_file_url" -O './tmp/'"$latest_release_file" 
     || exit_with_failure
 
 # Verify download
@@ -34,17 +30,19 @@ if [[ ! -f './tmp/'"$latest_release_file" ]]; then
 fi
 
 # Extract
-tar -xf './tmp/'"$latest_release_file" -C './tmp/'"$latest_release_name" \
+gunzip -c './tmp/'"$latest_release_file" > './tmp/'"$latest_release_name"'/cs' \
     || exit_with_failure
 
 # Install
-'./tmp/'"$latest_release_name"'/google-cloud-sdk/install.sh' || exit_with_failure
+chmod +x './tmp/'"$latest_release_name"'/cs' || exit_with_failure
+'./tmp/'"$latest_release_name"'/cs' setup --yes || exit_with_failure
+
+# Verify installation
+scala -version || exit_with_failure
 
 # Clean up
 ( rm './tmp/'"$latest_release_file" \
     && rm -r './tmp/'"$latest_release_name"
 ) || exit_with_failure
 
-
-# TODO: Needs to run 'gcloud init' in a new window
-# NOTE: To update run 'gcloud components update'
+echo 'Scala installed successfully.'
