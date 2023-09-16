@@ -8,13 +8,8 @@ if [[ (! "$1") || (! "$2") ]]; then
     echo '    key_url: URL to the public software signing key (e.g. https://example.com/apt/keys.asc)'
     echo '    key_filepath: Complete path to write the key to locally (e.g. /etc/apt/keyrings/example-keyring.gpg)'
     echo ''
-    echo 'Example usage inside of script:'
-    echo '    bash ./bin/utils/add_keyring.sh https://example.com/apt/keys.asc \'
-    echo '        /etc/apt/keyrings/example-keyring.gpg'
-    echo ''
-    echo 'Example usage outside of script:'
-    echo '    sudo bash ./bin/utils/add_keyring.sh https://example.com/apt/keys.asc \'
-    echo '        /etc/apt/keyrings/example-keyring.gpg'
+    echo 'Usage:'
+    echo '    sudo add_keyring.sh <key URL> <keyring path>'
     exit 1
 fi
 

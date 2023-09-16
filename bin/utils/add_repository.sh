@@ -11,19 +11,8 @@ if [[ (! "$1") || (! "$2") || (! "$3") || (! "$4") || (! "$5") ]]; then
     echo '    components: Repository components (space-separated)'
     echo '    filepath: Repository filepath (e.g. /etc/apt/sources.list.d/example.list)'
     echo ''
-    echo '    Example usage inside of script:'
-    echo '        add_repository.sh "arch=amd64 signed-by=/etc/apt/keyrings/example-keyring.gpg" \'
-    echo '            https://example.com/example-pub.gpg \'
-    echo '            stable \'
-    echo '            main \'
-    echo '            /etc/apt/sources.list.d/example.list'
-    echo ''
-    echo '    Example usage outside of script:'
-    echo '        sudo add_repository.sh "arch=amd64 signed-by=/etc/apt/keyrings/example-keyring.gpg" \'
-    echo '            https://example.com/example-pub.gpg \'
-    echo '            stable \'
-    echo '            main \'
-    echo '            /etc/apt/sources.list.d/example.list'
+    echo 'Usage:'
+    echo '    sudo add_repository.sh <key options> <key URL> <distribution> <components> <list file path>'
     exit 1
 fi
 
