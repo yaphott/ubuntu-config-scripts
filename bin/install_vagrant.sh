@@ -11,7 +11,7 @@ key_filepath='/etc/apt/keyrings/hashicorp-archive-keyring.gpg'
 
 repo_options='signed-by='"$key_filepath"
 repo_uri='https://apt.releases.hashicorp.com'
-repo_suite="$( lsb_release -cs )"
+repo_suite=$DIST_CODENAME
 repo_components='main'
 repo_filepath='/etc/apt/sources.list.d/hashicorp.list'
 

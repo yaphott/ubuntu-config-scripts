@@ -11,7 +11,7 @@ key_filepath='/etc/apt/keyrings/oracle-virtualbox-2016-keyring.gpg'
 
 repo_options='arch=amd64 signed-by='"$key_filepath"
 repo_uri='https://download.virtualbox.org/virtualbox/debian'
-repo_suite="$( lsb_release -cs )"
+repo_suite=$DIST_CODENAME
 repo_components='contrib'
 repo_filepath='/etc/apt/sources.list.d/oracle-vbox.list'
 

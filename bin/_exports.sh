@@ -7,6 +7,9 @@ else
     export USER=$LOGNAME;
 fi
 
+# Resolve distro codename
+export DIST_CODENAME="$( lsb_release -cs )"
+
 function create_marker () {
     # TODO: Validate function parameter
     marker_path='./tmp/'"$1"'.temp'
@@ -94,6 +97,6 @@ function prompt_to_exit () {
     #   Exit with 1 if users chooses not to continue
     #   prompt_to_exit 1
     on_yes_or_no 'Would you like to continue?' \
-                 "echo Continuing..." \
+                 "echo Continuing ..." \
                  "exit $1"
 }

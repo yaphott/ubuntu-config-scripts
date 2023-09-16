@@ -10,7 +10,7 @@ key_filepath='/etc/apt/keyrings/docker-keyring.gpg'
 
 repo_options='arch='"$(dpkg --print-architecture)"' signed-by='"$key_filepath"
 repo_uri='https://download.docker.com/linux/ubuntu'
-repo_suite="$( lsb_release -cs )"
+repo_suite=$DIST_CODENAME
 repo_components='stable'
 repo_filepath='/etc/apt/sources.list.d/docker.list'
 

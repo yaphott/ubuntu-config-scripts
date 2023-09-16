@@ -11,8 +11,8 @@ key_filepath='/etc/apt/keyrings/google-chrome-keyring.gpg'
 
 repo_options='arch='"$(dpkg --print-architecture)"' signed-by='"$key_filepath"
 repo_uri='http://dl.google.com/linux/chrome/deb/'
-repo_suite="$( lsb_release -cs )"
-repo_components='stable main'
+repo_suite='stable'
+repo_components='main'
 repo_filepath='/etc/apt/sources.list.d/google-chrome.list'
 
 # Insert public software signing key
