@@ -1,9 +1,8 @@
-#!/bin/bash -e
+#!/usr/bin/env bash -e
 
 function exit_with_failure () { echo 'Failed to configure Python 3.9.'; exit 1; }
 [[ $INSIDE_SCRIPT ]] || (echo 'Please run with the installer script.'; exit_with_failure)
 
-# Configure Python 3.9
 echo '~~~ Configuring Python 3.9'
 
 #### Update pip

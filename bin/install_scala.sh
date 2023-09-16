@@ -6,7 +6,7 @@ function exit_with_failure () { echo 'Failed to install Scala.'; exit 1; }
 echo '+++ Installing Scala'
 
 # Local variables
-latest_releast_name='coursier'
+latest_release_name='coursier'
 latest_release_file='cs-x86_64-pc-linux.gz'
 latest_release_file_url='https://github.com/coursier/coursier/releases/latest/download/'"$latest_release_file"
 
@@ -20,7 +20,7 @@ fi
 mkdir './tmp/'"$latest_release_name" || exit_with_failure
 
 # Download the latest installer
-wget "$latest_release_file_url" -O './tmp/'"$latest_release_file" 
+wget "$latest_release_file_url" -O './tmp/'"$latest_release_file" \
     || exit_with_failure
 
 # Verify download
@@ -34,11 +34,13 @@ gunzip -c './tmp/'"$latest_release_file" > './tmp/'"$latest_release_name"'/cs' \
     || exit_with_failure
 
 # Install
-chmod +x './tmp/'"$latest_release_name"'/cs' || exit_with_failure
-'./tmp/'"$latest_release_name"'/cs' setup --yes || exit_with_failure
+( sudo chmod +x './tmp/'"$latest_release_name"'/cs' \
+    && './tmp/'"$latest_release_name"'/cs' setup \
+) || exit_with_failure
 
 # Verify installation
-scala -version || exit_with_failure
+"$HOME"'/.local/share/coursier/bin/coursier' --help \
+    || exit_with_failure
 
 # Clean up
 ( rm './tmp/'"$latest_release_file" \

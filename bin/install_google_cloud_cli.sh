@@ -38,7 +38,14 @@ tar -xf './tmp/'"$latest_release_file" -C './tmp/'"$latest_release_name" \
     || exit_with_failure
 
 # Install
-'./tmp/'"$latest_release_name"'/google-cloud-sdk/install.sh' || exit_with_failure
+'./tmp/'"$latest_release_name"'/google-cloud-sdk/install.sh' \
+    || exit_with_failure
+
+# Avoid starting a new shell
+source "$HOME"'/.bashrc' || exit_with_failure
+
+# Update SDK installation
+gcloud components update || exit_with_failure
 
 # Clean up
 ( rm './tmp/'"$latest_release_file" \

@@ -30,9 +30,14 @@ export INSIDE_SCRIPT=true
 # Add variables and functions used throughout
 source ./bin/_exports.sh
 
-# Check if the script started previously but failed, then rompt user to try again
-# NOTE: The startpoint.temp file, located in temp/, is deleted upon expected exit behavior
-if [[ -f './tmp/startpoint.temp' ]]; then #############################################
+# Create temp folder if it doesn't exist
+if [[ ! -d './tmp' ]]; then
+    mkdir './tmp' || prompt_to_exit 1
+fi
+
+# Prompt user if the script started previously but failed
+#     NOTE: ./tmp/startpoint.temp is deleted upon expected exit behavior.
+if [[ -f './tmp/startpoint.temp' ]]; then
     echo 'Previously failed to configure Ubuntu.'
     prompt_to_exit 0
 else
@@ -40,9 +45,9 @@ else
     create_marker 'startpoint' || prompt_to_exit 1
 fi
 
-# Check if this is the first run (skip if second run)
-# NOTE: The waypoint.temp file, located in temp/, is created after the first run
-if [[ ! -f './tmp/waypoint.temp' ]]; then ##########################
+# Set points if this is the first run (skip if second run)
+#     NOTE: ./tmp/waypoint.temp is created after the first run.
+if [[ ! -f './tmp/waypoint.temp' ]]; then
     # 1. Update package database and upgrade packages (resolving dependencies)
     bash ./bin/upgrade_system.sh || prompt_to_exit 1
 
@@ -87,6 +92,7 @@ function reset_tasks () {
     declare -a TASK_CMDS
     declare -a TASK_SHOULD_EXIT
 }
+
 function register_task () {
     # Length is the next index, since index starts at 0
     TASK_NAMES[${#TASK_NAMES[@]}]="$1"
@@ -97,20 +103,17 @@ function register_task () {
 
 function execute_tasks () {
     for i in "${!TASK_NAMES[@]}"; do
-        task_label='[ '"${TASK_NAMES[$i]}"' : '"${TASK_NAMES[$i]}"' ]'
-        echo 'Starting '"$task_label"' ('"${TASK_TYPES[$i]}"')'
-        echo '... with command: '"${TASK_CMDS[$i]}"
+        local task_name="${TASK_NAMES[$i]}"
+        local task_type="${TASK_TYPES[$i]}"
+        local task_should_exit="${TASK_SHOULD_EXIT[$i]}"
+        echo_with_style bold 'Executing task [ '"$task_name"' : '"$task_type"' ]'
+        echo_with_style dim '... with command: '"${TASK_CMDS[$i]}"
         # Run the task and prompt to exit if it fails
-        ( eval ${TASK_CMDS[$i]} \
-              && echo 'Finished [ '"${TASK_NAMES[$i]}"' : '"${TASK_NAMES[$i]}"' ]' \
-        ) || ( \
-          echo 'Failed [ '"${TASK_NAMES[$i]}"' : '"${TASK_NAMES[$i]}"' ]' \
-              && ( \
-                  if [[ "${TASK_SHOULD_EXIT[$i]}" == '1' ]]; then \
-                      prompt_to_exit 1; \
-                  fi \
-              ) \
-        )
+        ( eval "${TASK_CMDS[$i]}" && echo_with_style green 'Success [ '"$task_name"' : '"$task_type"' ]' ) \
+            || ( \
+                echo_with_style red 'Failed [ '"$task_name"' : '"$task_type"' ]' \
+                    && ( [[ $task_should_exit == true ]] && prompt_to_exit 1 )
+            )
     done
 }
 
@@ -124,55 +127,55 @@ function execute_tasks () {
 #   echo performance | sudo tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor
 # Register tasks
 
-register_task 'DNS'                  configure  'bash ./bin/configure_dns.sh' 1
-register_task 'Firewall (UFW)'       configure  'bash ./bin/configure_ufw.sh' 1
-register_task 'Canonical Livepatch'  configure  "bash ./bin/configure_livepatch.sh '$LIVEPATCH_KEY'" 0
-register_task 'Bluetooth'            configure  'bash ./bin/configure_bluetooth.sh' 1
+register_task 'DNS'                  configure  'bash ./bin/configure_dns.sh' true
+register_task 'Firewall (UFW)'       configure  'bash ./bin/configure_ufw.sh' true
+register_task 'Canonical Livepatch'  configure  "bash ./bin/configure_livepatch.sh '$LIVEPATCH_KEY'" false
+register_task 'Bluetooth'            configure  'bash ./bin/configure_bluetooth.sh' true
 # (check comment in install script for 11.3)
-# register_task 'NVIDIA CUDA'          install    'bash ./bin/install_nvidia_cuda.sh' 1
+# register_task 'NVIDIA CUDA'          install    'bash ./bin/install_nvidia_cuda.sh' true
 
-register_task 'Dependencies'         install    'bash ./bin/install_dependencies.sh' 1
-register_task 'General Packages'     install    'bash ./bin/install_general.sh' 1
-register_task 'SSH'                  configure  'bash ./bin/configure_ssh.sh' 1
-register_task 'HTop'                 configure  'bash ./bin/configure_htop.sh' 0
-register_task 'Python'               install    'bash ./bin/install_python3.sh' 1
-register_task 'Python'               configure  'bash ./bin/configure_python3.sh' 1
-# register_task 'Python 3.9'           install    'bash ./bin/install_python39.sh' 1
-# register_task 'Python 3.9'           configure  'bash ./bin/configure_python39.sh' 1
+register_task 'Dependencies'         install    'bash ./bin/install_dependencies.sh' true
+register_task 'General Packages'     install    'bash ./bin/install_general.sh' true
+register_task 'SSH'                  configure  'bash ./bin/configure_ssh.sh' true
+register_task 'HTop'                 configure  'bash ./bin/configure_htop.sh' false
+register_task 'Python'               install    'bash ./bin/install_python3.sh' true
+register_task 'Python'               configure  'bash ./bin/configure_python3.sh' true
+# register_task 'Python 3.9'           install    'bash ./bin/install_python39.sh' true
+# register_task 'Python 3.9'           configure  'bash ./bin/configure_python39.sh' true
 #       ~/.cmdstan/cmdstan-2.29.1
-# register_task 'CmdStan'              install  'bash ./bin/install_cmdstan.sh' 1
+# register_task 'CmdStan'              install  'bash ./bin/install_cmdstan.sh' true
 #       ~/.mujoco/mujoco210
-# register_task 'MuJoCo'               install  'bash ./bin/install_mujoco.sh' 1
+# register_task 'MuJoCo'               install  'bash ./bin/install_mujoco.sh' true
 #       ~/.streamlit/config.toml
-# register_task 'Streamlit'            configure  'bash ./bin/configure_streamlit.sh' 1
-register_task 'Node.js'              install    'bash ./bin/install_nodejs.sh' 1
-register_task 'Yarn'                 install    'bash ./bin/install_yarn.sh' 1
-register_task 'Scala'                install    'bash ./bin/install_scala.sh' 1
-register_task 'Rust'                 install    'bash ./bin/install_rust.sh' 1
-register_task 'FiraCode Font'        install    'bash ./bin/install_firacode_font.sh' 1
-register_task 'Sublime Text'         install    'bash ./bin/install_sublime_text.sh' 1
-register_task 'Visual Studio Code'   install    'bash ./bin/install_visual_studio_code.sh' 1
-register_task 'Google Cloud CLI'     install    'bash ./bin/install_google_cloud_cli.sh' 1
-register_task 'Google Firebase CLI'  install    'bash ./bin/install_google_firebase_cli.sh' 1
-register_task 'Signal Desktop'       install    'bash ./bin/install_signal_desktop.sh' 1
-register_task 'Bitwarden'            install    'sudo snap install bitwarden' 1
-register_task 'Telegram Desktop'     install    'sudo snap install telegram-desktop' 1
-register_task 'Spotify'              install    'sudo snap install spotify' 1
-register_task 'Oracle VirtualBox'    install    'bash ./bin/install_oracle_virtualbox.sh' 1
-register_task 'Oracle VirtualBox'    configure  'bash ./bin/configure_oracle_virtualbox.sh' 1
-register_task 'Docker'               install    'bash ./bin/install_docker.sh' 1
-register_task 'Vagrant'              install    'bash ./bin/install_vagrant.sh' 1
-register_task 'Vagrant'              configure  'bash ./bin/configure_vagrant.sh' 1
-# register_task 'Mozilla Firefox'      configure 'bash ./bin/configure_mozilla_firefox.sh' 1
-register_task 'Google Chrome'        install  'bash ./bin/install_google_chrome.sh' 1
-# register_task 'Google Chrome'        configure  'bash ./bin/configure_google_chrome.sh' 1
-# register_task 'Geckodriver'          install  'bash ./bin/install_geckodriver.sh' 1
-# register_task 'Chromedriver'         install  'bash ./bin/install_chromedriver.sh' 1
-# register_task 'Anaconda'             install  'bash ./bin/install_anaconda.sh' 1
+# register_task 'Streamlit'            configure  'bash ./bin/configure_streamlit.sh' true
+register_task 'Node.js'              install    'bash ./bin/install_nodejs.sh' true
+register_task 'Yarn'                 install    'bash ./bin/install_yarn.sh' true
+register_task 'Scala'                install    'bash ./bin/install_scala.sh' true
+register_task 'Rust'                 install    'bash ./bin/install_rust.sh' true
+register_task 'FiraCode Font'        install    'bash ./bin/install_firacode_font.sh' true
+register_task 'Sublime Text'         install    'bash ./bin/install_sublime_text.sh' true
+register_task 'Visual Studio Code'   install    'bash ./bin/install_visual_studio_code.sh' true
+register_task 'Google Cloud CLI'     install    'bash ./bin/install_google_cloud_cli.sh' true
+register_task 'Google Firebase CLI'  install    'bash ./bin/install_google_firebase_cli.sh' true
+register_task 'Signal Desktop'       install    'bash ./bin/install_signal_desktop.sh' true
+register_task 'Bitwarden'            install    'sudo snap install bitwarden' true
+register_task 'Telegram Desktop'     install    'sudo snap install telegram-desktop' true
+register_task 'Spotify'              install    'sudo snap install spotify' true
+register_task 'Oracle VirtualBox'    install    'bash ./bin/install_oracle_virtualbox.sh' true
+register_task 'Oracle VirtualBox'    configure  'bash ./bin/configure_oracle_virtualbox.sh' true
+register_task 'Docker'               install    'bash ./bin/install_docker.sh' true
+register_task 'Vagrant'              install    'bash ./bin/install_vagrant.sh' true
+register_task 'Vagrant'              configure  'bash ./bin/configure_vagrant.sh' true
+# register_task 'Mozilla Firefox'      configure 'bash ./bin/configure_mozilla_firefox.sh' true
+register_task 'Google Chrome'        install  'bash ./bin/install_google_chrome.sh' true
+# register_task 'Google Chrome'        configure  'bash ./bin/configure_google_chrome.sh' true
+# register_task 'Geckodriver'          install  'bash ./bin/install_geckodriver.sh' true
+# register_task 'Chromedriver'         install  'bash ./bin/install_chromedriver.sh' true
+# register_task 'Anaconda'             install  'bash ./bin/install_anaconda.sh' true
 
-register_task 'dconf'                configure  'bash ./bin/configure_dconf.sh' 1
-register_task 'Swapfile'             configure  "bash ./bin/configure_swapfile.sh '$SWAPFILE_PATH' '$SWAPFILE_SIZE' '$SWAPFILE_SWAPINESS'" 1
-register_task 'Power Mode'           configure  'powerprofilesctl set performance' 1
+register_task 'dconf'                configure  'bash ./bin/configure_dconf.sh' true
+register_task 'Swapfile'             configure  "bash ./bin/configure_swapfile.sh '$SWAPFILE_PATH' '$SWAPFILE_SIZE' '$SWAPFILE_SWAPINESS'" true
+register_task 'Power Mode'           configure  'powerprofilesctl set performance' true
 
 # Execute tasks
 execute_tasks

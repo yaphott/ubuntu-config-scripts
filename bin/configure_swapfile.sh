@@ -18,13 +18,25 @@ echo '~~~ Configuring Swapfile'
 # cat /proc/swaps
 # grep swap /etc/fstab
 
-# Disable current swap and remove the file
-( sudo swapoff "$1" \
-    && sudo rm -f "$1"
-) || exit_with_failure
+# Disable and delete all current swaps
+declare -a swapfiles
+while read -r line; do
+    swapfiles+=("$line")
+done < <(grep swap /etc/fstab | awk '{print $1}')
+if [[ "${#swapfiles[@]}" -gt 0 ]]; then
+    for swapfile in "${swapfiles[@]}"; do
+        if [[ ! -f "$swapfile" ]]; then
+            echo 'Failed to find swapfile: '"$swapfile"'.'
+            exit_with_failure
+        fi
+        sudo swapoff "$swapfile" || exit_with_failure
+        sudo rm "$swapfile" || exit_with_failure
+    done
+fi
 
 # Create new swap
-( sudo fallocate -l "$2" "$1" \
+( sudo touch "$1" \
+    && sudo fallocate -l "$2" "$1" \
     && sudo chmod 600 "$1" \
     && sudo mkswap "$1"
 ) || exit_with_failure

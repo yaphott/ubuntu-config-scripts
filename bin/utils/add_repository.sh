@@ -50,6 +50,11 @@ if [ -f "$repo_filepath" ]; then
     echo 'Overwriting file.'
 fi
 
+entry_contents='deb [ '"$repo_options"' ] '"$repo_uri"' '"$repo_suite"
+if [[ "$repo_components" ]]; then
+    entry_contents+=' '"$repo_components"
+fi
 echo "# Added by the Ubuntu-Config-Scripts installer."            | sudo tee -a "$repo_filepath" > /dev/null
-echo "deb [$repo_options] $repo_uri $repo_suite $repo_components" | sudo tee -a "$repo_filepath" > /dev/null
+# echo "# $(date)"                                                  | sudo tee -a "$repo_filepath" > /dev/null
+echo "$entry_contents"                                            | sudo tee -a "$repo_filepath" > /dev/null
 echo ""                                                           | sudo tee -a "$repo_filepath" > /dev/null

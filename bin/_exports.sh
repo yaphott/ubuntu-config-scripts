@@ -11,7 +11,9 @@ fi
 export DIST_CODENAME="$( lsb_release -cs )"
 
 function create_marker () {
-    # TODO: Validate function parameter
+    # TODO:
+    # - Validate function parameter
+    # - Consider passing in the full path, or using a set_path function
     marker_path='./tmp/'"$1"'.temp'
     if [[ -f $marker_path ]]; then
         echo 'Marker already exists: '"$marker_path"
@@ -24,7 +26,9 @@ function create_marker () {
 }
 
 function delete_marker () {
-    # TODO: Validate function parameter
+    # TODO:
+    # - Validate function parameter
+    # - Consider passing in the full path, or using a set_path function
     marker_path='./tmp/'"$1"'.temp'
     if [[ ! -f $marker_path ]]; then
         echo 'Missing marker: '"$marker_path"
@@ -36,25 +40,23 @@ function delete_marker () {
     fi
 }
 
-
 function yes_or_no () {
-    # Prompt a user with a message until a yes or no answer is provided.
+    # Prompt a user with a message until a yes or no answer is provided
+    local y_or_n_input
     while [ true ]; do
-        # Display message
-        echo -n "$1"' (y/n) '
-        # Receive and validate user input
-        read y_or_n_input
+        # echo -n "$1"' (y/n) '
+        read -p "$1"' (y/n) ' y_or_n_input
         case "$y_or_n_input" in
-            y | yes | Y | YES)
-                # Valid input. User answered yes.
+            y | Y | yes | YES)
+                # Valid - Yes
                 return 0
                 ;;
-            n | no | N | NO)
-                # Valid input. User answered no.
+            n | N | no | NO)
+                # Valid - No
                 return 1
                 ;;
             *)
-                # Invalid input (loop)
+                # Invalid
                 ;;
         esac
     done
@@ -99,4 +101,28 @@ function prompt_to_exit () {
     on_yes_or_no 'Would you like to continue?' \
                  "echo Continuing ..." \
                  "exit $1"
+}
+
+declare -A TEXT_STYLES
+TEXT_STYLES['bold']='\e[1m'
+TEXT_STYLES['dim']='\e[2m'
+TEXT_STYLES['red']='\e[31m'
+TEXT_STYLES['green']='\e[32m'
+TEXT_STYLES['reset']='\e[0m'
+
+function style_text () {
+    local styles="$1"
+    local text="$2"
+    local style
+    local style_string=''
+    for style in ${styles//,/ }; do
+        style_string+="${TEXT_STYLES[$style]}"
+    done
+    echo -e "${style_string}${text}${TEXT_STYLES['reset']}"
+}
+
+function echo_with_style () {
+    local styles="$1"
+    local text="$2"
+    echo $( style_text "${styles}" "${text}" )
 }
