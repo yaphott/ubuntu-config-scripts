@@ -1,6 +1,6 @@
 test-cold:
-	cd vagrant_base && bash prepare_box.sh
-	cd vagrant_main && bash run_box.sh && vagrant up
+	bash ./vagrant_base/prepare_box.sh
+	bash ./vagrant_main/run_box.sh
 
 test-warm:
-	cd vagrant_main && bash run_box.sh && vagrant up
+	bash ./vagrant_main/run_box.sh

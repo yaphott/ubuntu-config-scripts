@@ -1,4 +1,4 @@
-#!/usr/bin/env bash -e
+#!/bin/bash -e
 
 # [[ $INSIDE_SCRIPT ]] || ( echo 'Please run with the installer script.'; exit 1; )
 

@@ -17,9 +17,11 @@ Vagrant.configure("2") do |config|
     end
 
     config.vm.provision "shell", inline: <<-SHELL
+        echo 'Installing Ubuntu Desktop'
         sudo apt-get update
         sudo apt-get install -y ubuntu-desktop
 
+        echo 'Enabling automatic login'
         sudo sed -E -e 's|^#  AutomaticLoginEnable = true$|AutomaticLoginEnable = true|' \
                     -e 's|^#  AutomaticLogin = user1$|AutomaticLogin = #{username}|' \
                     -i /etc/gdm3/custom.conf

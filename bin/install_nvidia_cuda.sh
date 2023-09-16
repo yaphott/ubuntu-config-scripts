@@ -1,15 +1,14 @@
-#!/usr/bin/env bash -e
+#!/bin/bash -e
 
-function exit_with_failure () { echo 'Failed to install NVIDIA CUDA 11.3.'; exit 1; }
+cuda_version="$1"
+function exit_with_failure () { echo 'Failed to install NVIDIA CUDA '"'""$cuda_version""'"'.'; exit 1; }
+[[ $INSIDE_SCRIPT ]] || (echo 'Please run with the installer script.'; exit_with_failure)
+[[ $cuda_version ]] || (echo 'Missing expected input parameter: cuda_version.'; exit_with_failure)
 
-if [[ ! $INSIDE_SCRIPT ]]; then
-    echo 'Please run with the installer script.'
-    exit_with_failure
-fi
+echo '+++ Installing NVIDIA CUDA '"$cuda_version"
 
-echo '+++ Installing NVIDIA CUDA 11.2'
-
-# TODO: Parse together expected ubuntu version
+# TODO:
+# - Parse together expected ubuntu version
 nvidia_ubuntu_ver='ubuntu2204'
 
 # Local variables
@@ -35,12 +34,9 @@ bash ./bin/utils/add_repository.sh "${repo_options}" "${repo_uri}" "${repo_suite
     || exit_with_failure
 
 # Update package database and install
-( sudo apt-get update && sudo apt-get install -y cuda-toolkit-11-2 ) \
+package_name='cuda-toolkit-'"${cuda_version//./-}"
+( sudo apt-get update && sudo apt-get install -y "$package_name" ) \
     || exit_with_failure
 
-# or for 11.3
-# sudo apt-get install -y cuda-toolkit-11-3
-
 # sudo apt-get install libcudnn8 libcudnn8-dev
-
-echo 'NVIDIA CUDA 11.2 installed successfully.'
+echo 'NVIDIA CUDA '"$cuda_version"' installed successfully.'

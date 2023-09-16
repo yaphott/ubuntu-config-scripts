@@ -1,5 +1,5 @@
 
-#!/usr/bin/env bash -e
+#!/bin/bash -e
 
 function exit_with_failure () { echo 'Failed to install Google Cloud CLI.'; exit 1; }
 [[ $INSIDE_SCRIPT ]] || (echo 'Please run with the installer script.'; exit_with_failure)
@@ -42,10 +42,14 @@ tar -xf './tmp/'"$latest_release_file" -C './tmp/'"$latest_release_name" \
     || exit_with_failure
 
 # Avoid starting a new shell
-source "$HOME"'/.bashrc' || exit_with_failure
+# source "$HOME"'/.bashrc' || exit_with_failure
 
 # Update SDK installation
-gcloud components update || exit_with_failure
+# gcloud components update || exit_with_failure
+
+# Install components
+# gcloud components install kubectl || exit_with_failure
+# TODO: Add more components
 
 # Clean up
 ( rm './tmp/'"$latest_release_file" \

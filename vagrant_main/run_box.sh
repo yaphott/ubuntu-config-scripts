@@ -1,19 +1,25 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
-# Prepare project files
-rm -rf ./ubuntu-config-scripts
-mkdir ./ubuntu-config-scripts
-mkdir ./ubuntu-config-scripts/bin
-mkdir ./ubuntu-config-scripts/tmp
+function get_vagrant_directory () {
+    local original_dir="$PWD"
+    local vagrant_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+    cd "$original_dir"
+    echo "$vagrant_dir"
+}
 
-# Copy project files
-cp -r ../run.sh ./ubuntu-config-scripts/run.sh
-cp -r ../run_in_vagrant.sh ./ubuntu-config-scripts/run_in_vagrant.sh
-cp -r ../bin/* ./ubuntu-config-scripts/bin/
+# Get the directory of this script
+vagrant_dir="$( get_vagrant_directory )"
 
-# Remove any existing box instance
+# Store the current directory to return to later
+original_dir="$PWD"
+cd "$vagrant_dir"
+
+# Remove any existing box
 vagrant destroy -f
 
-# Create new box instance
+# Provision the new box
 vagrant up
 vagrant reload
+
+# Return to the original directory
+cd "$original_dir"

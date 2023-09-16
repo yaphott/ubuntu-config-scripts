@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 # Resolve name of current user
 if [ $SUDO_USER ]; then

@@ -1,4 +1,4 @@
-#!/usr/bin/env bash -e
+#!/bin/bash -e
 
 function exit_with_failure () { echo 'Failed to configure Python 3.x.'; exit 1; }
 [[ $INSIDE_SCRIPT ]] || (echo 'Please run with the installer script.'; exit_with_failure)
@@ -14,5 +14,5 @@ echo '~~~ Configuring Python 3.x'
 
 #### Install dev tools
 
-python3 -m pip install --user black yapf isort pylint pytest mypy \
+python3 -m pip install --user black yapf isort pylint pytest mypy isort \
     || exit_with_failure
