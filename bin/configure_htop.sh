@@ -1,13 +1,8 @@
 #!/bin/bash -e
 
 function exit_with_failure () { echo 'Failed to configure HTop.'; exit 1; }
+[[ $INSIDE_SCRIPT ]] || (echo 'Please run with the installer script.'; exit_with_failure)
 
-if [[ ! $INSIDE_SCRIPT ]]; then
-    echo 'Please run with the installer script.'
-    exit_with_failure
-fi
-
-# Configure HTop
 echo '~~~ Configuring HTop'
 
 # Local variables
@@ -37,9 +32,9 @@ fi
 # TODO: Check that line was actually changed instead of command being successful
 
 sed -i -e "s|^tree_view=0$|tree_view=1|" \
-            -e "s|^detailed_cpu_time=0$|detailed_cpu_time=1|" \
-            -e "s|^show_cpu_frequency=0$|show_cpu_frequency=1|" \
-            -e "s|^show_cpu_temperature=0$|show_cpu_temperature=1|" \
-            -e "s|^degree_fahrenheit=0$|degree_fahrenheit=1|" \
-            "$configuration_path" \
-|| exit_with_failure
+    -e "s|^detailed_cpu_time=0$|detailed_cpu_time=1|" \
+    -e "s|^show_cpu_frequency=0$|show_cpu_frequency=1|" \
+    -e "s|^show_cpu_temperature=0$|show_cpu_temperature=1|" \
+    -e "s|^degree_fahrenheit=0$|degree_fahrenheit=1|" \
+    "$configuration_path" \
+    || exit_with_failure

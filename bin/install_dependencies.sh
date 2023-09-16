@@ -1,13 +1,8 @@
 #!/bin/bash -e
 
 function exit_with_failure () { echo 'Failed to install Dependencies.'; exit 1; }
+[[ $INSIDE_SCRIPT ]] || (echo 'Please run with the installer script.'; exit_with_failure)
 
-if [[ ! $INSIDE_SCRIPT ]]; then
-    echo 'Please run with the installer script.'
-    exit_with_failure
-fi
-
-# Install Dependencies
 echo '+++ Dependencies'
 
 # Update package database and install
@@ -19,11 +14,14 @@ echo '+++ Dependencies'
 # | apt-transport-https | Fetching files and installing keys. |
 # | gpg, wget, curl     | Fetching files and installing keys. |
 # | lsb-core            | Release codename.                   |
+# | ca-certificates     | HTTPS.                              |
+# | gnupg               | Fetching files and installing keys. |
 # +---------------------+-------------------------------------+
 ( sudo apt-get update \
-  && sudo apt-get install -y linux-generic \
-                          build-essential \
-                          apt-transport-https \
-                          gpg wget curl \
-                          lsb-core
+    && sudo apt-get install -y linux-generic \
+        build-essential \
+        apt-transport-https \
+        gpg wget curl \
+        lsb-core ca-certificates \
+        gnupg
 ) || exit_with_failure

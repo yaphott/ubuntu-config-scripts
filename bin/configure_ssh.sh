@@ -1,20 +1,15 @@
 #!/bin/bash -e
 
 function exit_with_failure () { echo 'Failed to configure SSH.'; exit 1; }
+[[ $INSIDE_SCRIPT ]] || (echo 'Please run with the installer script.'; exit_with_failure)
 
-if [[ ! $INSIDE_SCRIPT ]]; then
-    echo 'Please run with the installer script.'
-    exit_with_failure
-fi
-
-# Configure SSH
 # NOTE: THIS IS INCOMPLETE
 echo '~~~ Configuring SSH'
 
 #### Add github to known hosts - Needs sudo?
 
 ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts \
-|| exit_with_failure
+    || exit_with_failure
 
 #### Limit outside access and change port
 # TODO: Check that line was actually changed instead of command being successful

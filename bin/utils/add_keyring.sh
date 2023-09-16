@@ -1,30 +1,39 @@
 #!/bin/bash -e
 
-if [[ ! $INSIDE_SCRIPT ]]; then
-    echo 'Please run with the installer script.'
-    exit 1
-fi
+# [[ $INSIDE_SCRIPT ]] || ( echo 'Please run with the installer script.'; exit 1; )
 
 # Validate input parameters
-#   (1) URL of key to download
-#   (2) Alias name for key file
 if [[ (! "$1") || (! "$2") ]]; then
-    echo 'Missing expected input parameter(s).'
+    echo 'Missing expected input parameters:'
+    echo '    key_url: URL to the public software signing key (e.g. https://example.com/apt/keys.asc)'
+    echo '    key_filepath: Complete path to write the key to locally (e.g. /etc/apt/keyrings/example-keyring.gpg)'
+    echo ''
+    echo 'Usage:'
+    echo '    sudo add_keyring.sh <key URL> <keyring path>'
     exit 1
 fi
 
-temp_keyring_path='./tmp/'"$2"
-repo_keyring_path='/usr/share/keyrings/'"$2"
+key_url="$1"
+key_filepath="$2"
 
-# Insert public software signing key
-# TODO: Check for existing gpg keys before adding
-echo 'Adding keyring --> '"$repo_keyring_path"
+key_filename="$( basename "$key_filepath" )"
+temp_key_filepath='./tmp/'"$key_filename"
 
-# Download
-wget -qO - "$1" | gpg --dearmor > "$temp_keyring_path"
+echo 'Adding keyring --> '"$key_filepath"
+if [ -f "$key_filepath" ]; then
+    yes_or_no 'File already exists. Would you like to overwrite it?' || exit 1
+    echo 'Overwriting file.'
+fi
 
-# Install
-sudo install -D -o root -g root -m 644 "$temp_keyring_path" "$repo_keyring_path"
+# Download, decrypt, and write to temporary file
+# wget -qO - "$key_url" | gpg --dearmor > "$temp_key_filepath"
+curl -fsSL "$key_url" | sudo gpg --dearmor -o "$temp_key_filepath"
+
+# Install keyring
+sudo install -D -o root -g root -m 644 "$temp_key_filepath" "$key_filepath"
 
 # Clean up
-rm "$temp_keyring_path"
+if [ -f "$temp_key_filepath" ]; then
+    echo 'Removing temporary file --> '"$temp_key_filepath"
+    rm -f "$temp_key_filepath"
+fi

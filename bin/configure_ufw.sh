@@ -8,7 +8,6 @@ if [[ ! $INSIDE_SCRIPT ]]; then
     exit 1
 fi
 
-# Configure Firewall (UFW)
 echo '~~~ Configuring Universal Firewall (UFW)'
 
 # https://wiki.ubuntu.com/UncomplicatedFirewall
@@ -31,20 +30,17 @@ echo '~~~ Configuring Universal Firewall (UFW)'
 
 # Disable and reset
 # NOTE: Disabling and resetting should not be necessary
-sudo ufw disable \
-|| exit_with_failure
+sudo ufw disable || exit_with_failure
 
-( echo 'y' | sudo ufw reset ) \
-|| exit_with_failure
+( echo 'y' | sudo ufw reset ) || exit_with_failure
 
 # Configure
 ( sudo ufw default allow outgoing \
-  && sudo ufw default deny incoming
+    && sudo ufw default deny incoming
 ) || exit_with_failure
 # && sudo ufw allow 2222/tcp comment 'SSH access'
 
 # Enable
-sudo ufw enable \
-|| exit_with_failure
+sudo ufw enable || exit_with_failure
 
 # TODO: Verify successful firewall configuration using UFW status
