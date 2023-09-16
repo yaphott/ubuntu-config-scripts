@@ -53,7 +53,7 @@ make test-hot
 
 #### `bin/utils/add_keyring.sh`
 
-Add a keyring to the system by providing a URL to the keyring and the complete desired path to the keyring file.
+Add a keyring to the system by providing a **key URL** and the **desired path for the keyring file**.
 
 ```bash
 sudo add_keyring.sh <key URL> <keyring path>
@@ -69,7 +69,7 @@ sudo bash add_keyring.sh https://example.com/apt/keys.asc \
 
 #### `bin/utils/add_repository.sh`
 
-Add a repository to the system by providing the **key URL**, **distribution**, **components**, and the **destination path for the list file**.
+Add a repository to the system by providing the **key URL**, **distribution**, **components**, and the **desired path for the list file**.
 
 ```bash
 sudo add_repository.sh <key options> <key URL> <distribution> <components> <list file path>
