@@ -25,6 +25,7 @@ install_go.sh
 !install_google_chrome.sh
 !install_google_cloud_cli.sh
 !install_google_firebase_cli.sh
+!install_haskell.sh
 !install_nodejs.sh
 !install_nvidia_cuda.sh
 !install_rust.sh

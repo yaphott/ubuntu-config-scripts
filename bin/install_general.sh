@@ -5,6 +5,10 @@ function exit_with_failure () { echo 'Failed to install General Packages.'; exit
 
 echo '+++ General Packages'
 
+# Preconfigure packages
+# Wireshark - allow non-root users to capture packets
+echo "wireshark-common wireshark-common/install-setuid boolean true" | sudo debconf-set-selections
+
 # Update package database and install
 # Excluded: libdvd-pkg
 ( sudo apt-get update && sudo apt-get install -y \

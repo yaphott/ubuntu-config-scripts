@@ -9,7 +9,7 @@ if [[ (! "$1") || (! "$2") ]]; then
     echo '    key_filepath: Complete path to write the key to locally (e.g. /etc/apt/keyrings/example-keyring.gpg)'
     echo ''
     echo 'Usage:'
-    echo '    sudo add_keyring.sh <key URL> <keyring path>'
+    echo '    sudo add_keyring.sh <key_url> <keyring_path>'
     exit 1
 fi
 

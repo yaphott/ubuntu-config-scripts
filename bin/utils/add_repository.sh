@@ -5,14 +5,14 @@
 # Validate input parameters
 if [[ (! "$1") || (! "$2") || (! "$3") || (! "$4") || (! "$5") ]]; then
     echo 'Missing expected input parameters:'
-    echo '    options: Repository options (e.g. arch=amd64 signed-by=/etc/apt/keyrings/example-keyring.gpg)'
-    echo '    uri: Repository URI (e.g. https://example.com/example-pub.gpg)'
-    echo '    suite: Repository suite (e.g. stable)'
-    echo '    components: Repository components (space-separated)'
-    echo '    filepath: Repository filepath (e.g. /etc/apt/sources.list.d/example.list)'
+    echo '    repo_options: Repository options (e.g. arch=amd64 signed-by=/etc/apt/keyrings/example-keyring.gpg)'
+    echo '    repo_uri: Repository URI (e.g. https://example.com/example-pub.gpg)'
+    echo '    repo_suite: Repository suite (e.g. stable)'
+    echo "    repo_components: Repository components (space-separated), or 'none' if none (e.g. main contrib non-free)"
+    echo '    repo_filepath: Desired path to write the repository list file to (e.g. /etc/apt/sources.list.d/example.list)'
     echo ''
     echo 'Usage:'
-    echo '    sudo add_repository.sh <key options> <key URL> <distribution> <components> <list file path>'
+    echo '    sudo add_repository.sh <repo_options> <repo_uri> <repo_suite> <repo_components> <repo_filepath>'
     exit 1
 fi
 
@@ -35,12 +35,12 @@ repo_filepath="$5"
 
 echo 'Adding repository --> '"$repo_filepath"
 if [ -f "$repo_filepath" ]; then
-    yes_or_no 'File already exists. Would you like to overwrite it?' || exit 1
+    # yes_or_no 'File already exists. Would you like to overwrite it?' || exit 1
     echo 'Overwriting file.'
 fi
 
 entry_contents='deb [ '"$repo_options"' ] '"$repo_uri"' '"$repo_suite"
-if [[ "$repo_components" ]]; then
+if [[ ! -z "$repo_components" ]]; then
     entry_contents+=' '"$repo_components"
 fi
 echo "# Added by the Ubuntu-Config-Scripts installer."            | sudo tee -a "$repo_filepath" > /dev/null

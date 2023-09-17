@@ -30,7 +30,7 @@ is_valid=to_check.rstrip(ascii_letters).replace(".","").isdigit(); \
 is_valid_str=str(is_valid).lower(); \
 print(is_valid_str)\
 ' )
-if [ $is_valid_release_ver = false ]; then
+if [[ -z "$is_valid_release_ver" || "$is_valid_release_ver" != 'true' ]]; then
     echo 'Failed to fetch version for latest release of '"$github_project"' by '"$github_user"'.'
     exit_with_failure
 fi
