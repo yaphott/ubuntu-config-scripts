@@ -49,3 +49,5 @@ sudo swapon "$1" || exit_with_failure
 
 # Update swappiness
 sudo sysctl 'vm.swappiness='"$3" || exit_with_failure
+
+echo 'Swapfile configured successfully.'

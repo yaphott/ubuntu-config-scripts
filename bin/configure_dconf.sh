@@ -151,3 +151,5 @@ gsettings set  org.gnome.gedit.preferences.editor editor-font 'Fira Code 10' \
 # NOTE: Might want to move to other dark-mode changes
 # gsettings set  org.gnome.terminal.legacy.theme-variant dark \
 #     || exit_with_failure
+
+echo 'Dconf configured successfully.'

@@ -28,3 +28,5 @@ echo 'y' | sudo VBoxManage extpack install --replace './tmp/'"$ext_pack_filename
 ( sudo VBoxManage extpack cleanup \
     && rm './tmp/'"$ext_pack_filename"
 ) || exit_with_failure
+
+echo 'Oracle VirtualBox configured successfully.'

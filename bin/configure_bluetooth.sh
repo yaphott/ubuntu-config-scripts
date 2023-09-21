@@ -13,3 +13,5 @@ echo '~~~ Configuring Bluetooth'
 #   Modify the file located at /etc/bluetooth/main.conf
 sudo sed 's|AutoEnable=true|AutoEnable=false|' -i /etc/bluetooth/main.conf \
     || exit_with_failure
+
+echo 'Bluetooth configured successfully.'

@@ -16,3 +16,5 @@ echo '~~~ Configuring Python 3.x'
 
 python3 -m pip install --user black yapf isort pylint pytest mypy isort \
     || exit_with_failure
+
+echo 'Python 3.x configured successfully.'

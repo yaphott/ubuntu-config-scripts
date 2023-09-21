@@ -13,3 +13,5 @@ nameserver 8.4.4.8
 nameserver 1.0.0.1
 " | sudo tee /etc/resolv.conf > /dev/null \
     || exit_with_failure
+
+echo 'DNS configured successfully.'

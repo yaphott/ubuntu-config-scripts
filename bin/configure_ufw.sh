@@ -2,11 +2,7 @@
 
 ################ TODO: Check if evaluating the success of a command is the same if piping e.g. echo 'y' | mycommand
 function exit_with_failure () { echo 'Failed to configure Universal Firewall (UFW).'; exit 1; }
-
-if [[ ! $INSIDE_SCRIPT ]]; then
-    echo 'Please run with the installer script.'
-    exit 1
-fi
+[[ $INSIDE_SCRIPT ]] || (echo 'Please run with the installer script.'; exit_with_failure)
 
 echo '~~~ Configuring Universal Firewall (UFW)'
 
@@ -44,3 +40,5 @@ sudo ufw disable || exit_with_failure
 sudo ufw enable || exit_with_failure
 
 # TODO: Verify successful firewall configuration using UFW status
+
+echo 'Universal Firewall (UFW) configured successfully.'

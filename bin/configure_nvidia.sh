@@ -40,3 +40,5 @@ sudo prime-select nvidia
 #     'GPULogoBrightness' can use the following target types: GPU.
 
 nvidia-settings -a GpuPowerMizerMode=1
+
+echo 'NVIDIA graphics card configured successfully.'

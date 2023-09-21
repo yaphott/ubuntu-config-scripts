@@ -7,3 +7,5 @@ echo '+++ System Upgrades'
 
 ( sudo apt-get update && sudo apt-get dist-upgrade -y ) \
     || exit_with_failure
+
+echo 'System Upgraded successfully.'

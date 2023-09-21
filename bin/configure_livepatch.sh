@@ -30,3 +30,5 @@ sudo canonical-livepatch refresh \
 
 # Check current status of livepatch
 # sudo canonical-livepatch status
+
+echo 'Canonical Livepatch configured successfully.'

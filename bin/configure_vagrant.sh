@@ -9,3 +9,5 @@ echo '~~~ Configuring Vagrant'
 
 vagrant plugin install vagrant-disksize \
     || exit_with_failure
+
+echo 'Vagrant configured successfully.'
