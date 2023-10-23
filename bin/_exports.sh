@@ -17,11 +17,11 @@ function create_marker () {
     marker_path='./tmp/'"$1"'.temp'
     if [[ -f $marker_path ]]; then
         echo 'Marker already exists: '"$marker_path"
-        echo exit 1
+        return 1
     else
         echo 'Creating marker: '"$marker_path"
         touch "$marker_path"
-        return
+        return 0
     fi
 }
 
@@ -32,11 +32,11 @@ function delete_marker () {
     marker_path='./tmp/'"$1"'.temp'
     if [[ ! -f $marker_path ]]; then
         echo 'Missing marker: '"$marker_path"
-        echo exit 1
+        return 1
     else
         echo 'Deleting marker: '"$marker_path"
         rm "$marker_path"
-        return
+        return 0
     fi
 }
 
