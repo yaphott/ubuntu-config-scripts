@@ -44,7 +44,7 @@ make test-cold
 Subsequent times (main box):
 
 ```bash
-make test-hot
+make test-warm
 ```
 
 > **Note**: Password for the user is `vagrant`.
@@ -109,3 +109,71 @@ sudo add_repository.sh "arch=amd64 signed-by=/etc/apt/keyrings/example-keyring.g
 ```
 
 > See [Ubuntu Manpage: `sources.list`](https://manpages.ubuntu.com/manpages/xenial/man5/sources.list.5.html) for more information on the format of the list file.
+
+## Developer Notes
+
+Each file starts with a check to ensure the necessary setup has been completed.
+
+## Todo
+
+- [ ] Add helpers for downloading files.
+- [ ] Add check for existing keys and repositories.
+- [ ] Add check for existing packages.
+- [ ] Add check for existing configuration files.
+- [ ] Add validation for configuration changes.
+
+## Installation Components
+
+Easily install and configure the following:
+
+- | Dependencies  |                 |                     |     |      |      |          |                 |       |
+  | :------------ | :-------------- | :------------------ | :-- | :--- | :--- | :------- | :-------------- | :---- |
+  | linux-generic | build-essential | apt-transport-https | gpg | wget | curl | lsb-core | ca-certificates | gnupg |
+- | Packages  |            |                 |                   |             |
+  | :-------- | :--------- | :-------------- | :---------------- | :---------- |
+  | git       | synaptic   | htop            | tmux              | awscli      |
+  | net-tools | nmap       | whois           | ssh-askpass       | filezilla   |
+  | nomacs    | gimp       | imagemagick     | vlc               | handbrake   |
+  | bzip2     | unzip      | zstd            | file-roller       | jq          |
+  | gparted   | exfatprogs | usb-creator-gtk | protobuf-compiler | libreoffice |
+  | evince    | wireshark  | linssid         | sqlitebrowser     | ffmpeg      |
+  | ruby-full | php        | qgis            | qgis-plugin-grass |             |
+- [x] Configure DNS
+- [x] Configure Firewall (UFW)
+- [x] Configure Canonical Livepatch
+- [x] Configure Bluetooth
+- [x] Install NVIDIA CUDA
+- [x] Configure SSH
+- [ ] Install HTop
+- [x] Install Python 3
+- [x] Configure Python 3
+- [ ] Install CmdStan
+- [ ] Install MuJoCo
+- [ ] Configure Streamlit
+- [x] Install Node.js
+- [x] Install Yarn
+- [-] Install Scala
+- [-] Install Rust
+- [x] Install FiraCode Font
+- [x] Install Sublime Text
+- [x] Install Visual Studio Code
+- [x] Install Google Cloud CLI
+- [x] Install Google Firebase CLI
+- [x] Install Signal Desktop
+- [x] Install Bitwarden
+- [x] Install Telegram Desktop
+- [x] Install Spotify
+- [x] Install Oracle VirtualBox
+- [x] Configure Oracle VirtualBox
+- [x] Install Docker
+- [x] Install Vagrant
+- [x] Configure Vagrant
+- [ ] Configure Mozilla Firefox
+- [x] Install Google Chrome
+- [ ] Configure Google Chrome
+- [ ] Install Geckodriver
+- [ ] Install Chromedriver
+- [ ] Install Anaconda
+- [x] Configure dconf
+- [x] Configure Swapfile
+- [x] Configure Power Mode
