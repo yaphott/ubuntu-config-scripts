@@ -62,53 +62,6 @@ if [[ ! -f './tmp/waypoint.temp' ]]; then
     sudo shutdown -r now
 fi
 
-# Clear the queue of tasks.
-function reset_tasks () {
-    unset TASK_NAMES
-    unset TASK_TYPES
-    unset TASK_CMDS
-    unset TASK_MUST_EXIT_WITH_ZERO
-    declare -a TASK_NAMES
-    declare -a TASK_TYPES
-    declare -a TASK_CMDS
-    declare -a TASK_MUST_EXIT_WITH_ZERO
-}
-
-# Register a task to be executed.
-#
-# Usage:
-#     register_task <task_name> <task_type> <task_cmd> <task_should_exit>
-#
-# Example:
-#     register_task Sublime install 'bash ./bin/install_sublime.sh' true
-function register_task () {
-    # Length is the next index, since index starts at 0
-    local task_name="$1"
-    local task_type="$2"
-    local task_cmd="$3"
-    local task_should_exit="$4"
-    TASK_NAMES+=("$task_name")
-    TASK_TYPES+=("$task_type")
-    TASK_CMDS+=("$task_cmd")
-    TASK_MUST_EXIT_WITH_ZERO+=("$task_should_exit")
-}
-
-function execute_tasks () {
-    for i in "${!TASK_MUST_EXIT_WITH_ZERO[@]}"; do
-        local task_name="${TASK_NAMES[$i]}"
-        local task_type="${TASK_TYPES[$i]}"
-        local task_should_exit="${TASK_MUST_EXIT_WITH_ZERO[$i]}"
-        style_text bold 'Executing task [ '"$task_name"' : '"$task_type"' : '"$task_should_exit"' ]'
-        style_text dim '... with command: '"${TASK_CMDS[$i]}"
-        # Run the task and prompt to exit if it fails
-        ( eval "${TASK_CMDS[$i]}" && style_text green 'Success [ '"$task_name"' : '"$task_type"' ]' ) \
-            || ( \
-                style_text red 'Failed [ '"$task_name"' : '"$task_type"' '"$task_should_exit"' ]' \
-                    && ( [[ $task_should_exit == true ]] && prompt_to_exit 1 )
-            )
-    done
-}
-
 # Initialize the task variables
 reset_tasks
 
