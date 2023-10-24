@@ -17,10 +17,10 @@ if [[ (! "$1") || (! "$2") || (! "$3") || (! "$4") || (! "$5") ]]; then
 fi
 
 # The format for two one-line-style entries using the deb and deb-src types is:
-# 
+#
 #     deb [ option1=value1 option2=value2 ] uri suite [component1] [component2] [...]
 #     deb-src [ option1=value1 option2=value2 ] uri suite [component1] [component2] [...]
-# 
+#
 # See https://manpages.ubuntu.com/manpages/xenial/man5/sources.list.5.html for more details.
 
 repo_options="$1"

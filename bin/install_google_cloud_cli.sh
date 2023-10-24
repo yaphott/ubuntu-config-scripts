@@ -6,39 +6,21 @@ function exit_with_failure () { echo 'Failed to install Google Cloud CLI.'; exit
 
 echo '+++ Google Cloud CLI'
 
-function mk_temp_dir () {
-    # Create a new temporary directory and echo its path.
-    #
-    # Usage:
-    #     mk_temp_dir
-    #
-    # Example:
-    #     temp_dir="$( mk_temp_dir )"
-    echo "$( mktemp -d )"
-}
-
-function rm_dir () {
-    # Remove the specified temporary directory.
-    #
-    # Usage:
-    #     rm_dir <temp_dir_path>
-    #
-    # Example:
-    #     rm_dir /tmp/tmp.abc123
-    local temp_dir_path="$1"
-    rm -r "$temp_dir_path"
-}
-
+# Validate the download by checking the SHA256 hash.
+#
+# Usage:
+#     validate_download <downloaded_file_path> <expected_sha256_hash>
+#
+# Example with expected hash:
+#     validate_download /tmp/tmp.abc123/example.tar.gz abc123
+#
+# Example without expected hash:
+#     validate_download /tmp/tmp.abc123/example.tar.gz
+#
+# Parameters:
+#     downloaded_file_path: Path to the downloaded file.
+#     expected_sha256_hash: Optional. Expected SHA256 hash of the downloaded file.
 function validate_download () {
-    # Validate the download by checking the SHA256 hash.
-    # Usage:
-    #     validate_download <downloaded_file_path> <expected_sha256_hash>
-    #
-    # Example with expected hash:
-    #     validate_download '/tmp/tmp.abc123/example.tar.gz' 'abc123'
-    #
-    # Example without expected hash:
-    #     validate_download '/tmp/tmp.abc123/example.tar.gz'
     downloaded_file_path="$1"
     if [[ ! -f "$downloaded_file_path" ]]; then
         echo 'Downloaded file does not exist.'
@@ -59,14 +41,18 @@ function validate_download () {
     return 0
 }
 
+# Download a file from a URL.
+#
+# Usage:
+#     download_file <url> <output_path>
+#
+# Example:
+#     download_file https://example.com/example.tar.gz /tmp/example.tar.gz
+#
+# Parameters:
+#     url: URL to download the file from.
+#     output_path: Path to save the downloaded file to.
 function download_file () {
-    # Download a file from a URL.
-    #
-    # Usage:
-    #     download_file <url> <output_path>
-    #
-    # Example:
-    #     download_file 'https://example.com/example.tar.gz' '/tmp/example.tar.gz'
     local url="$1"
     local output_path="$2"
     wget "$url" -O "$output_path"
@@ -81,7 +67,7 @@ latest_release_file="$latest_release_name"'.tar.gz'
 latest_release_file_url='https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/'"$latest_release_file"
 
 # Create working directory
-temp_dir="$( mk_temp_dir )" || exit_with_failure
+temp_dir="$( mktemp -d )" || exit_with_failure
 
 # Download the latest installer
 download_file "$latest_release_file_url" "$temp_dir"'/'"$latest_release_file" \
@@ -116,7 +102,7 @@ tar -xf "$temp_dir"'/'"$latest_release_file" -C "$temp_dir" \
 # TODO: Add more components
 
 # Clean up
-rm_dir "$temp_dir"
+rm -r "$temp_dir_path" || echo 'Failed to remove temporary directory.'
 
 
 # TODO: Needs to run 'gcloud init' in a new window

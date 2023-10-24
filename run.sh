@@ -6,7 +6,7 @@
 #   inotifywatch -e modify,create,delete -r ~/.local
 #   inotifywatch -e modify,create,delete -r /etc/default
 #   dconf watch /
-# 
+#
 # TODO:
 # - Place a hidden file in the home directory after the entire install finishes sucessfully?
 # - Add user to specify which installations/configurations will be run.
@@ -62,62 +62,55 @@ if [[ ! -f './tmp/waypoint.temp' ]]; then
     sudo shutdown -r now
 fi
 
-
-# User-defined variables (if not set prior to executing)
-# TODO:
-# - Check for exported user variables before overriding.
-# - Could add prompt for user input.
-while [ ! "$LIVEPATCH_KEY" ]; do
-    echo 'Visit https://ubuntu.com/advantage for a key'
-    echo -n 'Enter your Canonical Livepatch key: '
-    read LIVEPATCH_KEY
-done
-echo 'LIVEPATCH_KEY: '"$LIVEPATCH_KEY"
-[[ ! $SWAPFILE_PATH ]] && SWAPFILE_PATH='/swapfile'
-echo 'SWAPFILE_PATH: '"$SWAPFILE_PATH"
-[[ ! $SWAPFILE_SIZE ]] && SWAPFILE_SIZE='12G'
-echo 'SWAPFILE_SIZE: '"$SWAPFILE_SIZE"
-[[ ! $SWAPFILE_SWAPPINESS ]] && SWAPFILE_SWAPPINESS='10'
-echo 'SWAPFILE_SWAPPINESS: '"$SWAPFILE_SWAPPINESS"
-[[ ! $NVIDIA_CUDA_VERSION ]] && NVIDIA_CUDA_VERSION='11.3'
-echo 'NVIDIA_CUDA_VERSION: '"$NVIDIA_CUDA_VERSION"
-[[ ! $NODE_MAJOR_VERSION ]] && NODE_MAJOR_VERSION='20'
-echo 'NODE_MAJOR_VERSION: '"$NODE_MAJOR_VERSION"
-
+# Clear the queue of tasks.
 function reset_tasks () {
     unset TASK_NAMES
     unset TASK_TYPES
     unset TASK_CMDS
-    unset TASK_SHOULD_EXIT
+    unset TASK_MUST_EXIT_WITH_ZERO
     declare -a TASK_NAMES
     declare -a TASK_TYPES
     declare -a TASK_CMDS
-    declare -a TASK_SHOULD_EXIT
+    declare -a TASK_MUST_EXIT_WITH_ZERO
 }
 
+# Register a task to be executed.
+#
+# Usage:
+#     register_task <task_name> <task_type> <task_cmd> <task_should_exit>
+#
+# Example:
+#     register_task Sublime install 'bash ./bin/install_sublime.sh' true
 function register_task () {
     # Length is the next index, since index starts at 0
-    TASK_NAMES[${#TASK_NAMES[@]}]="$1"
-    TASK_TYPES[${#TASK_TYPES[@]}]="$2"
-    TASK_CMDS[${#TASK_CMDS[@]}]="$3"
-    TASK_SHOULD_EXIT[${#TASK_SHOULD_EXIT[@]}]="$4"
+    local task_name="$1"
+    local task_type="$2"
+    local task_cmd="$3"
+    local task_should_exit="$4"
+    TASK_NAMES+=("$task_name")
+    TASK_TYPES+=("$task_type")
+    TASK_CMDS+=("$task_cmd")
+    TASK_MUST_EXIT_WITH_ZERO+=("$task_should_exit")
 }
 
 function execute_tasks () {
-    for i in "${!TASK_NAMES[@]}"; do
+    for i in "${!TASK_MUST_EXIT_WITH_ZERO[@]}"; do
         local task_name="${TASK_NAMES[$i]}"
         local task_type="${TASK_TYPES[$i]}"
-        local task_should_exit="${TASK_SHOULD_EXIT[$i]}"
-        echo_with_style bold 'Executing task [ '"$task_name"' : '"$task_type"' ]'
-        echo_with_style dim '... with command: '"${TASK_CMDS[$i]}"
+        local task_should_exit="${TASK_MUST_EXIT_WITH_ZERO[$i]}"
+        style_text bold 'Executing task [ '"$task_name"' : '"$task_type"' : '"$task_should_exit"' ]'
+        style_text dim '... with command: '"${TASK_CMDS[$i]}"
         # Run the task and prompt to exit if it fails
-        ( eval "${TASK_CMDS[$i]}" && echo_with_style green 'Success [ '"$task_name"' : '"$task_type"' ]' ) \
+        ( eval "${TASK_CMDS[$i]}" && style_text green 'Success [ '"$task_name"' : '"$task_type"' ]' ) \
             || ( \
-                echo_with_style red 'Failed [ '"$task_name"' : '"$task_type"' ]' \
+                style_text red 'Failed [ '"$task_name"' : '"$task_type"' '"$task_should_exit"' ]' \
                     && ( [[ $task_should_exit == true ]] && prompt_to_exit 1 )
             )
     done
 }
+
+# Initialize the task variables
+reset_tasks
 
 # TODO: Could change processor governors to "Performance"
 # https://askubuntu.com/questions/604720/setting-to-high-performance
@@ -127,8 +120,8 @@ function execute_tasks () {
 #   cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
 # Change setting:
 #   echo performance | sudo tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor
-# Register tasks
 
+# Register tasks
 register_task 'DNS'                  configure  'bash ./bin/configure_dns.sh' true
 register_task 'Firewall (UFW)'       configure  'bash ./bin/configure_ufw.sh' true
 register_task 'Canonical Livepatch'  configure  "bash ./bin/configure_livepatch.sh '$LIVEPATCH_KEY'" false
@@ -137,7 +130,6 @@ register_task 'NVIDIA CUDA'          install    "bash ./bin/install_nvidia_cuda.
 register_task 'Dependencies'         install    'bash ./bin/install_dependencies.sh' true
 register_task 'General Packages'     install    'bash ./bin/install_general.sh' true
 register_task 'SSH'                  configure  'bash ./bin/configure_ssh.sh' true
-register_task 'HTop'                 configure  'bash ./bin/configure_htop.sh' false
 register_task 'Python'               install    'bash ./bin/install_python3.sh' true
 register_task 'Python'               configure  'bash ./bin/configure_python3.sh' true
 register_task 'Node.js'              install    "bash ./bin/install_nodejs.sh '$NODE_MAJOR_VERSION'" true
