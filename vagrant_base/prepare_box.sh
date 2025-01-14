@@ -11,6 +11,8 @@ echo "Temporary Base VM path: ${box_file_path}"
 
 cd "$vagrant_dir"
 
+echo 'Halting any running instance...'
+vagrant halt || true
 echo 'Destroying any existing instance...'
 vagrant destroy -f || true
 echo 'Removing any existing box...'

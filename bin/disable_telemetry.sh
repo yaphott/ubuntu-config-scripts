@@ -16,7 +16,7 @@ echo '~~~ Disabling telemetry'
 #### Opt-out of telemetry
 
 echo 'Sending telemetry opt-out...'
-ubuntu-report -f send no
+ubuntu-report -f send no 2>/dev/null
 
 #### Blacklist domains
 
@@ -54,8 +54,6 @@ if $needs_any_blacklist; then
     echo '' | sudo tee -a /etc/hosts > /dev/null || exit_with_failure
 fi
 
-echo ''
-
 #### Stop and disable telemetry services
 
 PACKAGE_NAMES=(
@@ -78,7 +76,6 @@ SERVICE_BASE_NAMES=(
 function list_units () { systemctl list-units --all --full --type=service --no-pager --plain --no-legend | awk '{print $1}' | grep -E '^'"$1"'(\.\S+)?$'; }
 function check_active () { systemctl is-active "$1" 2>/dev/null; }
 function check_enabled () { systemctl is-enabled "$1" 2>/dev/null; }
-
 
 DISCOVERED_SERVICES=()
 for base_name in "${SERVICE_BASE_NAMES[@]}"; do
@@ -107,10 +104,7 @@ for service_unit in $DISCOVERED_SERVICES; do
         echo "Unexpected status for service: $service_unit (is-active: $active_status)"
         exit_with_failure
     fi
-done
-echo ''
 
-for service_unit in $DISCOVERED_SERVICES; do
     enabled_status="$(check_enabled "$service_unit")"
     if [[ "$enabled_status" == 'enabled' ]]; then
         echo "Disabling service: $service_unit"
@@ -127,10 +121,7 @@ for service_unit in $DISCOVERED_SERVICES; do
         echo "Unexpected status for service: $service_unit (is-enabled: $enabled_status)"
         exit_with_failure
     fi
-done
-echo ''
 
-for service_unit in $DISCOVERED_SERVICES; do
     enabled_status="$(check_enabled "$service_unit")"
     if [[ "$enabled_status" != 'masked' ]]; then
         echo "Masking service: $service_unit"
@@ -146,20 +137,13 @@ for service_unit in $DISCOVERED_SERVICES; do
         exit_with_failure
     fi
 done
-echo ''
 
-# for package_name in "${PACKAGE_NAMES[@]}"; do
-#     echo "Removing package: $package_name"
-#     sudo apt-get remove -y "$package_name" || exit_with_failure
-#     sudo apt-get purge -y "$package_name" || exit_with_failure
-# done
 echo "Removing packages: ${PACKAGE_NAMES[*]}"
 (sudo apt-get remove -q -y "${PACKAGE_NAMES[@]}" \
     && sudo apt-get purge -q -y "${PACKAGE_NAMES[@]}" \
     && sudo apt-get autoremove -q -y \
     && sudo apt-get autoclean -q
 ) || exit_with_failure
-echo ''
 
 #### Disable motd-news
 
