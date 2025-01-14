@@ -1,8 +1,1 @@
-# Ignore everything
-*
-
-# Except
-!run_box.sh
-!Vagrantfile
-
-!.gitignore
+.vagrant/

@@ -1,16 +1,16 @@
-username = "vagrant"
+COLD_BOX = ENV["VM_COLD_BOX"]
+USERNAME = ENV["VM_USERNAME"]
 
 Vagrant.configure("2") do |config|
-    config.vm.box = "ubuntu/jammy64"
+    config.vm.box = COLD_BOX
 
     config.vm.provider "virtualbox" do |vb|
         vb.gui = true
         vb.memory = "4096"
-        vb.cpus = "2"
+        vb.cpus = "4"
         vb.customize ["modifyvm", :id, "--vram", "128"]
         vb.customize ["modifyvm", :id, "--graphicscontroller", "vmsvga"]
         vb.customize ["modifyvm", :id, "--accelerate3d", "on"]
-        vb.customize ["modifyvm", :id, "--accelerate2dvideo", "on"]
         vb.customize ["modifyvm", :id, "--audio", "none"]
         vb.customize ["modifyvm", :id, "--clipboard", "bidirectional"]
         vb.customize ["modifyvm", :id, "--draganddrop", "bidirectional"]
@@ -20,10 +20,15 @@ Vagrant.configure("2") do |config|
         echo 'Installing Ubuntu Desktop'
         sudo apt-get update
         sudo apt-get install -y ubuntu-desktop
+        sudo apt-get autoremove -y
+        sudo apt-get autoclean
 
         echo 'Enabling automatic login'
-        sudo sed -E -e 's|^#  AutomaticLoginEnable = true$|AutomaticLoginEnable = true|' \
-                    -e 's|^#  AutomaticLogin = user1$|AutomaticLogin = #{username}|' \
+        sudo sed -E -e 's/^#[ \t]*AutomaticLoginEnable[ \t]*=[ \t]*\S+[ \t]*$/AutomaticLoginEnable = true/' \
+                    -e 's/^#[ \t]*AutomaticLogin[ \t]*=[ \t]*\S+[ \t]*$/AutomaticLogin = #{USERNAME}/' \
+                    -e 's/^#[ \t]*TimedLoginEnable[ \t]*=[ \t]*\S+[ \t]*$/TimedLoginEnable = true/' \
+                    -e 's/^#[ \t]*TimedLogin[ \t]*=[ \t]*\S+[ \t]*$/TimedLogin = #{USERNAME}/' \
+                    -e 's/^#[ \t]*TimedLoginDelay[ \t]*=[ \t]*\S+[ \t]*$/TimedLoginDelay = 0/' \
                     -i /etc/gdm3/custom.conf
 
         echo 'Restarting GDM3'

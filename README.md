@@ -72,14 +72,13 @@ sudo bash add_keyring.sh https://example.com/apt/keys.asc \
 Add a repository to the system by providing the **key URL**, **distribution**, **components**, and the **desired path for the list file**.
 
 ```bash
-sudo add_repository.sh <repo_options> <repo_uri> <repo_suite> <repo_components> <repo_filepath>
+add_repository.sh <repo_options> <repo_uri> <repo_suite> <repo_components> <repo_file_path>
 ```
 
 For example, if there is **one component**:
 
 ```bash
-cd ./bin/utils
-sudo add_repository.sh "arch=amd64 signed-by=/etc/apt/keyrings/example-keyring.gpg" \
+./bin/utils/add_repository.sh "arch=amd64 signed-by=/etc/apt/keyrings/example-keyring.gpg" \
     https://example.com/example-pub.gpg \
     stable \
     main \
@@ -89,8 +88,7 @@ sudo add_repository.sh "arch=amd64 signed-by=/etc/apt/keyrings/example-keyring.g
 Or if there are **multiple components**:
 
 ```bash
-cd ./bin/utils
-sudo add_repository.sh "arch=amd64 signed-by=/etc/apt/keyrings/example-keyring.gpg" \
+./bin/utils/add_repository.sh "arch=amd64 signed-by=/etc/apt/keyrings/example-keyring.gpg" \
     https://example.com/example-pub.gpg \
     stable \
     "main contrib non-free" \
@@ -100,8 +98,7 @@ sudo add_repository.sh "arch=amd64 signed-by=/etc/apt/keyrings/example-keyring.g
 Or if there are **no components**:
 
 ```bash
-cd ./bin/utils
-sudo add_repository.sh "arch=amd64 signed-by=/etc/apt/keyrings/example-keyring.gpg" \
+./bin/utils/add_repository.sh "arch=amd64 signed-by=/etc/apt/keyrings/example-keyring.gpg" \
     https://example.com/example-pub.gpg \
     stable \
     none \
@@ -114,50 +111,47 @@ sudo add_repository.sh "arch=amd64 signed-by=/etc/apt/keyrings/example-keyring.g
 
 Each file starts with a check to ensure the necessary setup has been completed.
 
-## Todo
+<!-- ## Installation Components
 
-- [ ] Add helpers for downloading files.
-- [ ] Add check for existing keys and repositories.
-- [ ] Add check for existing packages.
-- [ ] Add check for existing configuration files.
-- [ ] Add validation for configuration changes.
+| Dependencies|                 |                     |     |      |      |          |                 |       |
+| :------------ | :-------------- | :------------------ | :-- | :--- | :--- | :------- | :-------------- | :---- |
+| linux-generic | build-essential | apt-transport-https | gpg | wget | curl | lsb-core | ca-certificates | gnupg |
 
-## Installation Components
+General packages:
+
+| Packages  |            |                 |                   |             |
+| :-------- | :--------- | :-------------- | :---------------- | :---------- |
+| git       | synaptic   | htop            | tmux              | awscli      |
+| net-tools | nmap       | whois           | ssh-askpass       | filezilla   |
+| nomacs    | gimp       | imagemagick     | vlc               | handbrake   |
+| bzip2     | unzip      | zstd            | file-roller       | jq          |
+| gparted   | exfatprogs | usb-creator-gtk | protobuf-compiler | libreoffice |
+| evince    | wireshark  | linssid         | sqlitebrowser     | ffmpeg      |
+| ruby-full | php        | qgis            | qgis-plugin-grass |             |
 
 Easily install and configure the following:
 
-- | Dependencies  |                 |                     |     |      |      |          |                 |       |
-  | :------------ | :-------------- | :------------------ | :-- | :--- | :--- | :------- | :-------------- | :---- |
-  | linux-generic | build-essential | apt-transport-https | gpg | wget | curl | lsb-core | ca-certificates | gnupg |
-- | Packages  |            |                 |                   |             |
-  | :-------- | :--------- | :-------------- | :---------------- | :---------- |
-  | git       | synaptic   | htop            | tmux              | awscli      |
-  | net-tools | nmap       | whois           | ssh-askpass       | filezilla   |
-  | nomacs    | gimp       | imagemagick     | vlc               | handbrake   |
-  | bzip2     | unzip      | zstd            | file-roller       | jq          |
-  | gparted   | exfatprogs | usb-creator-gtk | protobuf-compiler | libreoffice |
-  | evince    | wireshark  | linssid         | sqlitebrowser     | ffmpeg      |
-  | ruby-full | php        | qgis            | qgis-plugin-grass |             |
 - [x] Configure DNS
 - [x] Configure Firewall (UFW)
-- [x] Configure Canonical Livepatch
+- [ ] Configure Canonical Livepatch
 - [x] Configure Bluetooth
-- [x] Install NVIDIA CUDA
-- [x] Configure SSH
+- [ ] Install NVIDIA CUDA
+- [ ] Configure SSH
 - [ ] Install HTop
+- [x] Install Go
 - [x] Install Python 3
 - [x] Configure Python 3
+- [x] Node Version Manager
 - [ ] Install CmdStan
 - [ ] Install MuJoCo
 - [ ] Configure Streamlit
-- [x] Install Node.js
-- [x] Install Yarn
-- [-] Install Scala
+- [ ] Install Yarn
+- [ ] SDKMan
 - [-] Install Rust
 - [x] Install FiraCode Font
 - [x] Install Sublime Text
 - [x] Install Visual Studio Code
-- [x] Install Google Cloud CLI
+- [ ] Install Google Cloud CLI
 - [x] Install Google Firebase CLI
 - [x] Install Signal Desktop
 - [x] Install Bitwarden
@@ -165,7 +159,7 @@ Easily install and configure the following:
 - [x] Install Spotify
 - [x] Install Oracle VirtualBox
 - [x] Configure Oracle VirtualBox
-- [x] Install Docker
+- [ ] Install Docker
 - [x] Install Vagrant
 - [x] Configure Vagrant
 - [ ] Configure Mozilla Firefox
@@ -176,4 +170,4 @@ Easily install and configure the following:
 - [ ] Install Anaconda
 - [x] Configure dconf
 - [x] Configure Swapfile
-- [x] Configure Power Mode
+- [x] Configure Power Mode -->

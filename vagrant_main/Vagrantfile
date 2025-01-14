@@ -1,35 +1,44 @@
-username = "vagrant"
+WARM_BOX = ENV["VM_WARM_BOX"]
+USERNAME = ENV["VM_USERNAME"]
 
 Vagrant.configure("2") do |config|
-    config.vm.box = "ubuntu_config_scripts_base"
+    config.vm.box = WARM_BOX
 
     config.vm.provider "virtualbox" do |vb|
         vb.gui = true
         vb.memory = "4096"
-        vb.cpus = "2"
+        vb.cpus = "4"
         vb.customize ["modifyvm", :id, "--vram", "128"]
         vb.customize ["modifyvm", :id, "--graphicscontroller", "vmsvga"]
         vb.customize ["modifyvm", :id, "--accelerate3d", "on"]
-        vb.customize ["modifyvm", :id, "--accelerate2dvideo", "on"]
         vb.customize ["modifyvm", :id, "--audio", "none"]
         vb.customize ["modifyvm", :id, "--clipboard", "bidirectional"]
         vb.customize ["modifyvm", :id, "--draganddrop", "bidirectional"]
     end
 
-    config.vm.provision "file", source: "../run.sh", destination: "/home/#{username}/ubuntu-config-scripts/run.sh"
-    config.vm.provision "file", source: "../run_in_vagrant.sh", destination: "/home/#{username}/ubuntu-config-scripts/run_in_vagrant.sh"
-    config.vm.provision "file", source: "../bin", destination: "/home/#{username}/ubuntu-config-scripts/bin"
-
     config.vm.provision "shell", privileged: false, inline: <<-SHELL
-        echo 'Setting permissions for UbuntuConfigScripts'
-        sudo chmod +x -R '/home/#{username}/ubuntu-config-scripts'
+        echo 'Creating ubuntu-config-scripts directory'
+        sudo mkdir -p '/home/#{USERNAME}/ubuntu-config-scripts'
 
-        echo 'Creating a service for UbuntuConfigScripts'
-        mkdir -p '/home/#{username}/.config/autostart'
-        echo '[Desktop Entry]'                                                                  | tee -a '/home/#{username}/.config/autostart/UbuntuConfigScripts.desktop' > /dev/null
-        echo 'Name=UbuntuConfigScripts'                                                         | tee -a '/home/#{username}/.config/autostart/UbuntuConfigScripts.desktop' > /dev/null
-        echo 'Exec=gnome-terminal -- /home/#{username}/ubuntu-config-scripts/run_in_vagrant.sh' | tee -a '/home/#{username}/.config/autostart/UbuntuConfigScripts.desktop' > /dev/null
-        echo 'Type=Application'                                                                 | tee -a '/home/#{username}/.config/autostart/UbuntuConfigScripts.desktop' > /dev/null
-        echo ''                                                                                 | tee -a '/home/#{username}/.config/autostart/UbuntuConfigScripts.desktop' > /dev/null
+        echo 'Setting ownership for ubuntu-config-scripts'
+        sudo chown -R #{USERNAME} '/home/#{USERNAME}/ubuntu-config-scripts'
     SHELL
+
+    config.vm.provision "file", source: "../bin", destination: "/home/#{USERNAME}/ubuntu-config-scripts/bin"
+    config.vm.provision "file", source: "../run.sh", destination: "/home/#{USERNAME}/ubuntu-config-scripts/run.sh"
+    config.vm.provision "file", source: "../run_in_vagrant.sh", destination: "/home/#{USERNAME}/ubuntu-config-scripts/run_in_vagrant.sh"
+
+    config.vm.provision "shell", privileged: false,
+        inline: <<-SHELL
+            echo 'Setting permissions for ubuntu-config-scripts'
+            sudo chmod +x -R '/home/#{USERNAME}/ubuntu-config-scripts'
+
+            echo 'Creating UbuntuConfigScripts test service'
+            mkdir '/home/#{USERNAME}/.config/autostart'
+            echo '[Desktop Entry]'                                                                  | tee    '/home/#{USERNAME}/.config/autostart/UbuntuConfigScripts.desktop' > /dev/null
+            echo 'Name=UbuntuConfigScripts'                                                         | tee -a '/home/#{USERNAME}/.config/autostart/UbuntuConfigScripts.desktop' > /dev/null
+            echo 'Exec=gnome-terminal -- /home/#{USERNAME}/ubuntu-config-scripts/run_in_vagrant.sh' | tee -a '/home/#{USERNAME}/.config/autostart/UbuntuConfigScripts.desktop' > /dev/null
+            echo 'Type=Application'                                                                 | tee -a '/home/#{USERNAME}/.config/autostart/UbuntuConfigScripts.desktop' > /dev/null
+            echo ''                                                                                 | tee -a '/home/#{USERNAME}/.config/autostart/UbuntuConfigScripts.desktop' > /dev/null
+        SHELL
 end

@@ -5,7 +5,6 @@ function exit_with_failure () { echo 'Failed to install Scala.'; exit 1; }
 
 echo '+++ Installing Scala'
 
-# Local variables
 latest_release_name='coursier'
 latest_release_file='cs-x86_64-pc-linux.gz'
 latest_release_file_url='https://github.com/coursier/coursier/releases/latest/download/'"$latest_release_file"

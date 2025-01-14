@@ -6,20 +6,20 @@ function exit_with_failure () { echo 'Failed to install Docker.'; exit 1; }
 echo '+++ Installing Docker'
 
 key_url='https://download.docker.com/linux/ubuntu/gpg'
-key_filepath='/etc/apt/keyrings/docker-keyring.gpg'
+key_file_path='/etc/apt/keyrings/docker-keyring.gpg'
 
-repo_options='arch='"$ARCHITECTURE"' signed-by='"$key_filepath"
+repo_options='arch='"$( dpkg --print-architecture )"' signed-by='"$key_file_path"
 repo_uri='https://download.docker.com/linux/ubuntu'
-repo_suite=$DIST_CODENAME
+repo_suite="$( lsb_release -cs )"
 repo_components='stable'
-repo_filepath='/etc/apt/sources.list.d/docker.list'
+repo_file_path='/etc/apt/sources.list.d/docker.list'
 
 # Insert public software signing key
-bash ./bin/utils/add_keyring.sh "${key_url}" "${key_filepath}" \
+bash ./bin/utils/add_keyring.sh "${key_url}" "${key_file_path}" \
     || exit_with_failure
 
 # Add to list of repositories
-bash ./bin/utils/add_repository.sh "${repo_options}" "${repo_uri}" "${repo_suite}" "${repo_components}" "${repo_filepath}" \
+bash ./bin/utils/add_repository.sh "${repo_options}" "${repo_uri}" "${repo_suite}" "${repo_components}" "${repo_file_path}" \
     || exit_with_failure
 
 # Update package database and install

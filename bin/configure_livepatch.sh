@@ -12,7 +12,7 @@ fi
 
 echo '~~~ Configuring Canonical Livepatch'
 
-# Install
+# Install from Snap Store
 sudo snap install canonical-livepatch \
     || exit_with_failure
 

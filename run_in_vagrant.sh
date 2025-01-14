@@ -1,9 +1,14 @@
 #!/bin/bash
 
-# Skip the prompt for the Livepatch key by setting it here.
-export LIVEPATCH_KEY='fake-livepatch-key'
-# Override the default swapfile size to prevent the system from running out of memory.
+# NOTE: This script is intended for testing within a VM.
+export INSIDE_TEST=true
+
+# Skip the prompt for the Livepatch key
+export LIVEPATCH_KEY='testing-livepatch-key'
+# Smaller swapfile size
 export SWAPFILE_SIZE='2G'
+
+# TODO: Check if guest additions are installed here, and install them if they are not?
 
 cd ~/ubuntu-config-scripts
 bash run.sh

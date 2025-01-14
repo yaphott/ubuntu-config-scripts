@@ -1,15 +1,25 @@
 #!/bin/bash -e
 
-# [[ $INSIDE_SCRIPT ]] || ( echo 'Please run with the installer script.'; exit 1; )
+# Prevent running with sudo
+if [ "$EUID" -eq 0 ]; then
+    echo 'Please run without sudo.'
+    exit 1
+fi
+
+# Prevent running as root user
+if [[ $USER == 'root' ]]; then
+    echo 'Please run as non-root user.'
+    exit 1
+fi
 
 # Validate input parameters
 if [[ (! "$1") || (! "$2") ]]; then
     echo 'Missing expected input parameters:'
-    echo '    key_url: URL to the public software signing key (e.g. https://example.com/apt/keys.asc)'
-    echo '    key_filepath: Complete path to write the key to locally (e.g. /etc/apt/keyrings/example-keyring.gpg)'
+    echo '    key_url: URL to the public software signing key (e.g. https://example.com/apt/keys.asc).'
+    echo '    key_filepath: Complete path to write the key to locally (e.g. /etc/apt/keyrings/example-keyring.gpg).'
     echo ''
     echo 'Usage:'
-    echo '    sudo add_keyring.sh <key_url> <keyring_path>'
+    echo '    add_keyring.sh <key_url> <keyring_path>'
     exit 1
 fi
 
@@ -17,23 +27,22 @@ key_url="$1"
 key_filepath="$2"
 
 key_filename="$( basename "$key_filepath" )"
-temp_key_filepath='./tmp/'"$key_filename"
+tmp_dir="$(mktemp -d)"
+tmp_key_filepath="${tmp_dir}/${key_filename}"
 
 echo 'Adding keyring --> '"$key_filepath"
 if [ -f "$key_filepath" ]; then
-    yes_or_no 'File already exists. Would you like to overwrite it?' || exit 1
-    echo 'Overwriting file.'
+    echo 'Backing up existing file.'
+    sudo cp -f "$key_filepath" "$key_filepath.bak"
 fi
 
 # Download, decrypt, and write to temporary file
-# wget -qO - "$key_url" | gpg --dearmor > "$temp_key_filepath"
-curl -fsSL "$key_url" | sudo gpg --dearmor -o "$temp_key_filepath"
+curl -fsSL "$key_url" | sudo gpg --dearmor -o "$tmp_key_filepath"
 
 # Install keyring
-sudo install -D -o root -g root -m 644 "$temp_key_filepath" "$key_filepath"
+sudo install -D -o root -g root -m 644 "$tmp_key_filepath" "$key_filepath"
 
 # Clean up
-if [ -f "$temp_key_filepath" ]; then
-    echo 'Removing temporary file --> '"$temp_key_filepath"
-    rm -f "$temp_key_filepath"
+if [ -d "$tmp_dir" ]; then
+    sudo rm -rf "$tmp_dir"
 fi

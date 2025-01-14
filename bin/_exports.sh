@@ -1,31 +1,33 @@
-#!/bin/bash
+#!/bin/bash -e
 
 # Resolve name of current user
-if [ $SUDO_USER ]; then
+if [ "$SUDO_USER" ]; then
     export USER=$SUDO_USER;
 else
     export USER=$LOGNAME;
 fi
 
-# Resolve distro codename
-[[ -z $DIST_CODENAME ]] && export DIST_CODENAME=$( lsb_release -cs )
-# Resolve architecture
-[[ -z $ARCHITECTURE ]] && export ARCHITECTURE=$( dpkg --print-architecture )
-
 # User-defined variables (if not set prior to executing)
-# TODO:
-# - Check for exported user variables before overriding.
-# - Could add prompt for user input.
-while [[ -z "$LIVEPATCH_KEY" ]]; do
+while ! echo "$LIVEPATCH_KEY" | grep -q -E '\S+'; do
     echo 'Visit https://ubuntu.com/advantage for a key'
-    echo -n 'Enter your Canonical Livepatch key: '
-    read LIVEPATCH_KEY
+    IFS= read -r -p 'Enter your Canonical Livepatch key: ' LIVEPATCH_KEY
 done
-[[ -z $SWAPFILE_PATH ]]       && export SWAPFILE_PATH='/swapfile'  && echo 'SWAPFILE_PATH: '"$SWAPFILE_PATH"
-[[ -z $SWAPFILE_SIZE ]]       && export SWAPFILE_SIZE='12G'        && echo 'SWAPFILE_SIZE: '"$SWAPFILE_SIZE"
-[[ -z $SWAPFILE_SWAPPINESS ]] && export SWAPFILE_SWAPPINESS='10'   && echo 'SWAPFILE_SWAPPINESS: '"$SWAPFILE_SWAPPINESS"
-[[ -z $NVIDIA_CUDA_VERSION ]] && export NVIDIA_CUDA_VERSION='11.3' && echo 'NVIDIA_CUDA_VERSION: '"$NVIDIA_CUDA_VERSION"
-[[ -z $NODE_MAJOR_VERSION ]]  && export NODE_MAJOR_VERSION='20'    && echo 'NODE_MAJOR_VERSION: '"$NODE_MAJOR_VERSION"
+[[ -z $SWAPFILE_PATH ]] && export SWAPFILE_PATH='/swapfile'
+echo "SWAPFILE_PATH: ${SWAPFILE_PATH}"
+[[ -z $SWAPFILE_SIZE ]] && export SWAPFILE_SIZE='12G'
+echo "SWAPFILE_SIZE: ${SWAPFILE_SIZE}"
+[[ -z $SWAPFILE_SWAPPINESS ]] && export SWAPFILE_SWAPPINESS='10'
+echo "SWAPFILE_SWAPPINESS: ${SWAPFILE_SWAPPINESS}"
+[[ -z $DNS1 ]] && export DNS1='1.1.1.1'
+echo "DNS1: ${DNS1}"
+[[ -z $DNS2 ]] && export DNS2='8.8.8.8'
+echo "DNS2: ${DNS2}"
+[[ -z $DNS3 ]] && export DNS3='1.0.0.1'
+echo "DNS3: ${DNS3}"
+[[ -z $DNS4 ]] && export DNS4='8.4.4.8'
+echo "DNS4: ${DNS4}"
+[[ -z $NVIDIA_CUDA_VERSION ]] && export NVIDIA_CUDA_VERSION='11.3'
+echo "NVIDIA_CUDA_VERSION: ${NVIDIA_CUDA_VERSION}"
 
 # Create a marker file to set a persistent state to 1.
 # States are persistent across runs and reboots.
@@ -47,9 +49,8 @@ done
 # - Validate the `marker_name` parameter.
 # - Consider using a different file extension (e..g. .marker).
 function create_marker () {
-    reset_params
     register_param marker_name true
-    validate_params "$@" || exit 1
+    verify_params "$@" || exit 1
     local marker_name="$1"
 
     local marker_path='./tmp/'"$marker_name"'.temp'
@@ -77,32 +78,22 @@ function create_marker () {
 #
 # Parameters
 #     marker_name: Name of the marker to delete.
-#
-# Returns 0 if the marker was deleted successfully.
-# Returns 1 if the marker does not exist.
-# Returns 1 if the marker could not be deleted.
-#
-# Todo:
-# - Validate the `marker_name` parameter.
-# - Consider using a different file extension (e..g. .marker).
 function delete_marker () {
-    reset_params
     register_param marker_name true
-    validate_params "$@" || exit 1
+    verify_params "$@" || exit 1
     local marker_name="$1"
 
     local marker_path='./tmp/'"$marker_name"'.temp'
     if [[ ! -f $marker_path ]]; then
         echo 'Missing marker: '"$marker_path"
-        return 1
+        exit 1
     else
         echo 'Deleting marker: '"$marker_path"
         rm "$marker_path"
         if [[ -f $marker_path ]]; then
             echo 'Failed to delete marker: '"$marker_path"
-            return 1
+            exit 1
         fi
-        return 0
     fi
 }
 
@@ -124,79 +115,40 @@ function delete_marker () {
 #     0: User answered with yes.
 #     1: User answered with no.
 function yes_or_no () {
-    reset_params
     register_param prompt_msg true
-    validate_params "$@" || exit 1
+    verify_params "$@" || exit 1
     local prompt_msg="$1"
 
     local y_or_n_input
-    while [ true ]; do
-        read -p "$prompt_msg"' (y/n) ' y_or_n_input
+    while true; do
+        IFS= read -r -p "$prompt_msg"' (y/n) ' y_or_n_input
         case "$y_or_n_input" in
-            y | Y | yes | YES)
-                # Valid - Yes
-                return 0
-                ;;
-            n | N | no | NO)
-                # Valid - No
-                return 1
-                ;;
-            *)
-                # Invalid
-                ;;
+            y | Y | yes | YES) return 0;;
+            n | N | no | NO) return 1;;
+            *);;
         esac
     done
 }
 
-# Prompt the user for input until a yes or no answer is provided.
-# If the user answers with yes, run the `yes_callable` (first) command.
-# If the user answers with no, run the `no_callable` (second) command.
+# Prompt the user to continue or exit the script.
 #
 # Usage:
-#     on_yes_or_no <prompt_msg> <yes_callable> <no_callable>
+#     prompt_to_exit
 #
 # Example:
-#     on_yes_or_no 'Do you want food?' 'echo "User is hungry"' 'echo "User is not hungry"'
+#     prompt_to_exit || exit 1
 #
-#     Input of 'y' will echo 'User is hungry'
-#     Input of 'n' will echo 'User is not hungry'
-#
-# Parameters:
-#     prompt_msg: Message to display during yes or no prompt.
-#     yes_callable: Command to run if user answers with yes.
-#     no_callable: Command to run if user answers with no.
-function on_yes_or_no () {
-    reset_params
-    register_param prompt_msg true
-    register_param yes_callable true
-    register_param no_callable true
-    validate_params "$@" || exit 1
-    local prompt_msg="$1"
-    local yes_callable="$2"
-    local no_callable="$3"
-
-    ( yes_or_no "$prompt_msg" && $yes_callable ) || $no_callable
-}
-
-# Prompt the user continue or exit with the provided status code.
-#
-# Usage:
-#     prompt_to_exit <exit_code>
-#
-# Example:
-#     prompt_to_exit 1
-#
-# Parameters
-#     exit_code: Exit code to exit with if the user chooses to exit.
+# Returns:
+#     0: User wants to continue.
+#     1: User wants to exit.
 function prompt_to_exit () {
-    reset_params
-    register_param exit_code true
-    validate_params "$@" || exit 1
-    local exit_code="$1"
-
-    on_yes_or_no 'Would you like to continue?' \
-        "echo 'Continuing ...'" \
-        "echo 'Exiting ...' && exit $exit_code"
+    if yes_or_no 'Would you like to continue?'; then
+        echo 'Continuing...'
+        return 0
+    else
+        echo 'Exiting...'
+        return 1
+    fi
 }
 
 declare -A TEXT_STYLES
@@ -221,10 +173,9 @@ TEXT_STYLES['reset']='\e[0m'
 # Output:
 #     Stylized text.
 function style_text () {
-    reset_params
     register_param styles true
     register_param text true
-    validate_params "$@" || exit 1
+    verify_params "$@" || exit 1
     local styles="$1"
     local text="$2"
 
@@ -241,58 +192,68 @@ function reset_tasks () {
     unset TASK_NAMES
     unset TASK_TYPES
     unset TASK_CMDS
-    unset TASK_MUST_EXIT_WITH_ZERO
+    unset TASK_MUST_SUCCEED
     declare -a TASK_NAMES
     declare -a TASK_TYPES
     declare -a TASK_CMDS
-    declare -a TASK_MUST_EXIT_WITH_ZERO
+    declare -a TASK_MUST_SUCCEED
 }
 
 # Register a task to be executed.
 #
 # Usage:
-#     register_task <task_name> <task_type> <task_cmd> <task_should_exit>
+#     register_task <task_name> <task_type> <task_cmd> <task_must_succeed>
 #
 # Example:
 #     register_task Sublime install 'bash ./bin/install_sublime.sh' true
 function register_task () {
-    # Length is the next index, since index starts at 0
+    register_param task_name true
+    register_param task_type true
+    register_param task_cmd true
+    register_param task_must_succeed true
+    verify_params "$@" || exit 1
     local task_name="$1"
     local task_type="$2"
     local task_cmd="$3"
-    local task_should_exit="$4"
+    local task_must_succeed="$4"
+
     TASK_NAMES+=("$task_name")
     TASK_TYPES+=("$task_type")
     TASK_CMDS+=("$task_cmd")
-    TASK_MUST_EXIT_WITH_ZERO+=("$task_should_exit")
+    TASK_MUST_SUCCEED+=("$task_must_succeed")
 }
 
 # Execute all registered tasks.
 function execute_tasks () {
-    for i in "${!TASK_MUST_EXIT_WITH_ZERO[@]}"; do
-        local task_name="${TASK_NAMES[$i]}"
-        local task_type="${TASK_TYPES[$i]}"
-        local task_should_exit="${TASK_MUST_EXIT_WITH_ZERO[$i]}"
-        style_text bold 'Executing task [ '"$task_name"' : '"$task_type"' : '"$task_should_exit"' ]'
-        style_text dim '... with command: '"${TASK_CMDS[$i]}"
-        # Run the task and prompt to exit if it fails
-        ( eval "${TASK_CMDS[$i]}" && style_text green 'Success [ '"$task_name"' : '"$task_type"' ]' ) \
-            || ( \
-                style_text red 'Failed [ '"$task_name"' : '"$task_type"' '"$task_should_exit"' ]' \
-                    && ( [[ $task_should_exit == true ]] && prompt_to_exit 1 )
-            )
+    local task_count="${#TASK_NAMES[@]}"
+    if [[ $task_count -eq 0 ]]; then
+        echo 'No tasks to execute.'
+        return
+    fi
+    for i in $(seq 0 $((task_count - 1))); do
+        local task_msg="[ ${TASK_NAMES[$i]} : ${TASK_TYPES[$i]} : ${TASK_MUST_SUCCEED[$i]} ]"
+        local task_cmd="${TASK_CMDS[$i]}"
+        style_text bold "Executing task $task_msg"
+        style_text dim "... with command: $task_cmd"
+        if eval "$task_cmd"; then
+            style_text green "Success $task_msg"
+        else
+            style_text red "Failed $task_msg"
+            ${TASK_MUST_SUCCEED[$i]} && (prompt_to_exit || exit 1)
+        fi
+        i=$((i + 1))
     done
 }
 
 # Clear the known parameters.
 function reset_params () {
     unset PARAM_NAMES
-    unset PARAM_IS_REQUIRED
+    unset PARAM_REQUIRED
     declare -a PARAM_NAMES
-    declare -a PARAM_IS_REQUIRED
+    declare -a PARAM_REQUIRED
 }
 
-# Register a parameter to be validated.
+# Register a parameter to be verified.
 #
 # Usage:
 #     register_param <param_name> <param_is_required>
@@ -318,40 +279,31 @@ function register_param () {
 
     # Length is the next index, since index starts at 0
     PARAM_NAMES+=("$param_name")
-    PARAM_IS_REQUIRED+=("$param_is_required")
+    PARAM_REQUIRED+=("$param_is_required")
 }
 
-# Validate that the required parameters exist and are valid.
+# Validate that the required parameters exist and are valid, resetting registered parameters.
 #
 # Usage:
-#     validate_params <params ...>
-#
-# Example:
-#     function my_function () {
-#         validate_params "$@"
-#         local param1="$1"
-#         local param2="$2"
-#         echo 'param1: '"$param1"
-#         echo 'param2: '"$param2"
-#     }
+#     verify_params <params...>
 #
 # Parameters:
-#     $@: All parameters to validate.
-#
-# Returns 0 if all parameters are valid.
-# Returns 1 if any parameter is invalid.
-function validate_params () {
+#     $@: All parameters to verify.
+function verify_params () {
+    local param_names=("${PARAM_NAMES[@]}")
+    local param_required=("${PARAM_REQUIRED[@]}")
+    reset_params
+
     local params=("$@")
-    for i in "${!PARAM_IS_REQUIRED[@]}"; do
-        local param_is_required=${PARAM_IS_REQUIRED[$i]}
-        local param_name=${PARAM_NAMES[$i]}
+    for i in "${!param_required[@]}"; do
+        local param_is_required=${param_required[$i]}
+        local param_name=${param_names[$i]}
         local param_value=${params[$i]}
         if [[ $param_is_required == true ]]; then
             if [[ -z $param_value ]]; then
                 echo 'Missing required parameter: '"$param_name"
-                return 1
+                exit 1
             fi
         fi
     done
-    return 0
 }

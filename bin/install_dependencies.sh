@@ -17,7 +17,7 @@ echo '+++ Dependencies'
 # | ca-certificates     | HTTPS.                              |
 # | gnupg               | Fetching files and installing keys. |
 # +---------------------+-------------------------------------+
-( sudo apt-get update \
+(sudo apt-get update \
     && sudo apt-get install -y linux-generic \
         build-essential \
         apt-transport-https \

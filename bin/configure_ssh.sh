@@ -13,13 +13,14 @@ ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts \
 
 #### Limit outside access and change port
 
-sudo sed -i -e "s|^#PermitRootLogin yes|PermitRootLogin no|" \
-    -e "s|^#PasswordAuthentication yes|PasswordAuthentication no|" \
-    -e "s|^#PermitEmptyPasswords no|PermitEmptyPasswords no|" \
-    -e "s|^#Port 22|Port 2222|" \
-    -e "s|^#LoginGraceTime 2m|LoginGraceTime 2m|" \
-    -e "s|^#MaxAuthTries 6|MaxAuthTries 6|" \
-    -e "s|^#MaxSessions 10|MaxSessions 10|" /etc/ssh/sshd_config \
+sudo sed -e "s|^# *PermitRootLogin +.+$|PermitRootLogin no|" \
+         -e "s|^# *PasswordAuthentication +.+$|PasswordAuthentication no|" \
+         -e "s|^# *PermitEmptyPasswords +.+$|PermitEmptyPasswords no|" \
+         -e "s|^# *Port +[0-9]+$|Port 2222|" \
+         -e "s|^# *LoginGraceTime +.+$|LoginGraceTime 2m|" \
+         -e "s|^# *MaxAuthTries +[0-9]+$|MaxAuthTries 6|" \
+         -e "s|^# *MaxSessions +[0-9]+$|MaxSessions 10|" \
+         -i /etc/ssh/sshd_config \
     || exit_with_failure
 
 #### Restart SSH

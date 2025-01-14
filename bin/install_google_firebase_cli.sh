@@ -6,5 +6,8 @@ function exit_with_failure () { echo 'Failed to install Google Firebase CLI.'; e
 echo '+++ Google Firebase CLI'
 
 # Run install script
-curl -sL https://firebase.tools | bash \
+curl -fsL --proto '=https' --tlsv1.2 -o- https://firebase.tools | bash \
     || exit_with_failure
+
+# Verify installation
+firebase --version > /dev/null || exit_with_failure

@@ -11,7 +11,6 @@ echo '+++ Installing NVIDIA CUDA '"$cuda_version"
 # - Parse together expected ubuntu version
 nvidia_ubuntu_ver='ubuntu2204'
 
-# Local variables
 key_url='https://developer.download.nvidia.com/compute/cuda/repos/'"$nvidia_ubuntu_ver"'/x86_64/3bf863cc.pub'
 key_filepath='/etc/apt/keyrings/nvidia-cuda-keyring.gpg'
 
