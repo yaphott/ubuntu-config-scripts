@@ -8,8 +8,6 @@ echo 'Vagrant directory: '"$VAGRANT_DIR"
 
 cd "$VAGRANT_DIR"
 
-echo 'Halting any running instance...'
-vagrant halt || true
 echo 'Destroying any existing instance...'
 vagrant destroy -f || true
 
