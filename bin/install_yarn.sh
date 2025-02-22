@@ -5,6 +5,13 @@ function exit_with_failure () { echo 'Failed to install Yarn.'; exit 1; }
 
 echo '+++ Installing Yarn'
 
+# Activate if not already
+if [[ ! -x "$(command -v nvm)" ]]; then
+    export NVM_DIR="$HOME/.nvm"
+    source "$NVM_DIR/nvm.sh" || exit_with_failure
+    source "$NVM_DIR/bash_completion" || exit_with_failure
+fi
+
 # Install
 npm install -g yarn || exit_with_failure
 

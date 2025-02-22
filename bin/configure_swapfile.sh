@@ -4,7 +4,7 @@ function exit_with_failure () { echo 'Failed to configure Swapfile.'; exit 1; }
 [[ $INSIDE_SCRIPT ]] || (echo 'Please run with the installer script.'; exit_with_failure)
 
 # Validate input parameters
-if [[ (! "$1") || (! "$2") || (! "$3") ]]; then
+if [[ $# -ne 3 ]]; then
     echo 'Missing expected input parameters:'
     echo '    swapfile_path: File path for swapfile (e.g. /swapfile).'
     echo '    swapfile_max_size: Maximum size of swapfile (e.g. 512M, 1G, or 2G).'
@@ -70,10 +70,10 @@ if [[ $(tail -n +2 /proc/swaps | awk '{print $1}' | grep -c '^'"$swapfile_path"'
     echo 'Failed to find swapfile '"$swapfile_path"' in /proc/swaps.'
     exit_with_failure
 fi
-if [[ $(cat /etc/fstab | awk '{print $1}' | grep -c '^'"$swapfile_path"'$') -ne 1 ]]; then
-    echo 'Failed to find swapfile '"$swapfile_path"' in /etc/fstab.'
-    exit_with_failure
-fi
+# if [[ $(cat /etc/fstab | awk '{print $1}' | grep -c '^'"$swapfile_path"'$') -ne 1 ]]; then
+#     echo 'Failed to find swapfile '"$swapfile_path"' in /etc/fstab.'
+#     exit_with_failure
+# fi
 
 if [[ "$(cat /proc/sys/vm/swappiness )" -ne "$swapfile_swappiness" ]]; then
     echo 'Configuring swappiness...'

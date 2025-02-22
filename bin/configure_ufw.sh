@@ -39,8 +39,7 @@ echo '~~~ Configuring Universal Firewall (UFW)'
 # Verify configuration
 if [[ $(sudo ufw status | grep -c '^Status: active$') -ne 1 ]]; then
     exit_with_failure
-fi
-if [[ $(sudo ufw status numbered | grep -c '\[ *[0-9]\]') -ne 0 ]]; then
+elif [[ $(sudo ufw status numbered | grep -c '\[ *[0-9]\]') -ne 0 ]]; then
     exit_with_failure
 fi
 

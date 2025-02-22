@@ -11,6 +11,7 @@ curl -fsL --proto '=https' --tlsv1.2 -o- https://raw.githubusercontent.com/nvm-s
 # Verify installation
 export NVM_DIR="$HOME/.nvm"
 source "$NVM_DIR/nvm.sh" || exit_with_failure
+source "$NVM_DIR/bash_completion" || exit_with_failure
 nvm --version > /dev/null || exit_with_failure
 
 echo 'Node Version Manager installed successfully.'

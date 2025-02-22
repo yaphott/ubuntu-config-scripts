@@ -8,7 +8,7 @@ echo '+++ Installing Sublime Text'
 key_url='https://download.sublimetext.com/sublimehq-pub.gpg'
 key_file_path='/etc/apt/keyrings/sublime-text-keyring.gpg'
 
-repo_options='arch=amd64 signed-by='"$key_file_path"
+repo_options='arch='"$(dpkg --print-architecture)"' signed-by='"$key_file_path"
 repo_uri='https://download.sublimetext.com/'
 repo_suite='apt/stable/'
 repo_components='none'

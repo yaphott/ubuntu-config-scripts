@@ -6,26 +6,51 @@ function exit_with_failure () { echo 'Failed to configure DNS.'; exit 1; }
 echo '~~~ Configuring DNS'
 
 # Validate input parameters
-if [[ ! "$1" ]]; then
+if [[ $# -ne 4 ]]; then
     echo 'Missing expected input parameters.'
     echo ''
     echo 'Usage:'
-    echo '    configure_dns.sh <dns 1> <dns 2> ... <dns N>'
+    echo '    configure_dns.sh <primary_dns> <primary_dns> <fallback_dns> <fallback_dns>'
     exit 1
 fi
 
-if [[ -s /etc/resolv.conf ]]; then
-    echo 'Backing up /etc/resolv.conf...'
-    sudo cp /etc/resolv.conf /etc/resolv.conf.bak || exit_with_failure
+primary_nameservers=("$1" "$2")
+fallback_nameservers=("$3" "$4")
+
+# Configure DNS
+primary_dns_repl="${primary_nameservers[@]}"
+fallback_dns_repl="${fallback_nameservers[@]}"
+echo 'Primary DNS servers:'"$primary_dns_repl"
+echo 'Fallback DNS servers:'"$fallback_dns_repl"
+sudo sed -E -e "s/^#?[ \t]*DNS[ \t]*=.*$/DNS=$primary_dns_repl/" \
+         -E -e "s/^#?[ \t]*FallbackDNS[ \t]*=.*$/FallbackDNS=$fallback_dns_repl/" \
+         -E -e "s/^#?[ \t]*DNSSEC[ \t]*=.*$/DNSSEC=yes/" \
+         -E -e "s/^#?[ \t]*DNSOverTLS[ \t]*=.*$/DNSOverTLS=opportunistic/" \
+         -i.bak /etc/systemd/resolved.conf || exit_with_failure
+
+# Verify
+primary_dns_expr=$(echo "$primary_dns_repl" | sed 's/\./\\./g')
+if [[ $(grep -c "^DNS=$primary_dns_expr$" /etc/systemd/resolved.conf) -ne 1 ]]; then
+    echo 'Failed to configure DNS.'
+    exit_with_failure
+fi
+fallback_dns_expr=$(echo "$fallback_dns_repl" | sed 's/\./\\./g')
+if [[ $(grep -c "^FallbackDNS=$fallback_dns_expr$" /etc/systemd/resolved.conf) -ne 1 ]]; then
+    echo 'Failed to configure DNS.'
+    exit_with_failure
+fi
+if [[ $(grep -c '^DNSSEC=yes$' /etc/systemd/resolved.conf) -ne 1 ]]; then
+    echo 'Failed to configure DNS.'
+    exit_with_failure
+fi
+if [[ $(grep -c '^DNSOverTLS=opportunistic$' /etc/systemd/resolved.conf) -ne 1 ]]; then
+    echo 'Failed to configure DNS.'
+    exit_with_failure
 fi
 
-sudo truncate -s 0 /etc/resolv.conf || exit_with_failure
-for dns in "$@"; do
-    echo "nameserver $dns" | sudo tee -a /etc/resolv.conf > /dev/null || exit_with_failure
-    if [[ $( grep -c "^nameserver $dns$" /etc/resolv.conf ) -ne 1 ]]; then
-        echo "Failed to add nameserver $dns to /etc/resolv.conf."
-        exit_with_failure
-    fi
-done
+echo 'Restarting systemd-resolved service...'
+sudo systemctl restart systemd-resolved || exit_with_failure
+
+# TODO: Verify DNS configuration is in use.
 
 echo 'DNS configured successfully.'

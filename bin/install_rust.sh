@@ -6,11 +6,11 @@ function exit_with_failure () { echo 'Failed to install Rust.'; exit 1; }
 echo '+++ Installing Rust'
 
 # Install
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh \
+curl -fsL --proto '=https' --tlsv1.2 -o- https://sh.rustup.rs | bash -s -- -y \
     || exit_with_failure
 
-# Verify installation (avoid starting a new shell)
-(source "$HOME/.cargo/env" && rustc --version > /dev/null) \
-    || exit_with_failure
+# Verify installation
+source "$HOME/.cargo/env"
+rustc --version > /dev/null || exit_with_failure
 
 echo 'Rust installed successfully.'

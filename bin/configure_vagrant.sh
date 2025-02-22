@@ -10,7 +10,7 @@ vagrant plugin install vagrant-disksize \
     || exit_with_failure
 
 # Verify Plugins
-if [[ $( vagrant plugin list | awk '{print $1}' | grep -c '^vagrant-disksize$' ) -ne 1 ]]; then
+if [[ $(vagrant plugin list | awk '{print $1}' | grep -c '^vagrant-disksize$') -ne 1 ]]; then
     exit_with_failure
 fi
 

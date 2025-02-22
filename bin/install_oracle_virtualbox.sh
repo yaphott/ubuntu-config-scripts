@@ -10,9 +10,9 @@ echo "+++ Installing Oracle VirtualBox ${VBOX_VERSION}"
 key_url='https://www.virtualbox.org/download/oracle_vbox_2016.asc'
 key_file_path='/etc/apt/keyrings/oracle-virtualbox-2016-keyring.gpg'
 
-repo_options='arch=amd64 signed-by='"$key_file_path"
+repo_options='arch='"$(dpkg --print-architecture)"' signed-by='"$key_file_path"
 repo_uri='https://download.virtualbox.org/virtualbox/debian'
-repo_suite="$( lsb_release -cs )"
+repo_suite="$(lsb_release -cs)"
 repo_components='contrib'
 repo_file_path='/etc/apt/sources.list.d/oracle-vbox.list'
 

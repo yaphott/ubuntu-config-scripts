@@ -8,7 +8,7 @@ echo '+++ Installing Signal Desktop'
 key_url='https://updates.signal.org/desktop/apt/keys.asc'
 key_file_path='/etc/apt/keyrings/signal-desktop-keyring.gpg'
 
-repo_options='arch=amd64 signed-by='"$key_file_path"
+repo_options='arch='"$(dpkg --print-architecture)"' signed-by='"$key_file_path"
 repo_uri='https://updates.signal.org/desktop/apt'
 repo_suite='xenial'
 repo_components='main'

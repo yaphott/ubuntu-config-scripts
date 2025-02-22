@@ -5,14 +5,14 @@ function exit_with_failure () { echo 'Failed to configure Power Profile.'; exit 
 
 echo '~~~ Configuring Power Profile'
 
-if [[ "$( powerprofilesctl get )" == 'performance' ]]; then
+if [[ "$(powerprofilesctl get)" == 'performance' ]]; then
     echo 'Power Profile already configured.'
     exit 0
 fi
 
 powerprofilesctl set performance || exit_with_failure
 
-if [[ "$( powerprofilesctl get )" != 'performance' ]]; then
+if [[ "$(powerprofilesctl get)" != 'performance' ]]; then
     exit_with_failure
 fi
 

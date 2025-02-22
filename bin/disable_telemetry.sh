@@ -139,13 +139,15 @@ for service_unit in $DISCOVERED_SERVICES; do
 done
 
 echo "Removing packages: ${PACKAGE_NAMES[*]}"
-(sudo apt-get remove -q -y "${PACKAGE_NAMES[@]}" \
-    && sudo apt-get purge -q -y "${PACKAGE_NAMES[@]}" \
-    && sudo apt-get autoremove -q -y \
-    && sudo apt-get autoclean -q
+(sudo apt-get remove -y "${PACKAGE_NAMES[@]}" \
+    && sudo apt-get purge -y "${PACKAGE_NAMES[@]}" \
+    && sudo apt-get autoremove -y \
+    && sudo apt-get autoclean
 ) || exit_with_failure
 
 #### Disable motd-news
+
+echo 'Disabling motd-news...'
 
 # Make motd-news script is unable to execute
 if [[ -f /etc/update-motd.d/50-motd-news ]]; then
@@ -154,21 +156,18 @@ fi
 
 # Configure motd-news to not run
 if [[ -s /etc/default/motd-news ]]; then
-    echo 'Backing up /etc/default/motd-news...'
-    sudo cp /etc/default/motd-news /etc/default/motd-news.bak || exit_with_failure
-
-    echo 'Disabling motd-news...'
-    sudo sed 's|^ENABLED=1$|ENABLED=0|g' -i /etc/default/motd-news || exit_with_failure
-
-    echo ''
+    sudo sed -E 's|^#?[ \t]*ENABLED[ \t]*=.+$|ENABLED=0|g' -i=.bak /etc/default/motd-news || exit_with_failure
 elif ! grep -q '^ENABLED=0$' /etc/default/motd-news; then
     echo 'ENABLED=0' | sudo tee /etc/default/motd-news > /dev/null || exit_with_failure
 fi
-
+if ! grep -q '^ENABLED=0$' /etc/default/motd-news; then
+    echo 'Failed to disable motd-news.'
+    exit_with_failure
+fi
 
 # Let OpenSSH handle the motd (place inside /etc/motd yourself)
 motd_base_expr='session[ \t]+optional[ \t]+pam_motd.so[ \t]+.+'
-sudo sed -E "s|^(${motd_base_expr})$|# \1|g" -i /etc/pam.d/sshd || exit_with_failure
+sudo sed -E "s|^(${motd_base_expr})$|# \1|g" -i=.bak /etc/pam.d/sshd || exit_with_failure
 if grep -E "^${motd_base_expr}[ \t]*$" /etc/pam.d/sshd; then
     echo 'Unexpected value for pam_motd.so in /etc/pam.d/sshd.'
     exit_with_failure

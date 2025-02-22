@@ -27,8 +27,10 @@ yes | sudo VBoxManage extpack install --replace "${tmp_dir}/${ext_pack_file_name
     || exit_with_failure
 
 # Verify installation
-sudo VBoxManage list extpacks | grep -q "Oracle VirtualBox Extension Pack" \
-    || exit_with_failure
+if ! sudo VBoxManage list extpacks | grep -q 'Oracle VirtualBox Extension Pack'; then
+    echo 'Extension Pack not found.'
+    exit_with_failure
+fi
 
 # Clean up
 (sudo VBoxManage extpack cleanup \

@@ -26,17 +26,13 @@ echo "DNS2: ${DNS2}"
 echo "DNS3: ${DNS3}"
 [[ -z $DNS4 ]] && export DNS4='8.4.4.8'
 echo "DNS4: ${DNS4}"
-[[ -z $NVIDIA_CUDA_VERSION ]] && export NVIDIA_CUDA_VERSION='11.3'
+[[ -z $NVIDIA_CUDA_VERSION ]] && export NVIDIA_CUDA_VERSION='12.6'
 echo "NVIDIA_CUDA_VERSION: ${NVIDIA_CUDA_VERSION}"
 
-# Create a marker file to set a persistent state to 1.
-# States are persistent across runs and reboots.
+# Create a marker file to set a persistent state.
 #
 # Usage:
 #     create_marker <marker_name>
-#
-# Example:
-#     create_marker startpoint
 #
 # Parameters:
 #     marker_name: Name of the marker to create.
@@ -53,7 +49,7 @@ function create_marker () {
     verify_params "$@" || exit 1
     local marker_name="$1"
 
-    local marker_path='./tmp/'"$marker_name"'.temp'
+    local marker_path='./tmp/'"$marker_name"'.state'
     if [[ -f $marker_path ]]; then
         echo 'Marker already exists: '"$marker_path"
         return 1
@@ -83,7 +79,7 @@ function delete_marker () {
     verify_params "$@" || exit 1
     local marker_name="$1"
 
-    local marker_path='./tmp/'"$marker_name"'.temp'
+    local marker_path='./tmp/'"$marker_name"'.state'
     if [[ ! -f $marker_path ]]; then
         echo 'Missing marker: '"$marker_path"
         exit 1
@@ -94,6 +90,33 @@ function delete_marker () {
             echo 'Failed to delete marker: '"$marker_path"
             exit 1
         fi
+    fi
+}
+
+# Check if a marker file exists.
+#
+# Usage:
+#     marker_exists <marker_name>
+#
+# Example:
+#     marker_exists startpoint || exit 1
+#
+# Parameters:
+#     marker_name: Name of the marker to check.
+#
+# Returns:
+#     0: Marker exists.
+#     1: Marker does not exist.
+function marker_exists () {
+    register_param marker_name true
+    verify_params "$@" || exit 1
+    local marker_name="$1"
+
+    local marker_path='./tmp/'"$marker_name"'.state'
+    if [[ -f $marker_path ]]; then
+        return 0
+    else
+        return 1
     fi
 }
 
@@ -128,27 +151,6 @@ function yes_or_no () {
             *);;
         esac
     done
-}
-
-# Prompt the user to continue or exit the script.
-#
-# Usage:
-#     prompt_to_exit
-#
-# Example:
-#     prompt_to_exit || exit 1
-#
-# Returns:
-#     0: User wants to continue.
-#     1: User wants to exit.
-function prompt_to_exit () {
-    if yes_or_no 'Would you like to continue?'; then
-        echo 'Continuing...'
-        return 0
-    else
-        echo 'Exiting...'
-        return 1
-    fi
 }
 
 declare -A TEXT_STYLES
@@ -239,7 +241,12 @@ function execute_tasks () {
             style_text green "Success $task_msg"
         else
             style_text red "Failed $task_msg"
-            ${TASK_MUST_SUCCEED[$i]} && (prompt_to_exit || exit 1)
+            if ${TASK_MUST_SUCCEED[$i]}; then
+                if ! yes_or_no 'Would you like to continue?'; then
+                    echo 'Exiting...'
+                    exit 1
+                fi
+            fi
         fi
         i=$((i + 1))
     done
@@ -306,4 +313,17 @@ function verify_params () {
             fi
         fi
     done
+}
+
+# Signal to the system that a reboot is needed.
+#
+# Usage:
+#     require_reboot
+function require_reboot () {
+    sudo touch /run/reboot-required
+    if [[ ! -f /etc/reboot-required.pkgs ]]; then
+        echo 'ubuntu-config-scripts' | sudo tee /etc/reboot-required.pkgs
+    elif ! grep -q '^ubuntu-config-scripts$' /etc/reboot-required.pkgs; then
+        echo 'ubuntu-config-scripts' | sudo tee -a /etc/reboot-required.pkgs
+    fi
 }
