@@ -93,7 +93,7 @@ register_task 'Yarn'                 install    "bash '$project_dir/bin/install_
 register_task 'SDKMAN'               install    "bash '$project_dir/bin/install_sdkman.sh'" true
 register_task 'Java'                 install    "bash '$project_dir/bin/install_java.sh'" true
 register_task 'Scala'                install    "bash '$project_dir/bin/install_scala.sh'" true
-# register_task 'Vulkan SDK'           install    "bash '$project_dir/bin/install_vulkan_sdk.sh'" true
+register_task 'Vulkan SDK'           install    "bash '$project_dir/bin/install_vulkan_sdk.sh'" true
 register_task 'Rust'                 install    "bash '$project_dir/bin/install_rust.sh'" true
 register_task 'FiraCode Font'        install    "bash '$project_dir/bin/install_firacode_font.sh'" true
 register_task 'Sublime Text'         install    "bash '$project_dir/bin/install_sublime_text.sh'" true
