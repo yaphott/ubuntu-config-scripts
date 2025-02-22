@@ -1,18 +1,20 @@
 #!/bin/bash -e
 
-function exit_with_failure () { echo 'Failed to install Google Cloud CLI.'; exit 1; }
+# TODO: WIP
+
+function exit_with_failure () { echo 'Failed to install Vulkan SDK.'; exit 1; }
 [[ $INSIDE_SCRIPT ]] || (echo 'Please run with the installer script.'; exit_with_failure)
 
-echo '+++ Installing Google Cloud CLI'
+echo '+++ Installing Vulkan SDK'
 
-key_url='https://packages.cloud.google.com/apt/doc/apt-key.gpg'
-key_file_path='/etc/apt/keyrings/cloud.google.gpg'
+key_url='https://packages.lunarg.com/lunarg-signing-key-pub.asc'
+key_file_path='/etc/apt/keyrings/vulkan-sdk.gpg'
 
 repo_options='arch='"$(dpkg --print-architecture)"' signed-by='"$key_file_path"
-repo_uri='https://packages.cloud.google.com/apt'
-repo_suite='cloud-sdk'
+repo_uri='https://packages.lunarg.com/vulkan'
+repo_suite="$(lsb_release -cs)"
 repo_components='main'
-repo_file_path='/etc/apt/sources.list.d/google-cloud-sdk.list'
+repo_file_path='/etc/apt/sources.list.d/vulkan-sdk.list'
 
 # Insert public software signing key
 bash ./bin/utils/add_keyring.sh "${key_url}" "${key_file_path}" \
@@ -23,10 +25,12 @@ bash ./bin/utils/add_repository.sh "${repo_options}" "${repo_uri}" "${repo_suite
     || exit_with_failure
 
 # Update package database and install
-(sudo apt-get update && sudo apt-get install -y google-cloud-cli) \
-    || exit_with_failure
+(sudo apt-get update \
+    && sudo apt-get install -y vulkan-sdk \
+) || exit_with_failure
 
 # Verify installation
-gcloud version > /dev/null || exit_with_failure
+vulkaninfo > /dev/null || exit_with_failure
 
-echo 'Google Cloud CLI installed successfully.'
+echo 'Vulkan SDK installed successfully.'
+

@@ -1,30 +1,40 @@
-username = "vagrant"
+COLD_BOX = ENV["VM_COLD_BOX"]
+USERNAME = ENV["VM_USERNAME"]
 
 Vagrant.configure("2") do |config|
-    config.vm.box = "ubuntu/jammy64"
+    config.vm.box = COLD_BOX
 
     config.vm.provider "virtualbox" do |vb|
         vb.gui = true
         vb.memory = "4096"
-        vb.cpus = "2"
+        vb.cpus = "4"
         vb.customize ["modifyvm", :id, "--vram", "128"]
         vb.customize ["modifyvm", :id, "--graphicscontroller", "vmsvga"]
-        vb.customize ["modifyvm", :id, "--accelerate3d", "on"]
-        vb.customize ["modifyvm", :id, "--accelerate2dvideo", "on"]
         vb.customize ["modifyvm", :id, "--audio", "none"]
-        vb.customize ["modifyvm", :id, "--clipboard", "bidirectional"]
-        vb.customize ["modifyvm", :id, "--draganddrop", "bidirectional"]
     end
 
     config.vm.provision "shell", inline: <<-SHELL
+        set -e
+
         echo 'Installing Ubuntu Desktop'
         sudo apt-get update
         sudo apt-get install -y ubuntu-desktop
+        sudo apt-get autoremove -y
+        sudo apt-get autoclean
+
+        echo 'Restarting GDM3 (1/2)'
+        sudo systemctl restart gdm3
 
         echo 'Enabling automatic login'
-        sudo sed -E -e 's|^#  AutomaticLoginEnable = true$|AutomaticLoginEnable = true|' \
-                    -e 's|^#  AutomaticLogin = user1$|AutomaticLogin = #{username}|' \
-                    -i /etc/gdm3/custom.conf
+        sudo sed -E -e 's/^#[ \t]*AutomaticLoginEnable[ \t]*=.*$/AutomaticLoginEnable = true/' -E -e 's/^#[ \t]*AutomaticLogin[ \t]*=.*$/AutomaticLogin = #{USERNAME}/' -i=.bak /etc/gdm3/custom.conf
+
+        echo 'Disabling sleep, suspend, hibernate, and hybrid-sleep'
+        SERVICE_NAMES=(sleep.target suspend.target hibernate.target hybrid-sleep.target)
+        sudo systemctl stop "${SERVICE_NAMES[@]}" 2>/dev/null
+        sudo systemctl disable "${SERVICE_NAMES[@]}" 2>/dev/null
+        sudo systemctl mask "${SERVICE_NAMES[@]}" 2>/dev/null
+
+        echo 'Restarting GDM3 (2/2)'
         sudo systemctl restart gdm3
     SHELL
 end

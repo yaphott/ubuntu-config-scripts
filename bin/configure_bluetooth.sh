@@ -10,6 +10,13 @@ echo '~~~ Configuring Bluetooth'
 # TODO: Disable bluetooth while running (not just on boot)
 
 # https://unix.stackexchange.com/questions/387502/disable-bluetooth-at-boot
-#   Modify the file located at /etc/bluetooth/main.conf
-sudo sed 's|AutoEnable=true|AutoEnable=false|' -i /etc/bluetooth/main.conf \
-    || exit_with_failure
+if grep -q '^AutoEnable=true$' /etc/bluetooth/main.conf; then
+    sudo sed 's|^AutoEnable=true$|AutoEnable=false|' -i=.bak /etc/bluetooth/main.conf || exit_with_failure
+elif ! grep -q '^AutoEnable=false$' /etc/bluetooth/main.conf; then
+    echo 'AutoEnable=false' | sudo tee -a /etc/bluetooth/main.conf > /dev/null || exit_with_failure
+fi
+if [[ $(grep -c '^AutoEnable=false$' /etc/bluetooth/main.conf) -ne 1 ]]; then
+    exit_with_failure
+fi
+
+echo 'Bluetooth configured successfully.'

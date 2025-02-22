@@ -5,11 +5,52 @@ function exit_with_failure () { echo 'Failed to configure DNS.'; exit 1; }
 
 echo '~~~ Configuring DNS'
 
-# TODO: Accept user input for DNS servers
-echo "\
-nameserver 1.1.1.1
-nameserver 8.8.8.8
-nameserver 8.4.4.8
-nameserver 1.0.0.1
-" | sudo tee /etc/resolv.conf > /dev/null \
-    || exit_with_failure
+# Validate input parameters
+if [[ $# -ne 4 ]]; then
+    echo 'Missing expected input parameters.'
+    echo ''
+    echo 'Usage:'
+    echo '    configure_dns.sh <primary_dns> <primary_dns> <fallback_dns> <fallback_dns>'
+    exit 1
+fi
+
+primary_nameservers=("$1" "$2")
+fallback_nameservers=("$3" "$4")
+
+# Configure DNS
+primary_dns_repl="${primary_nameservers[@]}"
+fallback_dns_repl="${fallback_nameservers[@]}"
+echo 'Primary DNS servers:'"$primary_dns_repl"
+echo 'Fallback DNS servers:'"$fallback_dns_repl"
+sudo sed -E -e "s/^#?[ \t]*DNS[ \t]*=.*$/DNS=$primary_dns_repl/" \
+         -E -e "s/^#?[ \t]*FallbackDNS[ \t]*=.*$/FallbackDNS=$fallback_dns_repl/" \
+         -E -e "s/^#?[ \t]*DNSSEC[ \t]*=.*$/DNSSEC=yes/" \
+         -E -e "s/^#?[ \t]*DNSOverTLS[ \t]*=.*$/DNSOverTLS=opportunistic/" \
+         -i.bak /etc/systemd/resolved.conf || exit_with_failure
+
+# Verify
+primary_dns_expr=$(echo "$primary_dns_repl" | sed 's/\./\\./g')
+if [[ $(grep -c "^DNS=$primary_dns_expr$" /etc/systemd/resolved.conf) -ne 1 ]]; then
+    echo 'Failed to configure DNS.'
+    exit_with_failure
+fi
+fallback_dns_expr=$(echo "$fallback_dns_repl" | sed 's/\./\\./g')
+if [[ $(grep -c "^FallbackDNS=$fallback_dns_expr$" /etc/systemd/resolved.conf) -ne 1 ]]; then
+    echo 'Failed to configure DNS.'
+    exit_with_failure
+fi
+if [[ $(grep -c '^DNSSEC=yes$' /etc/systemd/resolved.conf) -ne 1 ]]; then
+    echo 'Failed to configure DNS.'
+    exit_with_failure
+fi
+if [[ $(grep -c '^DNSOverTLS=opportunistic$' /etc/systemd/resolved.conf) -ne 1 ]]; then
+    echo 'Failed to configure DNS.'
+    exit_with_failure
+fi
+
+echo 'Restarting systemd-resolved service...'
+sudo systemctl restart systemd-resolved || exit_with_failure
+
+# TODO: Verify DNS configuration is in use.
+
+echo 'DNS configured successfully.'

@@ -3,28 +3,38 @@
 function exit_with_failure () { echo 'Failed to configure Oracle VirtualBox.'; exit 1; }
 [[ $INSIDE_SCRIPT ]] || (echo 'Please run with the installer script.'; exit_with_failure)
 
-echo '~~~ Configuring Oracle VirtualBox'
+VBOX_VERSION='7.1.4'
+tmp_dir="$(mktemp -d)"
+
+echo "~~~ Configuring Oracle VirtualBox ${VBOX_VERSION}"
 
 #### Install Extension Pack
 
-# Fetch the latest release
-# TODO: Validate response code/content in response
-ext_page_source="$( curl -S https://www.virtualbox.org/wiki/Downloads )"
-ext_pack_url="$( echo $ext_page_source | sed -E 's|.+href="(https:\/\/download\.virtualbox\.org\/virtualbox/[0-9\.]+/Oracle_VM_VirtualBox_Extension_Pack-[0-9\.]+\.vbox-extpack).+|\1|' )"
-ext_pack_filename="$( echo $ext_pack_url | sed -E 's|^.+/([^/]+)$|\1|' )"
-wget "$ext_pack_url" -O './tmp/'"$ext_pack_filename" \
+# Download
+ext_pack_url="https://download.virtualbox.org/virtualbox/${VBOX_VERSION}/Oracle_VirtualBox_Extension_Pack-${VBOX_VERSION}.vbox-extpack"
+ext_pack_file_name="$( echo "$ext_pack_url" | sed -E 's|^.+/([^/]+)$|\1|' )"
+curl -fsL --proto '=https' --tlsv1.2 "$ext_pack_url" -o "${tmp_dir}/${ext_pack_file_name}" \
     || exit_with_failure
 
 # Verify download
-if [[ ! -f './tmp/'"$ext_pack_filename" ]]; then
-    echo 'Failed to download '"$ext_pack_filename"' from '"$ext_pack_url"'.'
+if [[ ! -f "${tmp_dir}/${ext_pack_file_name}" ]]; then
+    echo "Missing file ${ext_pack_file_name} from ${ext_pack_url}"
     exit 1
 fi
 
 # Install
-echo 'y' | sudo VBoxManage extpack install --replace './tmp/'"$ext_pack_filename"
+yes | sudo VBoxManage extpack install --replace "${tmp_dir}/${ext_pack_file_name}" \
+    || exit_with_failure
+
+# Verify installation
+if ! sudo VBoxManage list extpacks | grep -q 'Oracle VirtualBox Extension Pack'; then
+    echo 'Extension Pack not found.'
+    exit_with_failure
+fi
 
 # Clean up
-( sudo VBoxManage extpack cleanup \
-    && rm './tmp/'"$ext_pack_filename"
+(sudo VBoxManage extpack cleanup \
+    && rm -r "$tmp_dir"
 ) || exit_with_failure
+
+echo 'Oracle VirtualBox configured successfully.'

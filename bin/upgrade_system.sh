@@ -5,5 +5,15 @@ function exit_with_failure () { echo 'Failed to install System Upgrades.'; exit 
 
 echo '+++ System Upgrades'
 
-( sudo apt-get update && sudo apt-get dist-upgrade -y ) \
+(sudo apt-get update && sudo apt-get install needrestart -y) \
     || exit_with_failure
+
+(sudo apt-get update \
+    && sudo NEEDRESTART_MODE=a apt-get dist-upgrade -y \
+    && sudo apt-get autoremove -y \
+    && sudo apt-get autoclean
+) || exit_with_failure
+
+sudo snap refresh || exit_with_failure
+
+echo 'System Upgraded successfully.'

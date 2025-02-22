@@ -3,22 +3,39 @@
 function exit_with_failure () { echo 'Failed to configure SSH.'; exit 1; }
 [[ $INSIDE_SCRIPT ]] || (echo 'Please run with the installer script.'; exit_with_failure)
 
-# NOTE: THIS IS INCOMPLETE
 echo '~~~ Configuring SSH'
 
-#### Add github to known hosts - Needs sudo?
-
-ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts \
+# Change the port and limit outside access
+sudo sed -E -e "s|^#[ \t]*PermitRootLogin[ \t]+.+$|PermitRootLogin no|" \
+         -E -e "s|^#[ \t]*PasswordAuthentication[ \t]+.+$|PasswordAuthentication no|" \
+         -E -e "s|^#[ \t]*PermitEmptyPasswords[ \t]+.+$|PermitEmptyPasswords no|" \
+         -E -e "s|^#[ \t]*Port[ \t]+.+$|Port 2222|" \
+         -E -e "s|^#[ \t]*LoginGraceTime[ \t]+.+$|LoginGraceTime 2m|" \
+         -E -e "s|^#[ \t]*MaxAuthTries[ \t]+.+$|MaxAuthTries 6|" \
+         -E -e "s|^#[ \t]*MaxSessions[ \t]+.+$|MaxSessions 10|" \
+         -i=.bak /etc/ssh/sshd_config \
     || exit_with_failure
 
-#### Limit outside access and change port
-# TODO: Check that line was actually changed instead of command being successful
+# Restart SSH
+echo 'Restarting service: sshd'
+sudo systemctl restart sshd \
+    || exit_with_failure
 
-# sudo sed -i -e "s|^#PermitRootLogin yes|PermitRootLogin no|" \
-# -e "s|^#PasswordAuthentication yes|PasswordAuthentication no|" \
-# -e "s|^#PermitEmptyPasswords no|PermitEmptyPasswords no|" \
-# -e "s|^#Port 22|Port 2222|" \
-# -e "s|^#LoginGraceTime 2m|LoginGraceTime 2m|" \
-# -e "s|^#MaxAuthTries 6|MaxAuthTries 6|" \
-# -e "s|^#MaxSessions 10|MaxSessions 10|" /etc/ssh/sshd_config \
-# || exit_with_failure
+# Verify
+if ! grep -q '^PermitRootLogin no$' /etc/ssh/sshd_config; then
+    exit_with_failure
+elif ! grep -q '^PasswordAuthentication no$' /etc/ssh/sshd_config; then
+    exit_with_failure
+elif ! grep -q '^PermitEmptyPasswords no$' /etc/ssh/sshd_config; then
+    exit_with_failure
+elif ! grep -q '^Port 2222$' /etc/ssh/sshd_config; then
+    exit_with_failure
+elif ! grep -q '^LoginGraceTime 2m$' /etc/ssh/sshd_config; then
+    exit_with_failure
+elif ! grep -q '^MaxAuthTries 6$' /etc/ssh/sshd_config; then
+    exit_with_failure
+elif ! grep -q '^MaxSessions 10$' /etc/ssh/sshd_config; then
+    exit_with_failure
+fi
+
+echo 'SSH configured successfully.'

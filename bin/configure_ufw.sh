@@ -1,12 +1,7 @@
 #!/bin/bash -e
 
-################ TODO: Check if evaluating the success of a command is the same if piping e.g. echo 'y' | mycommand
 function exit_with_failure () { echo 'Failed to configure Universal Firewall (UFW).'; exit 1; }
-
-if [[ ! $INSIDE_SCRIPT ]]; then
-    echo 'Please run with the installer script.'
-    exit 1
-fi
+[[ $INSIDE_SCRIPT ]] || (echo 'Please run with the installer script.'; exit_with_failure)
 
 echo '~~~ Configuring Universal Firewall (UFW)'
 
@@ -28,19 +23,24 @@ echo '~~~ Configuring Universal Firewall (UFW)'
 # sudo ufw status
 # cat /etc/default/ufw
 
-# Disable and reset
-# NOTE: Disabling and resetting should not be necessary
-sudo ufw disable || exit_with_failure
-
-( echo 'y' | sudo ufw reset ) || exit_with_failure
-
 # Configure
-( sudo ufw default allow outgoing \
-    && sudo ufw default deny incoming
+(sudo ufw disable \
+    && sudo ufw default deny incoming -y \
+    && sudo ufw default allow outgoing -y \
+    && yes | sudo ufw reset \
+    && sudo ufw enable \
+    && sudo ufw reload
 ) || exit_with_failure
-# && sudo ufw allow 2222/tcp comment 'SSH access'
 
-# Enable
-sudo ufw enable || exit_with_failure
+# Allow specific ports
+# sudo ufw allow 2222/tcp comment 'SSH access'
+# sudo ufw allow 25565/tcp comment 'Minecraft server'
 
-# TODO: Verify successful firewall configuration using UFW status
+# Verify configuration
+if [[ $(sudo ufw status | grep -c '^Status: active$') -ne 1 ]]; then
+    exit_with_failure
+elif [[ $(sudo ufw status numbered | grep -c '\[ *[0-9]\]') -ne 0 ]]; then
+    exit_with_failure
+fi
+
+echo 'Universal Firewall (UFW) configured successfully.'

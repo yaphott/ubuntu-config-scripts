@@ -12,7 +12,7 @@ fi
 
 echo '~~~ Configuring Canonical Livepatch'
 
-# Install
+# Install from Snap Store
 sudo snap install canonical-livepatch \
     || exit_with_failure
 
@@ -30,3 +30,5 @@ sudo canonical-livepatch refresh \
 
 # Check current status of livepatch
 # sudo canonical-livepatch status
+
+echo 'Canonical Livepatch configured successfully.'

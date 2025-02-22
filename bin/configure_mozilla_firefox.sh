@@ -28,3 +28,5 @@ do
     [ -d "$file_dir" ] || break
     echo "$file_dir"
 done
+
+echo 'Mozilla Firefox configured successfully.'

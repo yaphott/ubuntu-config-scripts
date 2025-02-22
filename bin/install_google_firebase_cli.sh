@@ -5,6 +5,15 @@ function exit_with_failure () { echo 'Failed to install Google Firebase CLI.'; e
 
 echo '+++ Google Firebase CLI'
 
-# Run install script
-curl -sL https://firebase.tools | bash \
-    || exit_with_failure
+# Activate if not already
+if [[ ! -x "$(command -v nvm)" ]]; then
+    export NVM_DIR="$HOME/.nvm"
+    source "$NVM_DIR/nvm.sh" || exit_with_failure
+    source "$NVM_DIR/bash_completion" || exit_with_failure
+fi
+
+# Install
+npm install -g firebase-tools || exit_with_failure
+
+# Verify installation
+firebase --version > /dev/null || exit_with_failure

@@ -1,22 +1,2 @@
-# Ignore everything
-*
-
-# Except
-!Makefile
-!run.sh
-!run_in_vagrant.sh
-
-!bin/
-!bin/*
-!tmp/
-!tmp/*
-!vagrant_base/
-!vagrant_base/*
-!vagrant_main/
-!vagrant_main/*
-
-!README.md
-!LICENSE
-!.gitignore
-!.git/
-!.git/*
+# Vagrant
+.vagrant/

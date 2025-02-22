@@ -44,7 +44,7 @@ make test-cold
 Subsequent times (main box):
 
 ```bash
-make test-hot
+make test-warm
 ```
 
 > **Note**: Password for the user is `vagrant`.
@@ -53,10 +53,10 @@ make test-hot
 
 #### `bin/utils/add_keyring.sh`
 
-Add a keyring to the system by providing a URL to the keyring and the complete desired path to the keyring file.
+Add a keyring to the system by providing a **key URL** and the **desired path for the keyring file**.
 
 ```bash
-sudo add_keyring.sh <key URL> <keyring path>
+sudo add_keyring.sh <key_url> <keyring_path>
 ```
 
 For example:
@@ -69,17 +69,16 @@ sudo bash add_keyring.sh https://example.com/apt/keys.asc \
 
 #### `bin/utils/add_repository.sh`
 
-Add a repository to the system by providing the **key URL**, **distribution**, **components**, and the **destination path for the list file**.
+Add a repository to the system by providing the **key URL**, **distribution**, **components**, and the **desired path for the list file**.
 
 ```bash
-sudo add_repository.sh <key options> <key URL> <distribution> <components> <list file path>
+add_repository.sh <repo_options> <repo_uri> <repo_suite> <repo_components> <repo_file_path>
 ```
 
 For example, if there is **one component**:
 
 ```bash
-cd ./bin/utils
-sudo add_repository.sh "arch=amd64 signed-by=/etc/apt/keyrings/example-keyring.gpg" \
+./bin/utils/add_repository.sh "arch=amd64 signed-by=/etc/apt/keyrings/example-keyring.gpg" \
     https://example.com/example-pub.gpg \
     stable \
     main \
@@ -89,8 +88,7 @@ sudo add_repository.sh "arch=amd64 signed-by=/etc/apt/keyrings/example-keyring.g
 Or if there are **multiple components**:
 
 ```bash
-cd ./bin/utils
-sudo add_repository.sh "arch=amd64 signed-by=/etc/apt/keyrings/example-keyring.gpg" \
+./bin/utils/add_repository.sh "arch=amd64 signed-by=/etc/apt/keyrings/example-keyring.gpg" \
     https://example.com/example-pub.gpg \
     stable \
     "main contrib non-free" \
@@ -100,8 +98,7 @@ sudo add_repository.sh "arch=amd64 signed-by=/etc/apt/keyrings/example-keyring.g
 Or if there are **no components**:
 
 ```bash
-cd ./bin/utils
-sudo add_repository.sh "arch=amd64 signed-by=/etc/apt/keyrings/example-keyring.gpg" \
+./bin/utils/add_repository.sh "arch=amd64 signed-by=/etc/apt/keyrings/example-keyring.gpg" \
     https://example.com/example-pub.gpg \
     stable \
     none \
@@ -109,3 +106,7 @@ sudo add_repository.sh "arch=amd64 signed-by=/etc/apt/keyrings/example-keyring.g
 ```
 
 > See [Ubuntu Manpage: `sources.list`](https://manpages.ubuntu.com/manpages/xenial/man5/sources.list.5.html) for more information on the format of the list file.
+
+## Developer Notes
+
+Each file starts with a check to ensure the necessary setup has been completed.

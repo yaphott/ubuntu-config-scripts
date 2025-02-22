@@ -6,10 +6,10 @@ function exit_with_failure () { echo 'Failed to configure Dconf.'; exit 1; }
 echo '~~~ Configuring Dconf'
 
 # https://www.freedesktop.org/software/gstreamer-sdk/data/docs/2012.5/glib/gvariant-text.html
-# 
+#
 # To monitor changes in dconf, run command:
 #   dconf watch /
-# 
+#
 # GVariant is the encoding that dconf will expect.
 # Example of fetching original values:
 #   Command:
@@ -151,3 +151,5 @@ gsettings set  org.gnome.gedit.preferences.editor editor-font 'Fira Code 10' \
 # NOTE: Might want to move to other dark-mode changes
 # gsettings set  org.gnome.terminal.legacy.theme-variant dark \
 #     || exit_with_failure
+
+echo 'Dconf configured successfully.'
