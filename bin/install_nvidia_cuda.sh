@@ -33,4 +33,8 @@ package_name='cuda-toolkit-'"${cuda_version//./-}"
     || exit_with_failure
 
 # sudo apt-get install libcudnn8 libcudnn8-dev
+
+# Verify installation
+"/usr/local/cuda-$cuda_version/bin/nvcc" --version > /dev/null || exit_with_failure
+
 echo 'NVIDIA CUDA '"$cuda_version"' installed successfully.'
