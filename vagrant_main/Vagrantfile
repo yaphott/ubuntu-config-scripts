@@ -10,10 +10,7 @@ Vagrant.configure("2") do |config|
         vb.cpus = "4"
         vb.customize ["modifyvm", :id, "--vram", "128"]
         vb.customize ["modifyvm", :id, "--graphicscontroller", "vmsvga"]
-        vb.customize ["modifyvm", :id, "--accelerate3d", "on"]
         vb.customize ["modifyvm", :id, "--audio", "none"]
-        vb.customize ["modifyvm", :id, "--clipboard", "bidirectional"]
-        vb.customize ["modifyvm", :id, "--draganddrop", "bidirectional"]
     end
 
     config.vm.provision "shell", privileged: false, inline: <<-SHELL
@@ -28,17 +25,21 @@ Vagrant.configure("2") do |config|
     config.vm.provision "file", source: "../run.sh", destination: "/home/#{USERNAME}/ubuntu-config-scripts/run.sh"
     config.vm.provision "file", source: "../run_in_vagrant.sh", destination: "/home/#{USERNAME}/ubuntu-config-scripts/run_in_vagrant.sh"
 
-    config.vm.provision "shell", privileged: false,
-        inline: <<-SHELL
-            echo 'Setting permissions for ubuntu-config-scripts'
-            sudo chmod +x -R '/home/#{USERNAME}/ubuntu-config-scripts'
+    config.vm.provision "shell", privileged: false, inline: <<-SHELL
+        set -e
 
-            echo 'Creating UbuntuConfigScripts test service'
-            mkdir '/home/#{USERNAME}/.config/autostart'
-            echo '[Desktop Entry]'                                                                  | tee    '/home/#{USERNAME}/.config/autostart/UbuntuConfigScripts.desktop' > /dev/null
-            echo 'Name=UbuntuConfigScripts'                                                         | tee -a '/home/#{USERNAME}/.config/autostart/UbuntuConfigScripts.desktop' > /dev/null
-            echo 'Exec=gnome-terminal -- /home/#{USERNAME}/ubuntu-config-scripts/run_in_vagrant.sh' | tee -a '/home/#{USERNAME}/.config/autostart/UbuntuConfigScripts.desktop' > /dev/null
-            echo 'Type=Application'                                                                 | tee -a '/home/#{USERNAME}/.config/autostart/UbuntuConfigScripts.desktop' > /dev/null
-            echo ''                                                                                 | tee -a '/home/#{USERNAME}/.config/autostart/UbuntuConfigScripts.desktop' > /dev/null
-        SHELL
+        echo 'Setting idle-delay to 0'
+        gsettings set org.gnome.desktop.session idle-delay 0
+
+        echo 'Setting permissions for ubuntu-config-scripts'
+        sudo chmod +x -R '/home/#{USERNAME}/ubuntu-config-scripts'
+
+        echo 'Creating UbuntuConfigScripts test service'
+        mkdir '/home/#{USERNAME}/.config/autostart'
+        echo '[Desktop Entry]'                                                                          | tee    '/home/#{USERNAME}/.config/autostart/UbuntuConfigScripts.desktop' > /dev/null
+        echo 'Name=UbuntuConfigScripts'                                                                 | tee -a '/home/#{USERNAME}/.config/autostart/UbuntuConfigScripts.desktop' > /dev/null
+        echo 'Exec=gnome-terminal -- bash -e /home/#{USERNAME}/ubuntu-config-scripts/run_in_vagrant.sh' | tee -a '/home/#{USERNAME}/.config/autostart/UbuntuConfigScripts.desktop' > /dev/null
+        echo 'Type=Application'                                                                         | tee -a '/home/#{USERNAME}/.config/autostart/UbuntuConfigScripts.desktop' > /dev/null
+        echo ''                                                                                         | tee -a '/home/#{USERNAME}/.config/autostart/UbuntuConfigScripts.desktop' > /dev/null
+    SHELL
 end

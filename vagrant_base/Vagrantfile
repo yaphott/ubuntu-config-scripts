@@ -10,28 +10,31 @@ Vagrant.configure("2") do |config|
         vb.cpus = "4"
         vb.customize ["modifyvm", :id, "--vram", "128"]
         vb.customize ["modifyvm", :id, "--graphicscontroller", "vmsvga"]
-        vb.customize ["modifyvm", :id, "--accelerate3d", "on"]
         vb.customize ["modifyvm", :id, "--audio", "none"]
-        vb.customize ["modifyvm", :id, "--clipboard", "bidirectional"]
-        vb.customize ["modifyvm", :id, "--draganddrop", "bidirectional"]
     end
 
     config.vm.provision "shell", inline: <<-SHELL
+        set -e
+
         echo 'Installing Ubuntu Desktop'
         sudo apt-get update
         sudo apt-get install -y ubuntu-desktop
         sudo apt-get autoremove -y
         sudo apt-get autoclean
 
-        echo 'Enabling automatic login'
-        sudo sed -E -e 's/^#[ \t]*AutomaticLoginEnable[ \t]*=[ \t]*\S+[ \t]*$/AutomaticLoginEnable = true/' \
-                    -e 's/^#[ \t]*AutomaticLogin[ \t]*=[ \t]*\S+[ \t]*$/AutomaticLogin = #{USERNAME}/' \
-                    -e 's/^#[ \t]*TimedLoginEnable[ \t]*=[ \t]*\S+[ \t]*$/TimedLoginEnable = true/' \
-                    -e 's/^#[ \t]*TimedLogin[ \t]*=[ \t]*\S+[ \t]*$/TimedLogin = #{USERNAME}/' \
-                    -e 's/^#[ \t]*TimedLoginDelay[ \t]*=[ \t]*\S+[ \t]*$/TimedLoginDelay = 0/' \
-                    -i /etc/gdm3/custom.conf
+        echo 'Restarting GDM3 (1/2)'
+        sudo systemctl restart gdm3
 
-        echo 'Restarting GDM3'
+        echo 'Enabling automatic login'
+        sudo sed -E -e 's/^#[ \t]*AutomaticLoginEnable[ \t]*=.*$/AutomaticLoginEnable = true/' -E -e 's/^#[ \t]*AutomaticLogin[ \t]*=.*$/AutomaticLogin = #{USERNAME}/' -i=.bak /etc/gdm3/custom.conf
+
+        echo 'Disabling sleep, suspend, hibernate, and hybrid-sleep'
+        SERVICE_NAMES=(sleep.target suspend.target hibernate.target hybrid-sleep.target)
+        sudo systemctl stop "${SERVICE_NAMES[@]}" 2>/dev/null
+        sudo systemctl disable "${SERVICE_NAMES[@]}" 2>/dev/null
+        sudo systemctl mask "${SERVICE_NAMES[@]}" 2>/dev/null
+
+        echo 'Restarting GDM3 (2/2)'
         sudo systemctl restart gdm3
     SHELL
 end
