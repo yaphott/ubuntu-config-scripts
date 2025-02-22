@@ -1,12 +1,11 @@
 #!/bin/bash -e
 
-export VM_WARM_BOX='ucs-base'
-export VM_USERNAME='vagrant'
+vagrant_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
+echo 'Vagrant directory: '"$vagrant_dir"
 
-VAGRANT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
-echo 'Vagrant directory: '"$VAGRANT_DIR"
+source "$vagrant_dir/_exports.sh"
 
-cd "$VAGRANT_DIR"
+cd "$vagrant_dir"
 
 echo 'Destroying any existing instance...'
 vagrant destroy -f || true

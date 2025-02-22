@@ -1,11 +1,10 @@
 #!/bin/bash -e
 
-export VM_COLD_BOX='ubuntu/jammy64'
-export VM_WARM_BOX='ucs-base'
-export VM_USERNAME='vagrant'
-
 vagrant_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 echo 'Vagrant directory: '"$vagrant_dir"
+
+source "$vagrant_dir/_exports.sh"
+
 box_file_path="/tmp/${VM_WARM_BOX}.box"
 echo "Temporary Base VM path: ${box_file_path}"
 
