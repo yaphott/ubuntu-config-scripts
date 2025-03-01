@@ -1,6 +1,6 @@
 # ubuntu-config-scripts
 
-Development environment configuration scripts for Ubuntu Desktop (22.04).
+Development environment configuration scripts for Ubuntu Desktop.
 
 **Not intended for production. Use at your own risk!**
 
@@ -56,7 +56,7 @@ make test-warm
 Add a keyring to the system by providing a **key URL** and the **desired path for the keyring file**.
 
 ```bash
-sudo add_keyring.sh <key_url> <keyring_path>
+add_keyring.sh <key_url> <keyring_path>
 ```
 
 For example:
@@ -78,7 +78,8 @@ add_repository.sh <repo_options> <repo_uri> <repo_suite> <repo_components> <repo
 For example, if there is **one component**:
 
 ```bash
-./bin/utils/add_repository.sh "arch=amd64 signed-by=/etc/apt/keyrings/example-keyring.gpg" \
+cd ./bin/utils
+sudo bash add_repository.sh "arch=amd64 signed-by=/etc/apt/keyrings/example-keyring.gpg" \
     https://example.com/example-pub.gpg \
     stable \
     main \
@@ -88,7 +89,8 @@ For example, if there is **one component**:
 Or if there are **multiple components**:
 
 ```bash
-./bin/utils/add_repository.sh "arch=amd64 signed-by=/etc/apt/keyrings/example-keyring.gpg" \
+cd ./bin/utils
+sudo bash add_repository.sh "arch=amd64 signed-by=/etc/apt/keyrings/example-keyring.gpg" \
     https://example.com/example-pub.gpg \
     stable \
     "main contrib non-free" \
@@ -98,7 +100,8 @@ Or if there are **multiple components**:
 Or if there are **no components**:
 
 ```bash
-./bin/utils/add_repository.sh "arch=amd64 signed-by=/etc/apt/keyrings/example-keyring.gpg" \
+cd ./bin/utils
+sudo bash add_repository.sh "arch=amd64 signed-by=/etc/apt/keyrings/example-keyring.gpg" \
     https://example.com/example-pub.gpg \
     stable \
     none \

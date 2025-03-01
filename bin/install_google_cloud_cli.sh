@@ -1,8 +1,5 @@
 #!/bin/bash -e
 
-function exit_with_failure () { echo 'Failed to install Google Cloud CLI.'; exit 1; }
-[[ $INSIDE_SCRIPT ]] || (echo 'Please run with the installer script.'; exit_with_failure)
-
 echo '+++ Installing Google Cloud CLI'
 
 key_url='https://packages.cloud.google.com/apt/doc/apt-key.gpg'
@@ -15,18 +12,15 @@ repo_components='main'
 repo_file_path='/etc/apt/sources.list.d/google-cloud-sdk.list'
 
 # Insert public software signing key
-bash ./bin/utils/add_keyring.sh "${key_url}" "${key_file_path}" \
-    || exit_with_failure
+bash ./bin/utils/add_keyring.sh "${key_url}" "${key_file_path}"
 
 # Add to list of repositories
-bash ./bin/utils/add_repository.sh "${repo_options}" "${repo_uri}" "${repo_suite}" "${repo_components}" "${repo_file_path}" \
-    || exit_with_failure
+bash ./bin/utils/add_repository.sh "${repo_options}" "${repo_uri}" "${repo_suite}" "${repo_components}" "${repo_file_path}"
 
 # Update package database and install
-(sudo apt-get update && sudo apt-get install -y google-cloud-cli) \
-    || exit_with_failure
+sudo apt-get update && sudo apt-get install -y google-cloud-cli
 
 # Verify installation
-gcloud version > /dev/null || exit_with_failure
+gcloud version > /dev/null
 
 echo 'Google Cloud CLI installed successfully.'

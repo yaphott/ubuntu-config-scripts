@@ -1,8 +1,5 @@
 #!/bin/bash -e
 
-function exit_with_failure () { echo 'Failed to configure Swapfile.'; exit 1; }
-[[ $INSIDE_SCRIPT ]] || (echo 'Please run with the installer script.'; exit_with_failure)
-
 # Validate input parameters
 if [[ $# -ne 3 ]]; then
     echo 'Missing expected input parameters:'
@@ -25,11 +22,11 @@ echo '~~~ Configuring Swapfile'
 
 if [[ -s /etc/fstab ]]; then
     echo 'Backing up /etc/fstab...'
-    sudo cp /etc/fstab /etc/fstab.bak || exit_with_failure
+    sudo cp /etc/fstab /etc/fstab.bak
 fi
 if [[ -s /etc/sysctl.conf ]]; then
     echo 'Backing up /etc/sysctl.conf...'
-    sudo cp /etc/sysctl.conf /etc/sysctl.conf.bak || exit_with_failure
+    sudo cp /etc/sysctl.conf /etc/sysctl.conf.bak
 fi
 
 declare -a swapfiles
@@ -41,50 +38,49 @@ if [[ "${#swapfiles[@]}" -gt 0 ]]; then
     for swapfile in "${swapfiles[@]}"; do
         if [[ ! -f "$swapfile" ]]; then
             echo 'Failed to find swapfile: '"$swapfile"'.'
-            exit_with_failure
+            exit 1
         fi
-        ( sudo swapoff "$swapfile" \
+        sudo swapoff "$swapfile" \
             && sudo rm "$swapfile"
-        ) || exit_with_failure
     done
 fi
 
 num_swaps=$( get_num_swaps )
 if [[ "$num_swaps" -ne 0 ]]; then
     echo "Expected 0 swaps, but found $num_swaps."
-    exit_with_failure
+    exit 1
 fi
 
 echo 'Creating new swapfile: '"$swapfile_path"
-(sudo touch "$swapfile_path" \
+sudo touch "$swapfile_path" \
     && sudo fallocate -l "$swapfile_max_size" "$swapfile_path" \
     && sudo chmod 600 "$swapfile_path" \
     && sudo mkswap "$swapfile_path"
-) || exit_with_failure
 
 echo 'Enabling new swapfile: '"$swapfile_path"
-sudo swapon "$swapfile_path" || exit_with_failure
+sudo swapon "$swapfile_path"
 
 echo 'Checking swapfile configuration...'
 if [[ $(tail -n +2 /proc/swaps | awk '{print $1}' | grep -c '^'"$swapfile_path"'$') -ne 1 ]]; then
     echo 'Failed to find swapfile '"$swapfile_path"' in /proc/swaps.'
-    exit_with_failure
+    exit 1
 fi
 # if [[ $(cat /etc/fstab | awk '{print $1}' | grep -c '^'"$swapfile_path"'$') -ne 1 ]]; then
 #     echo 'Failed to find swapfile '"$swapfile_path"' in /etc/fstab.'
-#     exit_with_failure
+#     exit 1
 # fi
 
 if [[ "$(cat /proc/sys/vm/swappiness )" -ne "$swapfile_swappiness" ]]; then
     echo 'Configuring swappiness...'
-    sudo sysctl 'vm.swappiness='"$swapfile_swappiness" || exit_with_failure
+    sudo sysctl 'vm.swappiness='"$swapfile_swappiness"
 else
     echo 'Swappiness already configured...'
 fi
 
 echo 'Checking updated swappiness...'
 if [[ "$(cat /proc/sys/vm/swappiness)" -ne "$swapfile_swappiness" ]]; then
-    exit_with_failure
+    echo 'Failed to configure swappiness.'
+    exit 1
 fi
 
 echo 'Swapfile configured successfully.'

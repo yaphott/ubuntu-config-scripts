@@ -1,8 +1,5 @@
 #!/bin/bash -e
 
-function exit_with_failure () { echo 'Failed to configure Universal Firewall (UFW).'; exit 1; }
-[[ $INSIDE_SCRIPT ]] || (echo 'Please run with the installer script.'; exit_with_failure)
-
 echo '~~~ Configuring Universal Firewall (UFW)'
 
 # https://wiki.ubuntu.com/UncomplicatedFirewall
@@ -24,23 +21,22 @@ echo '~~~ Configuring Universal Firewall (UFW)'
 # cat /etc/default/ufw
 
 # Configure
-(sudo ufw disable \
+sudo ufw disable \
     && sudo ufw default deny incoming -y \
     && sudo ufw default allow outgoing -y \
     && yes | sudo ufw reset \
     && sudo ufw enable \
     && sudo ufw reload
-) || exit_with_failure
 
 # Allow specific ports
 # sudo ufw allow 2222/tcp comment 'SSH access'
 # sudo ufw allow 25565/tcp comment 'Minecraft server'
 
 # Verify configuration
-if [[ $(sudo ufw status | grep -c '^Status: active$') -ne 1 ]]; then
-    exit_with_failure
-elif [[ $(sudo ufw status numbered | grep -c '\[ *[0-9]\]') -ne 0 ]]; then
-    exit_with_failure
+if [[ $(sudo ufw status | grep -c '^Status: active$') -ne 1 ]] \
+    || [[ $(sudo ufw status numbered | grep -c '\[ *[0-9]\]') -ne 0 ]]; then
+    echo 'Unexpected rules for UFW.'
+    exit 1
 fi
 
 echo 'Universal Firewall (UFW) configured successfully.'

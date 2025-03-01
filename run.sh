@@ -27,9 +27,6 @@ cd "$project_dir"
 tmp_dir="$project_dir/tmp"
 [[ ! -d "$tmp_dir" ]] && mkdir "$tmp_dir"
 
-# Flag stating the script is running
-export INSIDE_SCRIPT=true
-
 # Add variables and functions used throughout
 source "$project_dir/bin/_exports.sh"
 

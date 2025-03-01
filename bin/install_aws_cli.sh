@@ -1,8 +1,5 @@
 #!/bin/bash -e
 
-function exit_with_failure () { echo 'Failed to install AWS CLI.'; exit 1; }
-[[ $INSIDE_SCRIPT ]] || (echo 'Please run with the installer script.'; exit_with_failure)
-
 echo '+++ Installing AWS CLI'
 
 installer_file_name='awscli-exe-linux-x86_64.zip'
@@ -13,22 +10,22 @@ rm -f './tmp/'"$installer_file_name" && rm -rf './tmp/aws'
 
 # Download
 echo "Downloading $installer_file_name..."
-curl -fsL --proto '=https' --tlsv1.2 "$installer_file_name" -o './tmp/'"$installer_file_name" || exit_with_failure
+curl -fsL --proto '=https' --tlsv1.2 "$installer_file_name" -o './tmp/'"$installer_file_name"
 
 # Verify download
 if [[ ! -f './tmp/'"$installer_file_name" ]]; then
     echo "Failed to download $installer_file_name from $installer_url."
-    exit_with_failure
+    exit 1
 fi
 
 # Extract
-unzip -q './tmp/'"$installer_file_name" -d './tmp/' || exit_with_failure
+unzip -q './tmp/'"$installer_file_name" -d './tmp/'
 
 # Install
 sudo ./aws/install
 
 # Verify installation
-aws --version > /dev/null || exit_with_failure
+aws --version > /dev/null
 
 # Clean up
 (rm './tmp/'"$installer_file_name" && rm -rf './tmp/aws') \

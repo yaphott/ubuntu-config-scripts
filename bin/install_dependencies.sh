@@ -1,8 +1,5 @@
 #!/bin/bash -e
 
-function exit_with_failure () { echo 'Failed to install Dependencies.'; exit 1; }
-[[ $INSIDE_SCRIPT ]] || (echo 'Please run with the installer script.'; exit_with_failure)
-
 echo '+++ Dependencies'
 
 # Update package database and install
@@ -28,5 +25,4 @@ PACKAGE_NAMES=(
     ca-certificates
     gnupg
 )
-(sudo apt-get update && sudo apt-get install -y "${PACKAGE_NAMES[@]}") \
-    || exit_with_failure
+sudo apt-get update && sudo apt-get install -y "${PACKAGE_NAMES[@]}"
