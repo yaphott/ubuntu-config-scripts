@@ -1,8 +1,5 @@
 #!/bin/bash -e
 
-function exit_with_failure () { echo 'Failed to configure Bluetooth.'; exit 1; }
-[[ $INSIDE_SCRIPT ]] || (echo 'Please run with the installer script.'; exit_with_failure)
-
 echo '~~~ Configuring Bluetooth'
 
 #### Disable auto-enabling bluetooth at boot
@@ -11,12 +8,13 @@ echo '~~~ Configuring Bluetooth'
 
 # https://unix.stackexchange.com/questions/387502/disable-bluetooth-at-boot
 if grep -q '^AutoEnable=true$' /etc/bluetooth/main.conf; then
-    sudo sed 's|^AutoEnable=true$|AutoEnable=false|' -i=.bak /etc/bluetooth/main.conf || exit_with_failure
+    sudo sed 's|^AutoEnable=true$|AutoEnable=false|' -i=.bak /etc/bluetooth/main.conf
 elif ! grep -q '^AutoEnable=false$' /etc/bluetooth/main.conf; then
-    echo 'AutoEnable=false' | sudo tee -a /etc/bluetooth/main.conf > /dev/null || exit_with_failure
+    echo 'AutoEnable=false' | sudo tee -a /etc/bluetooth/main.conf > /dev/null
 fi
 if [[ $(grep -c '^AutoEnable=false$' /etc/bluetooth/main.conf) -ne 1 ]]; then
-    exit_with_failure
+    echo 'Failed to configure Bluetooth.'
+    exit 1
 fi
 
 echo 'Bluetooth configured successfully.'

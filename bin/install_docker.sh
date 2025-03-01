@@ -1,8 +1,5 @@
 #!/bin/bash -e
 
-function exit_with_failure () { echo 'Failed to install Docker.'; exit 1; }
-[[ $INSIDE_SCRIPT ]] || (echo 'Please run with the installer script.'; exit_with_failure)
-
 echo '+++ Installing Docker'
 
 key_url='https://download.docker.com/linux/ubuntu/gpg'
@@ -15,33 +12,30 @@ repo_components='stable'
 repo_file_path='/etc/apt/sources.list.d/docker.list'
 
 # Insert public software signing key
-bash ./bin/utils/add_keyring.sh "${key_url}" "${key_file_path}" \
-    || exit_with_failure
+bash ./bin/utils/add_keyring.sh "${key_url}" "${key_file_path}"
 
 # Add to list of repositories
-bash ./bin/utils/add_repository.sh "${repo_options}" "${repo_uri}" "${repo_suite}" "${repo_components}" "${repo_file_path}" \
-    || exit_with_failure
+bash ./bin/utils/add_repository.sh "${repo_options}" "${repo_uri}" "${repo_suite}" "${repo_components}" "${repo_file_path}"
 
 # Update package database and install
-(sudo apt-get update \
+sudo apt-get update \
     && sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-) || exit_with_failure
 
 # Set up Docker user group (check if the group already exists)
 if [[ ! $(getent group docker) ]]; then
     echo 'Creating docker user group.'
-    sudo groupadd docker || exit_with_failure
+    sudo groupadd docker
 fi
 
 # Add current user to docker user group (check if current user is already in the group)
 if [[ ! $(groups | grep docker) ]]; then
     echo 'Adding current user to docker user group.'
-    sudo usermod -aG docker "$USER" || exit_with_failure
+    sudo usermod -aG docker "$USER"
 fi
 
 # Restart Docker daemon
 echo 'Restarting Docker daemon.'
-sudo systemctl restart docker || exit_with_failure
+sudo systemctl restart docker
 
 # Wait for Docker to start
 function wait_for_docker () {
@@ -59,10 +53,13 @@ function wait_for_docker () {
     done
     return 1
 }
-wait_for_docker 90 1 || exit_with_failure
+if ! wait_for_docker 90 1; then
+    echo 'Failed to start Docker.'
+    exit 1
+fi
 
 # Verify installation
-sudo docker run hello-world > /dev/null || exit_with_failure
+sudo docker run hello-world > /dev/null
 
 echo 'Docker installed successfully.'
 

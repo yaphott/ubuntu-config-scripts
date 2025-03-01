@@ -2,8 +2,6 @@
 
 # TODO: WIP
 
-function exit_with_failure () { echo 'Failed to install Vulkan SDK.'; exit 1; }
-[[ $INSIDE_SCRIPT ]] || (echo 'Please run with the installer script.'; exit_with_failure)
 
 echo '+++ Installing Vulkan SDK'
 
@@ -17,20 +15,16 @@ repo_components='main'
 repo_file_path='/etc/apt/sources.list.d/vulkan-sdk.list'
 
 # Insert public software signing key
-bash ./bin/utils/add_keyring.sh "${key_url}" "${key_file_path}" \
-    || exit_with_failure
+bash ./bin/utils/add_keyring.sh "${key_url}" "${key_file_path}"
 
 # Add to list of repositories
-bash ./bin/utils/add_repository.sh "${repo_options}" "${repo_uri}" "${repo_suite}" "${repo_components}" "${repo_file_path}" \
-    || exit_with_failure
+bash ./bin/utils/add_repository.sh "${repo_options}" "${repo_uri}" "${repo_suite}" "${repo_components}" "${repo_file_path}"
 
 # Update package database and install
-(sudo apt-get update \
-    && sudo apt-get install -y vulkan-sdk \
-) || exit_with_failure
+sudo apt-get update && sudo apt-get install -y vulkan-sdk
 
 # Verify installation
-vulkaninfo > /dev/null || exit_with_failure
+vulkaninfo > /dev/null
 
 echo 'Vulkan SDK installed successfully.'
 

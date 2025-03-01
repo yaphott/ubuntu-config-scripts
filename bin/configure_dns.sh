@@ -1,8 +1,5 @@
 #!/bin/bash -e
 
-function exit_with_failure () { echo 'Failed to configure DNS.'; exit 1; }
-[[ $INSIDE_SCRIPT ]] || (echo 'Please run with the installer script.'; exit_with_failure)
-
 echo '~~~ Configuring DNS'
 
 # Validate input parameters
@@ -18,38 +15,29 @@ primary_nameservers=("$1" "$2")
 fallback_nameservers=("$3" "$4")
 
 # Configure DNS
-primary_dns_repl="${primary_nameservers[@]}"
-fallback_dns_repl="${fallback_nameservers[@]}"
+primary_dns_repl="${primary_nameservers[*]}"
+fallback_dns_repl="${fallback_nameservers[*]}"
 echo 'Primary DNS servers:'"$primary_dns_repl"
 echo 'Fallback DNS servers:'"$fallback_dns_repl"
 sudo sed -E -e "s/^#?[ \t]*DNS[ \t]*=.*$/DNS=$primary_dns_repl/" \
          -E -e "s/^#?[ \t]*FallbackDNS[ \t]*=.*$/FallbackDNS=$fallback_dns_repl/" \
          -E -e "s/^#?[ \t]*DNSSEC[ \t]*=.*$/DNSSEC=yes/" \
          -E -e "s/^#?[ \t]*DNSOverTLS[ \t]*=.*$/DNSOverTLS=opportunistic/" \
-         -i.bak /etc/systemd/resolved.conf || exit_with_failure
+         -i.bak /etc/systemd/resolved.conf
 
 # Verify
 primary_dns_expr=$(echo "$primary_dns_repl" | sed 's/\./\\./g')
-if [[ $(grep -c "^DNS=$primary_dns_expr$" /etc/systemd/resolved.conf) -ne 1 ]]; then
-    echo 'Failed to configure DNS.'
-    exit_with_failure
-fi
 fallback_dns_expr=$(echo "$fallback_dns_repl" | sed 's/\./\\./g')
-if [[ $(grep -c "^FallbackDNS=$fallback_dns_expr$" /etc/systemd/resolved.conf) -ne 1 ]]; then
+if [[ $(grep -c "^DNS=$primary_dns_expr$" /etc/systemd/resolved.conf) -ne 1 ]] \
+    || [[ $(grep -c "^FallbackDNS=$fallback_dns_expr$" /etc/systemd/resolved.conf) -ne 1 ]] \
+    || [[ $(grep -c '^DNSSEC=yes$' /etc/systemd/resolved.conf) -ne 1 ]] \
+    || [[ $(grep -c '^DNSOverTLS=opportunistic$' /etc/systemd/resolved.conf) -ne 1 ]]; then
     echo 'Failed to configure DNS.'
-    exit_with_failure
-fi
-if [[ $(grep -c '^DNSSEC=yes$' /etc/systemd/resolved.conf) -ne 1 ]]; then
-    echo 'Failed to configure DNS.'
-    exit_with_failure
-fi
-if [[ $(grep -c '^DNSOverTLS=opportunistic$' /etc/systemd/resolved.conf) -ne 1 ]]; then
-    echo 'Failed to configure DNS.'
-    exit_with_failure
+    exit 1
 fi
 
 echo 'Restarting systemd-resolved service...'
-sudo systemctl restart systemd-resolved || exit_with_failure
+sudo systemctl restart systemd-resolved
 
 # TODO: Verify DNS configuration is in use.
 

@@ -1,8 +1,5 @@
 #!/bin/bash -e
 
-function exit_with_failure () { echo 'Failed to install Oracle VirtualBox.'; exit 1; }
-[[ $INSIDE_SCRIPT ]] || (echo 'Please run with the installer script.'; exit_with_failure)
-
 VBOX_VERSION='7.1'
 
 echo "+++ Installing Oracle VirtualBox ${VBOX_VERSION}"
@@ -17,18 +14,18 @@ repo_components='contrib'
 repo_file_path='/etc/apt/sources.list.d/oracle-vbox.list'
 
 # Insert public software signing key
-bash ./bin/utils/add_keyring.sh "${key_url}" "${key_file_path}" \
-    || exit_with_failure
+bash ./bin/utils/add_keyring.sh "${key_url}" "${key_file_path}"
 
 # Add to list of repositories
-bash ./bin/utils/add_repository.sh "${repo_options}" "${repo_uri}" "${repo_suite}" "${repo_components}" "${repo_file_path}" \
-    || exit_with_failure
+bash ./bin/utils/add_repository.sh "${repo_options}" "${repo_uri}" "${repo_suite}" "${repo_components}" "${repo_file_path}"
 
 # Update package database and install
-(sudo apt-get update && sudo apt-get install -y "virtualbox-${VBOX_VERSION}") \
-    || exit_with_failure
+sudo apt-get update && sudo apt-get install -y "virtualbox-${VBOX_VERSION}"
 
 # Verify installation
-[[ -x "$(command -v virtualbox)" ]] || exit_with_failure
+if [[ ! -x "$(command -v virtualbox)" ]]; then
+    echo 'Oracle VirtualBox not found.'
+    exit 1
+fi
 
 echo 'Oracle VirtualBox installed successfully.'

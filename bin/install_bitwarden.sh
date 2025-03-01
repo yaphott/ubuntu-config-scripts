@@ -1,14 +1,14 @@
 #!/bin/bash -e
 
-function exit_with_failure () { echo 'Failed to install Bitwarden.'; exit 1; }
-[[ $INSIDE_SCRIPT ]] || (echo 'Please run with the installer script.'; exit_with_failure)
-
 echo '+++ Installing Bitwarden'
 
 # Install from Snap Store
-sudo snap install bitwarden || exit_with_failure
+sudo snap install bitwarden
 
 # Verify installation
-[[ -x "$(command -v bitwarden)" ]] || exit_with_failure
+if [[ ! -x "$(command -v bitwarden)" ]]; then
+    echo 'Bitwarden not found.'
+    exit 1
+fi
 
 echo 'Bitwarden installed successfully.'

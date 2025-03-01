@@ -1,8 +1,5 @@
 #!/bin/bash -e
 
-function exit_with_failure () { echo 'Failed to install Visual Studio Code.'; exit 1; }
-[[ $INSIDE_SCRIPT ]] || (echo 'Please run with the installer script.'; exit_with_failure)
-
 echo '+++ Installing Visual Studio Code'
 
 key_url='https://packages.microsoft.com/keys/microsoft.asc'
@@ -15,18 +12,15 @@ repo_components='main'
 repo_file_path='/etc/apt/sources.list.d/vscode.list'
 
 # Insert public software signing key
-bash ./bin/utils/add_keyring.sh "${key_url}" "${key_file_path}" \
-    || exit_with_failure
+bash ./bin/utils/add_keyring.sh "${key_url}" "${key_file_path}"
 
 # Add to list of repositories
-bash ./bin/utils/add_repository.sh "${repo_options}" "${repo_uri}" "${repo_suite}" "${repo_components}" "${repo_file_path}" \
-    || exit_with_failure
+bash ./bin/utils/add_repository.sh "${repo_options}" "${repo_uri}" "${repo_suite}" "${repo_components}" "${repo_file_path}"
 
 # Update package database and install
-(sudo apt-get update && sudo apt-get install -y code) \
-    || exit_with_failure
+sudo apt-get update && sudo apt-get install -y code
 
 # Verify installation
-code --version > /dev/null || exit_with_failure
+code --version > /dev/null
 
 echo 'Visual Studio Code installed successfully.'

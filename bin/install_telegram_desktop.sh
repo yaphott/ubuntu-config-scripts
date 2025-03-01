@@ -1,14 +1,14 @@
 #!/bin/bash -e
 
-function exit_with_failure () { echo 'Failed to install Telegram Desktop.'; exit 1; }
-[[ $INSIDE_SCRIPT ]] || (echo 'Please run with the installer script.'; exit_with_failure)
-
 echo '+++ Installing Telegram Desktop'
 
 # Install from Snap Store
-sudo snap install telegram-desktop || exit_with_failure
+sudo snap install telegram-desktop
 
 # Verify installation
-[[ -x "$(command -v telegram-desktop)" ]] || exit_with_failure
+if [[ ! -x "$(command -v telegram-desktop)" ]]; then
+    echo 'Telegram Desktop not found.'
+    exit 1
+fi
 
 echo 'Telegram Desktop installed successfully.'

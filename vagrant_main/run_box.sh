@@ -8,7 +8,7 @@ source "$vagrant_dir/_exports.sh"
 cd "$vagrant_dir"
 
 echo 'Destroying any existing instance...'
-vagrant destroy -f || true
+vagrant destroy -f 2>/dev/null
 
 echo 'Provisioning the new box...'
 vagrant up

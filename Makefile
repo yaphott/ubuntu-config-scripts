@@ -17,10 +17,10 @@ clean:
 
 clean-main:
 	@echo "Cleaning up main..."
-	@cd vagrant_main && (\. ./_exports.sh && vagrant destroy -f || true)
+	@cd vagrant_main && (\. ./_exports.sh && vagrant destroy -f 2>/dev/null)
 	@rm -f ./vagrant_main/ubuntu-*-console.log
 
 clean-base:
 	@echo "Cleaning up base..."
-	@cd vagrant_base && (\. ./_exports.sh && vagrant destroy -f || true) && (vagrant box remove -f ucs-base || true)
+	@cd vagrant_base && (\. ./_exports.sh && vagrant destroy -f 2>/dev/null) && (vagrant box remove -f ucs-base 2>/dev/null || true)
 	@rm -f ./vagrant_base/ubuntu-*-console.log
