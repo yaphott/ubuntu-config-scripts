@@ -76,7 +76,7 @@ register_task 'DNS'                  configure  "bash '$project_dir/bin/configur
 register_task 'Firewall (UFW)'       configure  "bash '$project_dir/bin/configure_ufw.sh'" true
 # register_task 'Canonical Livepatch'  configure  "bash ./bin/configure_livepatch.sh '$LIVEPATCH_KEY'" false
 register_task 'Bluetooth'            configure  "bash '$project_dir/bin/configure_bluetooth.sh'" true
-register_task 'NVIDIA CUDA'          install    "bash ./bin/install_nvidia_cuda.sh '$NVIDIA_CUDA_VERSION'" true
+register_task 'NVIDIA CUDA'          install    "bash '$project_dir/bin/install_nvidia_cuda.sh' '$NVIDIA_CUDA_VERSION'" true
 register_task 'SSH'                  configure  "bash '$project_dir/bin/configure_ssh.sh'" true
 register_task 'Wireshark'            configure  "bash '$project_dir/bin/configure_wireshark.sh'" true
 register_task 'General Packages'     install    "bash '$project_dir/bin/install_general.sh'" true

@@ -56,7 +56,7 @@ make test-warm
 Add a keyring to the system by providing a **key URL** and the **desired path for the keyring file**.
 
 ```bash
-add_keyring.sh <key_url> <keyring_path>
+add_keyring.sh <url> <file_path>
 ```
 
 For example:
@@ -72,7 +72,7 @@ sudo bash add_keyring.sh https://example.com/apt/keys.asc \
 Add a repository to the system by providing the **key URL**, **distribution**, **components**, and the **desired path for the list file**.
 
 ```bash
-add_repository.sh <repo_options> <repo_uri> <repo_suite> <repo_components> <repo_file_path>
+add_repository.sh <options> <uri> <suite> <components> <file_path>
 ```
 
 For example, if there is **one component**:
