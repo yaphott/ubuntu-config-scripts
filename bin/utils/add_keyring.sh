@@ -15,25 +15,26 @@ fi
 # Validate input parameters
 if [[ $# -ne 2 ]]; then
     echo 'Missing expected input parameters:'
-    echo '    key_url: URL to the public software signing key (e.g. https://example.com/apt/keys.asc).'
-    echo '    key_file_path: Complete path to write the key to locally (e.g. /etc/apt/keyrings/example-keyring.gpg).'
+    echo '    url: URL to the public software signing key (e.g. https://example.com/apt/keys.asc).'
+    echo '    file_path: Complete path to write the key to locally (e.g. /etc/apt/keyrings/example-keyring.gpg).'
     echo ''
     echo 'Usage:'
-    echo '    add_keyring.sh <key_url> <keyring_path>'
+    echo '    add_keyring.sh <url> <file_path>'
     exit 1
 fi
 
 key_url="$1"
 key_file_path="$2"
 
-key_filename="$( basename "$key_file_path" )"
+key_filename="$(basename "$key_file_path")"
 tmp_dir="$(mktemp -d)"
 tmp_key_file_path="${tmp_dir}/${key_filename}"
 
-echo 'Adding keyring --> '"$key_file_path"
+echo "Adding keyring to ${key_file_path}"
 if [ -f "$key_file_path" ]; then
-    echo 'Backing up existing file.'
-    sudo cp -f "$key_file_path" "$key_file_path.bak"
+    backup_key_file_path="${key_file_path}.bak"
+    echo "Backing up existing file ${key_file_path} to ${backup_key_file_path}"
+    sudo cp -f "$key_file_path" "$backup_key_file_path"
 fi
 
 # Download, decrypt, and write to temporary file
@@ -44,5 +45,5 @@ sudo install -D -o root -g root -m 644 "$tmp_key_file_path" "$key_file_path"
 
 # Clean up
 if [ -d "$tmp_dir" ]; then
-    sudo rm -rf "$tmp_dir"
+    sudo rm -r "$tmp_dir"
 fi

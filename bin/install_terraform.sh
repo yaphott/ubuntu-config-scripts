@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-echo '+++ Installing Vagrant'
+echo '+++ Installing Terraform'
 
 key_url='https://apt.releases.hashicorp.com/gpg'
 key_file_path='/etc/apt/keyrings/hashicorp-archive-keyring.gpg'
@@ -18,9 +18,9 @@ bash ./bin/utils/add_keyring.sh "${key_url}" "${key_file_path}"
 bash ./bin/utils/add_repository.sh "${repo_options}" "${repo_uri}" "${repo_suite}" "${repo_components}" "${repo_file_path}"
 
 # Update package database and install
-sudo apt-get update && sudo apt-get install -y vagrant
+sudo apt-get update && sudo apt-get install -y terraform
 
 # Verify installation
-vagrant --version > /dev/null
+terraform --version > /dev/null
 
-echo 'Vagrant installed successfully.'
+echo 'Terraform installed successfully.'

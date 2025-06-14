@@ -8,7 +8,7 @@ key_file_path='/etc/apt/keyrings/sublime-text-keyring.gpg'
 repo_options='arch='"$(dpkg --print-architecture)"' signed-by='"$key_file_path"
 repo_uri='https://download.sublimetext.com/'
 repo_suite='apt/stable/'
-repo_components='none'
+repo_components=''
 repo_file_path='/etc/apt/sources.list.d/sublime-text.list'
 
 # Insert public software signing key

@@ -76,7 +76,7 @@ register_task 'DNS'                  configure  "bash '$project_dir/bin/configur
 register_task 'Firewall (UFW)'       configure  "bash '$project_dir/bin/configure_ufw.sh'" true
 # register_task 'Canonical Livepatch'  configure  "bash ./bin/configure_livepatch.sh '$LIVEPATCH_KEY'" false
 register_task 'Bluetooth'            configure  "bash '$project_dir/bin/configure_bluetooth.sh'" true
-register_task 'NVIDIA CUDA'          install    "bash ./bin/install_nvidia_cuda.sh '$NVIDIA_CUDA_VERSION'" true
+register_task 'NVIDIA CUDA'          install    "bash '$project_dir/bin/install_nvidia_cuda.sh' '$NVIDIA_CUDA_VERSION'" true
 register_task 'SSH'                  configure  "bash '$project_dir/bin/configure_ssh.sh'" true
 register_task 'Wireshark'            configure  "bash '$project_dir/bin/configure_wireshark.sh'" true
 register_task 'General Packages'     install    "bash '$project_dir/bin/install_general.sh'" true
@@ -106,6 +106,7 @@ register_task 'Oracle VirtualBox'    configure  "bash '$project_dir/bin/configur
 register_task 'Docker'               install    "bash '$project_dir/bin/install_docker.sh'" true
 register_task 'Vagrant'              install    "bash '$project_dir/bin/install_vagrant.sh'" true
 register_task 'Vagrant'              configure  "bash '$project_dir/bin/configure_vagrant.sh'" true
+register_task 'Terraform'            install    "bash '$project_dir/bin/install_terraform.sh'" true
 register_task 'Google Chrome'        install    "bash '$project_dir/bin/install_google_chrome.sh'" true
 register_task 'dconf'                configure  "bash '$project_dir/bin/configure_dconf.sh'" true
 register_task 'Swapfile'             configure  "bash '$project_dir/bin/configure_swapfile.sh' '$SWAPFILE_PATH' '$SWAPFILE_SIZE' '$SWAPFILE_SWAPPINESS'" true
