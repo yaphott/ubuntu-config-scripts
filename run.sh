@@ -106,6 +106,7 @@ register_task 'Oracle VirtualBox'    configure  "bash '$project_dir/bin/configur
 register_task 'Docker'               install    "bash '$project_dir/bin/install_docker.sh'" true
 register_task 'Vagrant'              install    "bash '$project_dir/bin/install_vagrant.sh'" true
 register_task 'Vagrant'              configure  "bash '$project_dir/bin/configure_vagrant.sh'" true
+register_task 'Terraform'            install    "bash '$project_dir/bin/install_terraform.sh'" true
 register_task 'Google Chrome'        install    "bash '$project_dir/bin/install_google_chrome.sh'" true
 register_task 'dconf'                configure  "bash '$project_dir/bin/configure_dconf.sh'" true
 register_task 'Swapfile'             configure  "bash '$project_dir/bin/configure_swapfile.sh' '$SWAPFILE_PATH' '$SWAPFILE_SIZE' '$SWAPFILE_SWAPPINESS'" true
