@@ -72,7 +72,7 @@ if ! marker_exists waypoint2; then
 fi
 
 reset_tasks
-register_task 'DNS'                  configure  "bash '$project_dir/bin/configure_dns.sh' $DNS1 $DNS2 $DNS3 $DNS4" true
+register_task 'DNS'                  configure  "bash '$project_dir/bin/configure_dns.sh' '$PRIMARY_DNS' '$FALLBACK_DNS'" true
 register_task 'Firewall (UFW)'       configure  "bash '$project_dir/bin/configure_ufw.sh'" true
 # register_task 'Canonical Livepatch'  configure  "bash ./bin/configure_livepatch.sh '$LIVEPATCH_KEY'" false
 register_task 'Bluetooth'            configure  "bash '$project_dir/bin/configure_bluetooth.sh'" true
