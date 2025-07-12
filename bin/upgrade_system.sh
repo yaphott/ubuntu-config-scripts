@@ -2,7 +2,7 @@
 
 echo '+++ System Upgrades'
 
-sudo apt-get update && sudo apt-get install needrestart -y
+sudo apt-get update && sudo apt-get install -y needrestart
 
 sudo apt-get update \
     && sudo NEEDRESTART_MODE=a apt-get dist-upgrade -y \

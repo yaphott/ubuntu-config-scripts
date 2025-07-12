@@ -10,7 +10,7 @@ echo "~~~ Configuring Oracle VirtualBox ${VBOX_VERSION}"
 # Download
 ext_pack_url="https://download.virtualbox.org/virtualbox/${VBOX_VERSION}/Oracle_VirtualBox_Extension_Pack-${VBOX_VERSION}.vbox-extpack"
 ext_pack_file_name="$( echo "$ext_pack_url" | sed -E 's|^.+/([^/]+)$|\1|' )"
-curl -fsL --proto '=https' --tlsv1.2 "$ext_pack_url" -o "${tmp_dir}/${ext_pack_file_name}"
+curl -fsLS --proto '=https' --tlsv1.2 "$ext_pack_url" -o "${tmp_dir}/${ext_pack_file_name}"
 
 # Verify download
 if [[ ! -f "${tmp_dir}/${ext_pack_file_name}" ]]; then

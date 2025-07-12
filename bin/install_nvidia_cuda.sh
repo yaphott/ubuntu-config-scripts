@@ -4,8 +4,7 @@ if [[ $# -ne 1 ]]; then
     echo 'Missing expected input parameter(s).'
     echo '    cuda_version: Version of NVIDIA CUDA to install (e.g. 12.0).'
     echo ''
-    echo 'Usage:'
-    echo '    install_nvidia_cuda.sh <cuda_version>'
+    echo 'Usage: install_nvidia_cuda.sh <cuda_version>'
     exit 1
 fi
 
@@ -32,7 +31,7 @@ bash ./bin/utils/add_keyring.sh "${key_url}" "${key_file_path}"
 bash ./bin/utils/add_repository.sh "${repo_options}" "${repo_uri}" "${repo_suite}" "${repo_components}" "${repo_file_path}"
 
 # Update package database and install
-package_name='cuda-toolkit-'"${cuda_version//./-}"
+package_name="cuda-toolkit-${cuda_version//./-}"
 sudo apt-get update && sudo apt-get install -y "$package_name"
 
 # sudo apt-get install libcudnn8 libcudnn8-dev

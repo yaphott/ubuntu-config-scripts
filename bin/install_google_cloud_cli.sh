@@ -5,7 +5,7 @@ echo '+++ Installing Google Cloud CLI'
 key_url='https://packages.cloud.google.com/apt/doc/apt-key.gpg'
 key_file_path='/etc/apt/keyrings/cloud.google.gpg'
 
-repo_options='arch='"$(dpkg --print-architecture)"' signed-by='"$key_file_path"
+repo_options="arch=$(dpkg --print-architecture) signed-by=${key_file_path}"
 repo_uri='https://packages.cloud.google.com/apt'
 repo_suite='cloud-sdk'
 repo_components='main'

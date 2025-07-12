@@ -5,7 +5,7 @@ echo '+++ Installing Google Chrome'
 key_url='https://dl-ssl.google.com/linux/linux_signing_key.pub'
 key_file_path='/etc/apt/keyrings/google-chrome-keyring.gpg'
 
-repo_options='arch='"$(dpkg --print-architecture)"' signed-by='"$key_file_path"
+repo_options="arch=$(dpkg --print-architecture) signed-by=${key_file_path}"
 repo_uri='http://dl.google.com/linux/chrome/deb/'
 repo_suite='stable'
 repo_components='main'

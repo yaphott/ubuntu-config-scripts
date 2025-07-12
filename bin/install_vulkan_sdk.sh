@@ -8,7 +8,7 @@ echo '+++ Installing Vulkan SDK'
 key_url='https://packages.lunarg.com/lunarg-signing-key-pub.asc'
 key_file_path='/etc/apt/keyrings/vulkan-sdk.gpg'
 
-repo_options='arch='"$(dpkg --print-architecture)"' signed-by='"$key_file_path"
+repo_options="arch=$(dpkg --print-architecture) signed-by=${key_file_path}"
 repo_uri='https://packages.lunarg.com/vulkan'
 repo_suite="$(lsb_release -cs)"
 repo_components='main'

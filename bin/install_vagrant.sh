@@ -5,7 +5,7 @@ echo '+++ Installing Vagrant'
 key_url='https://apt.releases.hashicorp.com/gpg'
 key_file_path='/etc/apt/keyrings/hashicorp-archive-keyring.gpg'
 
-repo_options='arch='"$(dpkg --print-architecture)"' signed-by='"$key_file_path"
+repo_options="arch=$(dpkg --print-architecture) signed-by=${key_file_path}"
 repo_uri='https://apt.releases.hashicorp.com'
 repo_suite="$(lsb_release -cs)"
 repo_components='main'

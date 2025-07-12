@@ -5,7 +5,7 @@ echo '+++ Installing Visual Studio Code'
 key_url='https://packages.microsoft.com/keys/microsoft.asc'
 key_file_path='/etc/apt/keyrings/packages.microsoft.gpg'
 
-repo_options='arch='"$(dpkg --print-architecture)"' signed-by='"$key_file_path"
+repo_options="arch=$(dpkg --print-architecture) signed-by=${key_file_path}"
 repo_uri='https://packages.microsoft.com/repos/code'
 repo_suite='stable'
 repo_components='main'

@@ -5,18 +5,15 @@ if [[ $# -ne 3 ]]; then
     echo 'Missing expected input parameters:'
     echo '    swapfile_path: File path for swapfile (e.g. /swapfile).'
     echo '    swapfile_max_size: Maximum size of swapfile (e.g. 512M, 1G, or 2G).'
-    echo '    swapfile_swappiness: Swappiness (default is 60 for most Linux distros).'
+    echo '    swapfile_swappiness: Swappiness (default is 60 for most Linux distributions).'
     echo ''
-    echo 'Usage:'
-    echo '    configure_swapfile.sh <swapfile_path> <swapfile_max_size> <swapfile_swappiness>'
+    echo 'Usage: configure_swapfile.sh <swapfile_path> <swapfile_max_size> <swapfile_swappiness>'
     exit 1
 fi
 
 swapfile_path="$1"
 swapfile_max_size="$2"
 swapfile_swappiness="$3"
-
-function get_num_swaps() { tail -n +2 /proc/swaps | wc -l; }
 
 echo '~~~ Configuring Swapfile'
 
@@ -40,22 +37,21 @@ if [[ "${#swapfiles[@]}" -gt 0 ]]; then
             echo 'Failed to find swapfile: '"$swapfile"'.'
             exit 1
         fi
-        sudo swapoff "$swapfile" \
-            && sudo rm "$swapfile"
+        sudo swapoff "$swapfile"
+        sudo rm "$swapfile"
     done
 fi
 
-num_swaps=$( get_num_swaps )
-if [[ "$num_swaps" -ne 0 ]]; then
+if [[ $(tail -n +2 /proc/swaps | wc -l) -ne 0 ]]; then
     echo "Expected 0 swaps, but found $num_swaps."
     exit 1
 fi
 
 echo 'Creating new swapfile: '"$swapfile_path"
-sudo touch "$swapfile_path" \
-    && sudo fallocate -l "$swapfile_max_size" "$swapfile_path" \
-    && sudo chmod 600 "$swapfile_path" \
-    && sudo mkswap "$swapfile_path"
+sudo touch "$swapfile_path"
+sudo fallocate -l "$swapfile_max_size" "$swapfile_path"
+sudo chmod 600 "$swapfile_path"
+sudo mkswap "$swapfile_path"
 
 echo 'Enabling new swapfile: '"$swapfile_path"
 sudo swapon "$swapfile_path"

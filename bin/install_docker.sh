@@ -5,7 +5,7 @@ echo '+++ Installing Docker'
 key_url='https://download.docker.com/linux/ubuntu/gpg'
 key_file_path='/etc/apt/keyrings/docker-keyring.gpg'
 
-repo_options='arch='"$(dpkg --print-architecture)"' signed-by='"$key_file_path"
+repo_options="arch=$(dpkg --print-architecture) signed-by=${key_file_path}"
 repo_uri='https://download.docker.com/linux/ubuntu'
 repo_suite="$(lsb_release -cs)"
 repo_components='stable'
