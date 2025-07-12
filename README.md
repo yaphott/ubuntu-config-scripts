@@ -28,12 +28,12 @@ Development environment configuration scripts for Ubuntu Desktop.
 
 ## Testing with Vagrant
 
-Testing occurs in 2 steps.
+Testing occurs in 2 stages:
 
 1. Provision a base box and create a snapshot.
 2. Restore the snapshot and run the configuration scripts.
 
-Creating the snapshot reduces the overall time needed to test the configuration scripts in a clean environment.
+> Creating the snapshot reduces the overall time needed to test the configuration scripts in a clean environment.
 
 First time (base box + main box):
 
@@ -56,60 +56,103 @@ make test-warm
 Add a keyring to the system by providing a **key URL** and the **desired path for the keyring file**.
 
 ```bash
-add_keyring.sh <url> <file_path>
+add_keyring.sh <key_url> <key_file_path>
 ```
 
-For example:
+For example using a **GPG** key URL:
 
 ```bash
-cd ./bin/utils
-sudo bash add_keyring.sh https://example.com/apt/keys.asc \
-    /etc/apt/keyrings/example-keyring.gpg
+key_url="https://apt.releases.example.com/gpg"
+key_file_path="/etc/apt/keyrings/example-keyring.gpg"
+sudo bash ./bin/utils/add_keyring.sh "${key_url}" "${key_file_path}"
+```
+
+Or using an **ASC** key URL:
+
+```bash
+key_url="https://example.com/apt/keys.asc"
+key_file_path="/etc/apt/keyrings/example-keyring.gpg"
+sudo bash ./bin/utils/add_keyring.sh "${key_url}" "${key_file_path}"
 ```
 
 #### `bin/utils/add_repository.sh`
 
-Add a repository to the system by providing the **key URL**, **distribution**, **components**, and the **desired path for the list file**.
+Add a repository to the system by providing the **repository options**, **repository URI**, **repository suite**, **repository components**, and the **desired path for the repository list file**.
 
 ```bash
-add_repository.sh <options> <uri> <suite> <components> <file_path>
+add_repository.sh <repo_options> <repo_uri> <repo_suite> <repo_components> <repo_file_path>
 ```
 
 For example, if there is **one component**:
 
 ```bash
-cd ./bin/utils
-sudo bash add_repository.sh "arch=amd64 signed-by=/etc/apt/keyrings/example-keyring.gpg" \
-    https://example.com/example-pub.gpg \
-    stable \
-    main \
-    /etc/apt/sources.list.d/example.list
+key_file_path="/etc/apt/keyrings/example-keyring.gpg"
+repo_options="arch=$(dpkg --print-architecture) signed-by=${key_file_path}"
+repo_uri="https://apt.releases.example.com"
+repo_suite="$(lsb_release -cs)"
+repo_components="main"
+repo_file_path="/etc/apt/sources.list.d/example.list"
+bash ./bin/utils/add_repository.sh "${repo_options}" "${repo_uri}" "${repo_suite}" "${repo_components}" "${repo_file_path}"
 ```
 
 Or if there are **multiple components**:
 
 ```bash
-cd ./bin/utils
-sudo bash add_repository.sh "arch=amd64 signed-by=/etc/apt/keyrings/example-keyring.gpg" \
-    https://example.com/example-pub.gpg \
-    stable \
-    "main contrib non-free" \
-    /etc/apt/sources.list.d/example.list
+key_file_path="/etc/apt/keyrings/example-keyring.gpg"
+repo_options="arch=$(dpkg --print-architecture) signed-by=${key_file_path}"
+repo_uri="https://apt.releases.example.com"
+repo_suite="$(lsb_release -cs)"
+repo_components="main contrib non-free"
+repo_file_path="/etc/apt/sources.list.d/example.list"
+bash ./bin/utils/add_repository.sh "${repo_options}" "${repo_uri}" "${repo_suite}" "${repo_components}" "${repo_file_path}"
 ```
 
 Or if there are **no components**:
 
 ```bash
-cd ./bin/utils
-sudo bash add_repository.sh "arch=amd64 signed-by=/etc/apt/keyrings/example-keyring.gpg" \
-    https://example.com/example-pub.gpg \
-    stable \
-    none \
-    /etc/apt/sources.list.d/example.list
+key_file_path="/etc/apt/keyrings/example-keyring.gpg"
+repo_options="arch=$(dpkg --print-architecture) signed-by=${key_file_path}"
+repo_uri="https://apt.releases.example.com"
+repo_suite="$(lsb_release -cs)"
+repo_components=""
+repo_file_path="/etc/apt/sources.list.d/example.list"
+bash ./bin/utils/add_repository.sh "${repo_options}" "${repo_uri}" "${repo_suite}" "${repo_components}" "${repo_file_path}"
 ```
 
 > See [Ubuntu Manpage: `sources.list`](https://manpages.ubuntu.com/manpages/xenial/man5/sources.list.5.html) for more information on the format of the list file.
 
 ## Developer Notes
 
-Each file starts with a check to ensure the necessary setup has been completed.
+All install and configuration scripts should attempt to verify the necessary setup and/or configuration has completed successfully.
+
+### Updating Vagrant Plugins
+
+To update Vagrant plugins, run the following command:
+
+```bash
+vagrant plugin update
+```
+
+### Watching Dconf Changes
+
+```bash
+dconf watch /
+```
+
+### Watching for File/Config Changes
+
+To monitor changes to specific directories or files, you can use the `inotifywatch` command:
+
+```bash
+inotifywatch -e modify,create,delete -r ~/.config
+inotifywatch -e modify,create,delete -r ~/snap/firefox/common/.mozilla
+inotifywatch -e modify,create,delete -r ~/.local
+inotifywatch -e modify,create,delete -r /etc/default
+```
+
+> **Note**: The above commands require `inotify-tools` to be installed. You can install it using the following command:
+
+```bash
+sudo apt-get update
+sudo apt-get install inotify-tools
+```
