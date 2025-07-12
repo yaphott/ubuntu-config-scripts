@@ -14,7 +14,6 @@ PACKAGE_NAMES=(
     git
     gparted
     handbrake
-    htop
     imagemagick
     jq
     libreoffice
