@@ -125,9 +125,17 @@ bash ./bin/utils/add_repository.sh "${repo_options}" "${repo_uri}" "${repo_suite
 
 All install and configuration scripts should attempt to verify the necessary setup and/or configuration has completed successfully.
 
+### Installing Vagrant Plugins
+
+Install the required Vagrant plugins by running the following command:
+
+```bash
+vagrant plugin install vagrant-disksize
+```
+
 ### Updating Vagrant Plugins
 
-To update Vagrant plugins, run the following command:
+Update installed Vagrant plugins by running the following command:
 
 ```bash
 vagrant plugin update

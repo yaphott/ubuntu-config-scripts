@@ -1,13 +1,17 @@
 COLD_BOX = ENV["VM_COLD_BOX"]
 USERNAME = ENV["VM_USERNAME"]
+VM_MEMORY = ENV["VM_MEMORY"] || "4096"
+VM_CPUS = ENV["VM_CPUS"] || "4"
+VM_DISK_SIZE = ENV["VM_DISK_SIZE"] || "60GB"
 
 Vagrant.configure("2") do |config|
     config.vm.box = COLD_BOX
+    config.disksize.size = VM_DISK_SIZE
 
     config.vm.provider "virtualbox" do |vb|
         vb.gui = true
-        vb.memory = "4096"
-        vb.cpus = "4"
+        vb.memory = VM_MEMORY
+        vb.cpus = VM_CPUS
         vb.customize ["modifyvm", :id, "--vram", "128"]
         vb.customize ["modifyvm", :id, "--graphicscontroller", "vmsvga"]
         vb.customize ["modifyvm", :id, "--audio", "none"]
