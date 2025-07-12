@@ -12,20 +12,63 @@ while ! echo "$LIVEPATCH_KEY" | grep -q -E '\S+'; do
     echo 'Visit https://ubuntu.com/advantage for a key'
     IFS= read -r -p 'Enter your Canonical Livepatch key: ' LIVEPATCH_KEY
 done
+
 [[ -z $SWAPFILE_PATH ]] && export SWAPFILE_PATH='/swapfile'
 echo "SWAPFILE_PATH: ${SWAPFILE_PATH}"
-[[ -z $SWAPFILE_SIZE ]] && export SWAPFILE_SIZE='12G'
+
+[[ -z $SWAPFILE_SIZE ]] && [[ "$INSIDE_TEST" != 'true' ]] && export SWAPFILE_SIZE='12G' || export SWAPFILE_SIZE='512M'
 echo "SWAPFILE_SIZE: ${SWAPFILE_SIZE}"
+
 [[ -z $SWAPFILE_SWAPPINESS ]] && export SWAPFILE_SWAPPINESS='10'
 echo "SWAPFILE_SWAPPINESS: ${SWAPFILE_SWAPPINESS}"
-[[ -z $DNS1 ]] && export DNS1='1.1.1.1'
-echo "DNS1: ${DNS1}"
-[[ -z $DNS2 ]] && export DNS2='8.8.8.8'
-echo "DNS2: ${DNS2}"
-[[ -z $DNS3 ]] && export DNS3='1.0.0.1'
-echo "DNS3: ${DNS3}"
-[[ -z $DNS4 ]] && export DNS4='8.4.4.8'
-echo "DNS4: ${DNS4}"
+
+cloudflare_ipv4_dns=(
+    '1.1.1.1'
+    '1.0.0.1'
+)
+cloudflare_ipv6_dns=(
+    '2606:4700:4700:0:0:0:0:1111'
+    '2606:4700:4700:0:0:0:0:1001'
+)
+google_ipv4_dns=(
+    '8.8.8.8'
+    '8.8.4.4'
+)
+google_ipv6_dns=(
+    '2001:4860:4860:0:0:0:0:8888'
+    '2001:4860:4860:0:0:0:0:8844'
+)
+quad9_ipv4_dns=(
+    '9.9.9.9'
+    '149.112.112.112'
+)
+quad_9_ipv6=(
+    '2620:fe:0:0:0:0:0:fe'
+    '2620:fe:0:0:0:0:0:9'
+)
+if [[ -z $PRIMARY_DNS ]]; then
+    export PRIMARY_DNS=(
+        "${cloudflare_ipv4_dns[0]}"
+        "${cloudflare_ipv6_dns[0]}"
+        "${google_ipv4_dns[0]}"
+        "${google_ipv6_dns[0]}"
+        "${quad9_ipv4_dns[0]}"
+        "${quad_9_ipv6[0]}"
+    )
+fi
+echo "PRIMARY_DNS: ${PRIMARY_DNS[*]}"
+if [[ -z $FALLBACK_DNS ]]; then
+    export FALLBACK_DNS=(
+        "${cloudflare_ipv4_dns[1]}"
+        "${cloudflare_ipv6_dns[1]}"
+        "${google_ipv4_dns[1]}"
+        "${google_ipv6_dns[1]}"
+        "${quad9_ipv4_dns[1]}"
+        "${quad_9_ipv6[1]}"
+    )
+fi
+echo "FALLBACK_DNS: ${FALLBACK_DNS[*]}"
+
 [[ -z $NVIDIA_CUDA_VERSION ]] && export NVIDIA_CUDA_VERSION='12.6'
 echo "NVIDIA_CUDA_VERSION: ${NVIDIA_CUDA_VERSION}"
 
@@ -111,7 +154,6 @@ function marker_exists () {
     register_param marker_name true
     verify_params "$@" || exit 1
     local marker_name="$1"
-
     local marker_path='./tmp/'"$marker_name"'.state'
     if [[ -f $marker_path ]]; then
         return 0
