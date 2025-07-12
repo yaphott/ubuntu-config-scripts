@@ -1,8 +1,31 @@
 #!/bin/bash -e
 
+blacklisted_domains=(
+    # 'geo.ubuntu.com'
+    'popcon.ubuntu.com'
+    # 'popcon.canonical.com'
+    'metrics.ubuntu.com'
+    'www.metrics.ubuntu.com'
+    'www.popcon.ubuntu.com'
+)
+package_names=(
+    'apport'
+    'popularity-contest'
+    'ubuntu-report'
+    'whoopsie'
+)
+service_base_names=(
+    'apport'
+    'apport-autoreport'
+    'apport-forward'
+    'apport-symptoms'
+    'motd-news'
+    'popularity-contest'
+    'ubuntu-report'
+    'whoopsie'
+)
 
 echo '~~~ Disabling telemetry'
-
 
 # TODO
 # sudo apt-get remove --purge -y ubuntu-advantage-tools
@@ -13,18 +36,9 @@ echo '~~~ Disabling telemetry'
 #### Opt-out of telemetry
 
 echo 'Sending telemetry opt-out...'
-ubuntu-report -f send no 2>/dev/null
+ubuntu-report -f send no 2>/dev/null || true
 
 #### Blacklist domains
-
-BLACKLISTED_DOMAINS=(
-    # 'geo.ubuntu.com'
-    'popcon.ubuntu.com'
-    # 'popcon.canonical.com'
-    'metrics.ubuntu.com'
-    'www.metrics.ubuntu.com'
-    'www.popcon.ubuntu.com'
-)
 
 if [[ -s /etc/hosts ]]; then
     echo 'Backing up /etc/hosts...'
@@ -32,7 +46,7 @@ if [[ -s /etc/hosts ]]; then
 fi
 
 needs_any_blacklist=false
-for domain in "${BLACKLISTED_DOMAINS[@]}"; do
+for domain in "${blacklisted_domains[@]}"; do
     if grep -q -E '^127.0.0.1[ \t]+'"$domain"'[ \t]*$' /etc/hosts; then
         needs_any_blacklist=true
         break
@@ -40,7 +54,7 @@ for domain in "${BLACKLISTED_DOMAINS[@]}"; do
 done
 if $needs_any_blacklist; then
     echo '' | sudo tee -a /etc/hosts > /dev/null
-    for domain in "${BLACKLISTED_DOMAINS[@]}"; do
+    for domain in "${blacklisted_domains[@]}"; do
         if grep -q -E '^127.0.0.1[ \t]+'"$domain"'[ \t]*$' /etc/hosts; then
             echo "Domain already blacklisted: $domain"
         else
@@ -53,29 +67,12 @@ fi
 
 #### Stop and disable telemetry services
 
-PACKAGE_NAMES=(
-    'apport'
-    'popularity-contest'
-    'ubuntu-report'
-    'whoopsie'
-)
-SERVICE_BASE_NAMES=(
-    'apport'
-    'apport-autoreport'
-    'apport-forward'
-    'apport-symptoms'
-    'motd-news'
-    'popularity-contest'
-    'ubuntu-report'
-    'whoopsie'
-)
-
 function list_units () { systemctl list-units --all --full --type=service --no-pager --plain --no-legend | awk '{print $1}' | grep -E '^'"$1"'(\.\S+)?$'; }
 function check_active () { systemctl is-active "$1" 2>/dev/null; }
 function check_enabled () { systemctl is-enabled "$1" 2>/dev/null; }
 
 DISCOVERED_SERVICES=()
-for base_name in "${SERVICE_BASE_NAMES[@]}"; do
+for base_name in "${service_base_names[@]}"; do
     service_units="$(list_units "$base_name")"
     if [[ -z "$service_units" ]]; then
         echo "No service units found for $base_name"
@@ -135,9 +132,9 @@ for service_unit in "${DISCOVERED_SERVICES[@]}"; do
     fi
 done
 
-echo "Removing packages: ${PACKAGE_NAMES[*]}"
-sudo apt-get remove -y "${PACKAGE_NAMES[@]}" \
-    && sudo apt-get purge -y "${PACKAGE_NAMES[@]}" \
+echo "Removing packages: ${package_names[*]}"
+sudo apt-get remove -y "${package_names[@]}" \
+    && sudo apt-get purge -y "${package_names[@]}" \
     && sudo apt-get autoremove -y \
     && sudo apt-get autoclean
 
