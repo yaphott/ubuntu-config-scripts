@@ -7,7 +7,7 @@ key_file_path='/etc/apt/keyrings/signal-desktop-keyring.gpg'
 
 repo_options="arch=$(dpkg --print-architecture) signed-by=${key_file_path}"
 repo_uri='https://updates.signal.org/desktop/apt'
-repo_suite="$(lsb_release -cs)"
+repo_suite='xenial'
 repo_components='main'
 repo_file_path='/etc/apt/sources.list.d/signal-desktop.list'
 
