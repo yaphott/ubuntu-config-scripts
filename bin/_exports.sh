@@ -1,5 +1,7 @@
 #!/bin/bash -e
 
+project_dir="$(dirname "$(dirname "$(realpath "${BASH_SOURCE[0]}")")")"
+
 # Resolve name of current user
 if [ "$SUDO_USER" ]; then
     export USER=$SUDO_USER;
@@ -16,7 +18,7 @@ done
 [[ -z $SWAPFILE_PATH ]] && export SWAPFILE_PATH='/swapfile'
 echo "SWAPFILE_PATH: ${SWAPFILE_PATH}"
 
-[[ -z $SWAPFILE_SIZE ]] && [[ "$INSIDE_TEST" != 'true' ]] && export SWAPFILE_SIZE='12G' || export SWAPFILE_SIZE='512M'
+[[ -z $SWAPFILE_SIZE ]] && export SWAPFILE_SIZE='4G'
 echo "SWAPFILE_SIZE: ${SWAPFILE_SIZE}"
 
 [[ -z $SWAPFILE_SWAPPINESS ]] && export SWAPFILE_SWAPPINESS='10'
@@ -91,8 +93,7 @@ function create_marker () {
     register_param marker_name true
     verify_params "$@" || exit 1
     local marker_name="$1"
-
-    local marker_path='./tmp/'"$marker_name"'.state'
+    local marker_path="${project_dir}/${marker_name}.state"
     if [[ -f $marker_path ]]; then
         echo 'Marker already exists: '"$marker_path"
         return 1
@@ -121,8 +122,7 @@ function delete_marker () {
     register_param marker_name true
     verify_params "$@" || exit 1
     local marker_name="$1"
-
-    local marker_path='./tmp/'"$marker_name"'.state'
+    local marker_path="${project_dir}/${marker_name}.state"
     if [[ ! -f $marker_path ]]; then
         echo 'Missing marker: '"$marker_path"
         exit 1
@@ -154,7 +154,7 @@ function marker_exists () {
     register_param marker_name true
     verify_params "$@" || exit 1
     local marker_name="$1"
-    local marker_path='./tmp/'"$marker_name"'.state'
+    local marker_path="${project_dir}/${marker_name}.state"
     if [[ -f $marker_path ]]; then
         return 0
     else
@@ -183,7 +183,6 @@ function yes_or_no () {
     register_param prompt_msg true
     verify_params "$@" || exit 1
     local prompt_msg="$1"
-
     local y_or_n_input
     while true; do
         IFS= read -r -p "$prompt_msg"' (y/n) ' y_or_n_input
@@ -222,7 +221,6 @@ function style_text () {
     verify_params "$@" || exit 1
     local styles="$1"
     local text="$2"
-
     local style
     local style_string=''
     for style in ${styles//,/ }; do
@@ -260,7 +258,6 @@ function register_task () {
     local task_type="$2"
     local task_cmd="$3"
     local task_must_succeed="$4"
-
     TASK_NAMES+=("$task_name")
     TASK_TYPES+=("$task_type")
     TASK_CMDS+=("$task_cmd")
@@ -325,7 +322,6 @@ function register_param () {
         echo 'Missing required parameter: param_is_required'
         exit 1
     fi
-
     # Length is the next index, since index starts at 0
     PARAM_NAMES+=("$param_name")
     PARAM_REQUIRED+=("$param_is_required")
@@ -342,7 +338,6 @@ function verify_params () {
     local param_names=("${PARAM_NAMES[@]}")
     local param_required=("${PARAM_REQUIRED[@]}")
     reset_params
-
     local params=("$@")
     for i in "${!param_required[@]}"; do
         local param_is_required=${param_required[$i]}

@@ -24,6 +24,7 @@ service_base_names=(
     'ubuntu-report'
     'whoopsie'
 )
+hosts_path='/etc/hosts'
 
 echo '~~~ Disabling telemetry'
 
@@ -40,38 +41,39 @@ ubuntu-report -f send no 2>/dev/null || true
 
 #### Blacklist domains
 
-if [[ -s /etc/hosts ]]; then
-    echo 'Backing up /etc/hosts...'
-    sudo cp /etc/hosts /etc/hosts.bak
+if [[ -s "$hosts_path" ]]; then
+    backup_hosts_path="${hosts_path}.bak"
+    echo "Backing up existing file ${hosts_path} to ${backup_hosts_path}"
+    sudo cp "$hosts_path" "$backup_hosts_path"
 fi
 
 needs_any_blacklist=false
 for domain in "${blacklisted_domains[@]}"; do
-    if grep -q -E '^127.0.0.1[ \t]+'"$domain"'[ \t]*$' /etc/hosts; then
+    if grep -q -E "^127.0.0.1 +$domain *$" "$hosts_path"; then
         needs_any_blacklist=true
         break
     fi
 done
 if $needs_any_blacklist; then
-    echo '' | sudo tee -a /etc/hosts > /dev/null
+    echo '' | sudo tee -a "$hosts_path" > /dev/null
     for domain in "${blacklisted_domains[@]}"; do
-        if grep -q -E '^127.0.0.1[ \t]+'"$domain"'[ \t]*$' /etc/hosts; then
+        if grep -q -E "^127.0.0.1 +$domain *$" "$hosts_path"; then
             echo "Domain already blacklisted: $domain"
         else
             echo "Blacklisting domain: $domain"
-            echo "127.0.0.1 $domain" | sudo tee -a /etc/hosts > /dev/null
+            echo "127.0.0.1 $domain" | sudo tee -a "$hosts_path" > /dev/null
         fi
     done
-    echo '' | sudo tee -a /etc/hosts > /dev/null
+    echo '' | sudo tee -a "$hosts_path" > /dev/null
 fi
 
 #### Stop and disable telemetry services
 
-function list_units () { systemctl list-units --all --full --type=service --no-pager --plain --no-legend | awk '{print $1}' | grep -E '^'"$1"'(\.\S+)?$'; }
+function list_units () { systemctl list-units --all --full --type=service --no-pager --plain --no-legend | awk '{print $1}' | grep -E '^'"$1"'(\.\S+)?$' || true; }
 function check_active () { systemctl is-active "$1" 2>/dev/null; }
 function check_enabled () { systemctl is-enabled "$1" 2>/dev/null; }
 
-DISCOVERED_SERVICES=()
+discovered_services=()
 for base_name in "${service_base_names[@]}"; do
     service_units="$(list_units "$base_name")"
     if [[ -z "$service_units" ]]; then
@@ -79,31 +81,32 @@ for base_name in "${service_base_names[@]}"; do
         continue
     fi
     for service_unit in $service_units; do
-        DISCOVERED_SERVICES+=("$service_unit")
+        discovered_services+=("$service_unit")
     done
+    echo "Discovered service units for $base_name: ${discovered_services[*]}"
 done
 
-for service_unit in "${DISCOVERED_SERVICES[@]}"; do
-    active_status="$(check_active "$service_unit")"
+for service_unit in "${discovered_services[@]}"; do
+    active_status="$(check_active "$service_unit" || true)"
     if [[ "$active_status" == 'active' ]]; then
         echo "Stopping service: $service_unit"
         sudo systemctl stop "$service_unit" 2>/dev/null
-        active_status="$(check_active "$service_unit")"
+        active_status="$(check_active "$service_unit" || true)"
         if [[ "$active_status" != 'inactive' ]]; then
             echo "Failed to stop service: $service_unit (is-active: $active_status)"
         fi
     elif [[ "$active_status" == 'inactive' ]]; then
         echo "Service already stopped: $service_unit"
-    else
+    elif [[ -n "$active_status" ]]; then
         echo "Unexpected status for service: $service_unit (is-active: $active_status)"
         exit 1
     fi
 
-    enabled_status="$(check_enabled "$service_unit")"
+    enabled_status="$(check_enabled "$service_unit" || true)"
     if [[ "$enabled_status" == 'enabled' ]]; then
         echo "Disabling service: $service_unit"
         sudo systemctl disable "$service_unit" 2>/dev/null
-        enabled_status="$(check_enabled "$service_unit")"
+        enabled_status="$(check_enabled "$service_unit" || true)"
         if [[ "$enabled_status" != 'disabled' ]]; then
             echo "Failed to disable service: $service_unit (is-enabled: $enabled_status)"
         fi
@@ -111,32 +114,32 @@ for service_unit in "${DISCOVERED_SERVICES[@]}"; do
         echo "Service already disabled: $service_unit"
     elif [[ "$enabled_status" == 'static' ]]; then
         echo "Service is static: $service_unit"
-    else
+    elif [[ -n "$enabled_status" ]]; then
         echo "Unexpected status for service: $service_unit (is-enabled: $enabled_status)"
         exit 1
     fi
 
-    enabled_status="$(check_enabled "$service_unit")"
+    enabled_status="$(check_enabled "$service_unit" || true)"
     if [[ "$enabled_status" != 'masked' ]]; then
         echo "Masking service: $service_unit"
         sudo systemctl mask "$service_unit" 2>/dev/null
-        enabled_status="$(check_enabled "$service_unit")"
+        enabled_status="$(check_enabled "$service_unit" || true)"
         if [[ "$enabled_status" != 'masked' ]]; then
             echo "Failed to mask service: $service_unit (is-enabled: $enabled_status)"
         fi
     elif [[ "$enabled_status" == 'masked' ]]; then
         echo "Service already masked: $service_unit"
-    else
+    elif [[ -n "$enabled_status" ]]; then
         echo "Unexpected status for service: $service_unit (is-enabled: $enabled_status)"
         exit 1
     fi
 done
 
 echo "Removing packages: ${package_names[*]}"
-sudo apt-get remove -y "${package_names[@]}" \
-    && sudo apt-get purge -y "${package_names[@]}" \
-    && sudo apt-get autoremove -y \
-    && sudo apt-get autoclean
+sudo apt-get remove -y "${package_names[@]}"
+sudo apt-get purge -y "${package_names[@]}"
+sudo apt-get autoremove -y
+sudo apt-get autoclean
 
 #### Disable motd-news
 

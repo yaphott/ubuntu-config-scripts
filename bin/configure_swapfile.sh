@@ -47,13 +47,13 @@ if [[ $(tail -n +2 /proc/swaps | wc -l) -ne 0 ]]; then
     exit 1
 fi
 
-echo 'Creating new swapfile: '"$swapfile_path"
+echo "Creating new swapfile: ${swapfile_path}"
 sudo touch "$swapfile_path"
 sudo fallocate -l "$swapfile_max_size" "$swapfile_path"
 sudo chmod 600 "$swapfile_path"
 sudo mkswap "$swapfile_path"
 
-echo 'Enabling new swapfile: '"$swapfile_path"
+echo "Enabling new swapfile: ${swapfile_path}"
 sudo swapon "$swapfile_path"
 
 echo 'Checking swapfile configuration...'
@@ -68,7 +68,7 @@ fi
 
 if [[ "$(cat /proc/sys/vm/swappiness )" -ne "$swapfile_swappiness" ]]; then
     echo 'Configuring swappiness...'
-    sudo sysctl 'vm.swappiness='"$swapfile_swappiness"
+    sudo sysctl "vm.swappiness=$swapfile_swappiness"
 else
     echo 'Swappiness already configured...'
 fi
