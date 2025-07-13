@@ -1,12 +1,5 @@
 #!/bin/bash -e
 
-# Helpful file/config watching commands (requires inotify-tools):
-#   inotifywatch -e modify,create,delete -r ~/.config
-#   inotifywatch -e modify,create,delete -r ~/snap/firefox/common/.mozilla
-#   inotifywatch -e modify,create,delete -r ~/.local
-#   inotifywatch -e modify,create,delete -r /etc/default
-#   dconf watch /
-
 # Prevent running with sudo
 if [ "$EUID" -eq 0 ]; then
     echo 'Please run without sudo.'
@@ -25,7 +18,6 @@ cd "$project_dir"
 
 # Add variables and functions used throughout
 source "$project_dir/bin/_exports.sh"
-
 
 # Prompt user if the script started previously but failed
 # NOTE: startpoint marker must be deleted upon expected exit behavior.
