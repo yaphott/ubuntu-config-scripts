@@ -23,10 +23,6 @@ fi
 project_dir="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
 cd "$project_dir"
 
-# Create a temporary directory for the script
-tmp_dir="$project_dir/tmp"
-[[ ! -d "$tmp_dir" ]] && mkdir "$tmp_dir"
-
 # Add variables and functions used throughout
 source "$project_dir/bin/_exports.sh"
 
