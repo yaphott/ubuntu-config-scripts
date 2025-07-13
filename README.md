@@ -59,15 +59,15 @@ Add a keyring to the system by providing a **key URL** and the **desired path fo
 add_keyring.sh <key_url> <key_file_path>
 ```
 
-For example using a **GPG** key URL:
+For example using a **binary** GPG keyring URL:
 
 ```bash
-key_url="https://apt.releases.example.com/gpg"
+key_url="https://example.com/apt/keys.gpg"
 key_file_path="/etc/apt/keyrings/example-keyring.gpg"
 sudo bash ./bin/utils/add_keyring.sh "${key_url}" "${key_file_path}"
 ```
 
-Or using an **ASC** key URL:
+Or using an **ASCII-armored** GPG keyring URL:
 
 ```bash
 key_url="https://example.com/apt/keys.asc"
