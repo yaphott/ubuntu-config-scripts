@@ -1,4 +1,5 @@
-#!/bin/bash -e
+#!/bin/env bash
+set -e
 
 # Prevent running with sudo
 if [ "$EUID" -eq 0 ]; then
