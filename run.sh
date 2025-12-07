@@ -81,6 +81,7 @@ register_task 'Java'                 install    "bash -e '$project_dir/bin/insta
 register_task 'Scala'                install    "bash -e '$project_dir/bin/install_scala.sh'" true
 register_task 'Vulkan SDK'           install    "bash -e '$project_dir/bin/install_vulkan_sdk.sh'" true
 register_task 'Rust'                 install    "bash -e '$project_dir/bin/install_rust.sh'" true
+register_task 'GitHub CLI'           install    "bash -e '$project_dir/bin/install_gh_cli.sh'" true
 register_task 'FiraCode Font'        install    "bash -e '$project_dir/bin/install_firacode_font.sh'" true
 register_task 'Sublime Text'         install    "bash -e '$project_dir/bin/install_sublime_text.sh'" true
 register_task 'Visual Studio Code'   install    "bash -e '$project_dir/bin/install_visual_studio_code.sh'" true
