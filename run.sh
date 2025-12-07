@@ -70,7 +70,8 @@ register_task 'Wireshark'            configure  "bash -e '$project_dir/bin/confi
 register_task 'General Packages'     install    "bash -e '$project_dir/bin/install_general.sh'" true
 register_task 'Python 3'             install    "bash -e '$project_dir/bin/install_python3.sh'" true
 register_task 'Python 3'             configure  "bash -e '$project_dir/bin/configure_python3.sh'" true
-register_task 'Anaconda'             install    "bash -e '$project_dir/bin/install_anaconda.sh'" true
+register_task 'Miniconda 3'          install    "bash -e '$project_dir/bin/install_miniconda3.sh'" true
+register_task 'Conda'                configure  "bash -e '$project_dir/bin/configure_conda.sh'" true
 register_task 'Go'                   install    "bash -e '$project_dir/bin/install_go.sh'" true
 register_task 'Node Version Manager' install    "bash -e '$project_dir/bin/install_nvm.sh'" true
 register_task 'Node JS'              install    "bash -e '$project_dir/bin/install_nodejs.sh'" true
