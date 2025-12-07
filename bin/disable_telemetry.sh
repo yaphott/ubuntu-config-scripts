@@ -69,7 +69,7 @@ fi
 
 #### Stop and disable telemetry services
 
-function list_units () { systemctl list-units --all --full --type=service --no-pager --plain --no-legend | awk '{print $1}' | grep -E '^'"$1"'(\.\S+)?$'; }
+function list_units () { systemctl list-units --all --full --type=service --no-pager --plain --no-legend | awk '{print $1}' | grep -E '^'"$1"'(\.\S+)?$' || true; }
 function check_active () { systemctl is-active "$1" 2>/dev/null; }
 function check_enabled () { systemctl is-enabled "$1" 2>/dev/null; }
 
