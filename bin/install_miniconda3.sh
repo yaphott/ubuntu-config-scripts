@@ -1,13 +1,12 @@
 #!/bin/bash -e
 
-echo '+++ Installing Anaconda'
+echo '+++ Installing Miniconda 3'
 
 tmp_dir="$(mktemp -d)"
 
 # Download the latest version
-archive_html=$(curl -fsLS --proto '=https' --tlsv1.2 https://repo.anaconda.com/archive/)
-latest_file_name=$(echo "$archive_html" | grep -oP 'Anaconda3-[0-9\.\-]+\-Linux-x86_64.sh' | sort -V | tail -n 1)
-latest_url="https://repo.anaconda.com/archive/${latest_file_name}"
+latest_url="https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-$(uname -m).sh"
+latest_file_name="$(echo "$latest_url" | grep -oP '[^/]+$')"
 
 echo "Downloading ${latest_file_name}..."
 curl -fsLS --proto '=https' --tlsv1.2 "$latest_url" -o "${tmp_dir}/${latest_file_name}"
@@ -18,11 +17,11 @@ if [[ ! -f "${tmp_dir}/${latest_file_name}" ]]; then
     exit 1
 fi
 
-# Install Anaconda
-bash "${tmp_dir}/${latest_file_name}" -b -p "$HOME/anaconda3" -b
+# Install Miniconda 3
+bash "${tmp_dir}/${latest_file_name}" -b -p "$HOME/miniconda3"
 
-# Add Anaconda to PATH in .bashrc
-export PATH="$PATH:$HOME/anaconda3/bin"
+# Add Miniconda 3 to PATH in .bashrc
+export PATH="$PATH:$HOME/miniconda3/bin"
 conda init
 
 # Verify installation
@@ -34,4 +33,4 @@ conda config --set auto_activate_base True
 # Clean up
 rm -r "$tmp_dir"
 
-echo 'Anaconda installed successfully.'
+echo 'Miniconda 3 installed successfully.'

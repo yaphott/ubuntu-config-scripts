@@ -21,10 +21,12 @@ PACKAGE_NAMES=(
     net-tools
     nmap
     nomacs
+    ntfs-3g
     php
     protobuf-compiler
     qgis
     qgis-plugin-grass
+    postgresql-client
     ruby-full
     sqlitebrowser
     ssh-askpass

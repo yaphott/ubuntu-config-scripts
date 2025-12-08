@@ -61,8 +61,8 @@ if [[ -s "$HOME/.fonts/uuid" ]]; then
 fi
 
 # Copy into fonts and rebuild font cache
-cp "${tmp_dir}/${latest_name}"'/ttf/'*'.ttf' -t "$HOME/.fonts" \
-    && fc-cache -f -v
+cp "${tmp_dir}/${latest_name}"'/ttf/'*'.ttf' -t "$HOME/.fonts"
+fc-cache -f -v
 
 # Validate the fonts are installed
 if [[ $(fc-list | grep -c 'Fira Code') -eq 0 ]]; then

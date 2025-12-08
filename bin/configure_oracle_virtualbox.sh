@@ -28,7 +28,7 @@ if ! sudo VBoxManage list extpacks | grep -q 'Oracle VirtualBox Extension Pack';
 fi
 
 # Clean up
-sudo VBoxManage extpack cleanup \
-    && rm -r "$tmp_dir"
+sudo VBoxManage extpack cleanup
+rm -r "$tmp_dir"
 
 echo 'Oracle VirtualBox configured successfully.'

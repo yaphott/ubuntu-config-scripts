@@ -1,11 +1,15 @@
 #!/bin/bash -e
 
 # Validate input parameters
-#   (1) Canonical Livepatch key
-if [[ ! "$1" ]]; then
-    echo 'Missing expected input parameter(s).'
+if [[ $# -ne 1 ]]; then
+    echo 'Missing expected input parameters:'
+    echo '    livepatch_key: Canonical Livepatch key.'
+    echo ''
+    echo 'Usage: configure_livepatch.sh <livepatch_key>'
     exit 1
 fi
+
+livepatch_key="$1"
 
 echo '~~~ Configuring Canonical Livepatch'
 
@@ -17,7 +21,7 @@ sudo snap install canonical-livepatch
 # sudo ua attach "$1"
 # Ubuntu Pro
 # sudo pro attach "$1"
-sudo canonical-livepatch enable "$1"
+sudo canonical-livepatch enable "$livepatch_key"
 
 # Reload
 sudo canonical-livepatch refresh
