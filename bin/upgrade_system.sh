@@ -2,9 +2,9 @@
 
 echo '+++ System Upgrades'
 
-
 if [[ "$INSIDE_TEST" == 'true' ]]; then
-    sudo apt-get update && sudo apt-get install -y needrestart
+    sudo apt-get update
+    sudo apt-get install -y needrestart
     export NEEDRESTART_MODE=a
 fi
 
