@@ -101,6 +101,8 @@ register_task 'Vagrant'                  configure  "bash -e '$project_dir/bin/c
 register_task 'Terraform'                install    "bash -e '$project_dir/bin/install_terraform.sh'" true
 register_task 'Google Chrome'            install    "bash -e '$project_dir/bin/install_google_chrome.sh'" true
 register_task 'Ledger Live'              install    "bash -e '$project_dir/bin/install_ledger_live.sh'" true
+register_task 'Tailscale'                install    "bash -e '$project_dir/bin/install_tailscale.sh'" true
+# register_task 'Tailscale'                configure  "bash -e '$project_dir/bin/configure_tailscale.sh'" true
 register_task 'dconf'                    configure  "bash -e '$project_dir/bin/configure_dconf.sh'" true
 register_task 'Swapfile'                 configure  "bash -e '$project_dir/bin/configure_swapfile.sh' '$SWAPFILE_PATH' '$SWAPFILE_SIZE' '$SWAPFILE_SWAPPINESS'" true
 register_task 'Power Mode'               configure  "bash -e '$project_dir/bin/configure_power_profile.sh'" true
