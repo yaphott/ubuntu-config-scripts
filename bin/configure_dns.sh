@@ -69,7 +69,7 @@ if [[ $# -ne 2 ]]; then
 fi
 
 primary_dns="$1"
-fallback_nameservers="$2"
+fallback_dns="$2"
 
 primary_dns_repl="${primary_dns[*]}"
 fallback_dns_repl="${fallback_dns[*]}"
@@ -85,10 +85,12 @@ sudo sed -E -e "s/^#?[ \t]*DNS[ \t]*=.*$/DNS=$primary_dns_repl/" \
 # Verify configuration has been modified
 primary_dns_expr="${primary_dns_repl//./\\.}"
 fallback_dns_expr="${fallback_dns_repl//./\\.}"
-if [[ $(grep -c "^DNS=$primary_dns_expr$" /etc/systemd/resolved.conf) -ne 1 ]] \
-    || [[ $(grep -c "^FallbackDNS=$fallback_dns_expr$" /etc/systemd/resolved.conf) -ne 1 ]] \
-    || [[ $(grep -c '^DNSSEC=yes$' /etc/systemd/resolved.conf) -ne 1 ]] \
-    || [[ $(grep -c '^DNSOverTLS=opportunistic$' /etc/systemd/resolved.conf) -ne 1 ]]; then
+if [[
+    $(grep -c "^DNS=$primary_dns_expr$" /etc/systemd/resolved.conf) -ne 1 \
+    || $(grep -c "^FallbackDNS=$fallback_dns_expr$" /etc/systemd/resolved.conf) -ne 1 \
+    || $(grep -c '^DNSSEC=yes$' /etc/systemd/resolved.conf) -ne 1 \
+    || $(grep -c '^DNSOverTLS=opportunistic$' /etc/systemd/resolved.conf) -ne 1
+]]; then
     echo 'Failed to configure DNS.'
     exit 1
 fi
@@ -101,18 +103,20 @@ resolved_status="$(resolvectl status --no-pager)"
 primary_dns_actual=$(extract_multiline_values 'DNS Servers:' "$resolved_status")
 fallback_dns_actual=$(extract_multiline_values 'Fallback DNS Servers:' "$resolved_status")
 protocols_actual=$(extract_multiline_values 'Protocols:' "$resolved_status")
-if [[ $(normalize_zero_compression "$primary_dns_actual") != $(normalize_zero_compression "$primary_dns_repl") ]] \
-    || [[ $(normalize_zero_compression "$fallback_dns_actual") != $(normalize_zero_compression "$fallback_dns_repl") ]]; then
+if [[
+    $(normalize_zero_compression "$primary_dns_actual") != $(normalize_zero_compression "$primary_dns_repl") \
+    || $(normalize_zero_compression "$fallback_dns_actual") != $(normalize_zero_compression "$fallback_dns_repl")
+]]; then
     echo 'Failed to configure DNS nameservers:'
     echo "    Expected: ${primary_dns_repl}"
-    echo "    Found: ${primary_dns_actual}"
+    echo "    Actual: ${primary_dns_actual}"
     exit 1
 fi
 if [[ ! "$protocols_actual" =~ (^|[[:space:]])DNSOverTLS=opportunistic([[:space:]]|$) ]] \
     || [[ ! "$protocols_actual" =~ (^|[[:space:]])DNSSEC=yes/supported([[:space:]]|$) ]]; then
     echo 'Failed to verify DNS protocols.'
-    echo "    Expected: DNSOverTLS=opportunistic, DNSSEC=yes/supported"
-    echo "    Actual: $protocols_actual"
+    echo "    Expected: DNSOverTLS=opportunistic DNSSEC=yes/supported"
+    echo "    Actual: ${protocols_actual}"
     exit 1
 fi
 
