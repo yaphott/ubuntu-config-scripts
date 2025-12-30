@@ -4,9 +4,9 @@ project_dir="$(dirname "$(dirname "$(realpath "${BASH_SOURCE[0]}")")")"
 
 # Resolve name of current user
 if [ "$SUDO_USER" ]; then
-    export USER=$SUDO_USER;
+    export USER="$SUDO_USER";
 else
-    export USER=$LOGNAME;
+    export USER="$LOGNAME";
 fi
 
 # User-defined variables (if not set prior to executing)
@@ -15,13 +15,13 @@ while ! echo "$LIVEPATCH_KEY" | grep -q -E '\S+'; do
     IFS= read -r -p 'Enter your Canonical Livepatch key: ' LIVEPATCH_KEY
 done
 
-[[ -z $SWAPFILE_PATH ]] && export SWAPFILE_PATH='/swapfile'
+[[ -z "$SWAPFILE_PATH" ]] && export SWAPFILE_PATH='/swapfile'
 echo "SWAPFILE_PATH: ${SWAPFILE_PATH}"
 
-[[ -z $SWAPFILE_SIZE ]] && export SWAPFILE_SIZE='4G'
+[[ -z "$SWAPFILE_SIZE" ]] && export SWAPFILE_SIZE='4G'
 echo "SWAPFILE_SIZE: ${SWAPFILE_SIZE}"
 
-[[ -z $SWAPFILE_SWAPPINESS ]] && export SWAPFILE_SWAPPINESS='10'
+[[ -z "$SWAPFILE_SWAPPINESS" ]] && export SWAPFILE_SWAPPINESS='10'
 echo "SWAPFILE_SWAPPINESS: ${SWAPFILE_SWAPPINESS}"
 
 cloudflare_ipv4_dns=(
@@ -48,7 +48,7 @@ quad_9_ipv6=(
     '2620:fe:0:0:0:0:0:fe'
     '2620:fe:0:0:0:0:0:9'
 )
-if [[ -z $PRIMARY_DNS ]]; then
+if [[ -z "$PRIMARY_DNS" ]]; then
     export PRIMARY_DNS=(
         "${cloudflare_ipv4_dns[0]}"
         "${cloudflare_ipv6_dns[0]}"
@@ -59,7 +59,7 @@ if [[ -z $PRIMARY_DNS ]]; then
     )
 fi
 echo "PRIMARY_DNS: ${PRIMARY_DNS[*]}"
-if [[ -z $FALLBACK_DNS ]]; then
+if [[ -z "$FALLBACK_DNS" ]]; then
     export FALLBACK_DNS=(
         "${cloudflare_ipv4_dns[1]}"
         "${cloudflare_ipv6_dns[1]}"
@@ -71,9 +71,9 @@ if [[ -z $FALLBACK_DNS ]]; then
 fi
 echo "FALLBACK_DNS: ${FALLBACK_DNS[*]}"
 
-[[ -z $NVIDIA_CUDA_VERSION ]] && export NVIDIA_CUDA_VERSION='12.6'
+[[ -z "$NVIDIA_CUDA_VERSION" ]] && export NVIDIA_CUDA_VERSION='12.6'
 echo "NVIDIA_CUDA_VERSION: ${NVIDIA_CUDA_VERSION}"
-[[ -z $NVIDIA_CONTAINER_TOOLKIT_VERSION ]] && export NVIDIA_CONTAINER_TOOLKIT_VERSION='1.18.1-1'
+[[ -z "$NVIDIA_CONTAINER_TOOLKIT_VERSION" ]] && export NVIDIA_CONTAINER_TOOLKIT_VERSION='1.18.1-1'
 echo "NVIDIA_CONTAINER_TOOLKIT_VERSION: ${NVIDIA_CONTAINER_TOOLKIT_VERSION}"
 
 # Create a marker file to set a persistent state.
@@ -96,14 +96,14 @@ function create_marker () {
     verify_params "$@" || exit 1
     local marker_name="$1"
     local marker_path="${project_dir}/${marker_name}.state"
-    if [[ -f $marker_path ]]; then
-        echo 'Marker already exists: '"$marker_path"
+    if [[ -f "$marker_path" ]]; then
+        echo "Marker already exists: ${marker_path}"
         return 1
     else
         echo 'Creating marker: '"$marker_path"
         touch "$marker_path"
-        if [[ ! -f $marker_path ]]; then
-            echo 'Failed to create marker: '"$marker_path"
+        if [[ ! -f "$marker_path" ]]; then
+            echo "Failed to create marker: ${marker_path}"
             return 1
         fi
         return 0
@@ -125,14 +125,14 @@ function delete_marker () {
     verify_params "$@" || exit 1
     local marker_name="$1"
     local marker_path="${project_dir}/${marker_name}.state"
-    if [[ ! -f $marker_path ]]; then
-        echo 'Missing marker: '"$marker_path"
+    if [[ ! -f "$marker_path" ]]; then
+        echo "Missing marker: ${marker_path}"
         exit 1
     else
-        echo 'Deleting marker: '"$marker_path"
+        echo "Deleting marker: ${marker_path}"
         rm "$marker_path"
-        if [[ -f $marker_path ]]; then
-            echo 'Failed to delete marker: '"$marker_path"
+        if [[ -f "$marker_path" ]]; then
+            echo "Failed to delete marker: ${marker_path}"
             exit 1
         fi
     fi
@@ -157,7 +157,7 @@ function marker_exists () {
     verify_params "$@" || exit 1
     local marker_name="$1"
     local marker_path="${project_dir}/${marker_name}.state"
-    if [[ -f $marker_path ]]; then
+    if [[ -f "$marker_path" ]]; then
         return 0
     else
         return 1
@@ -187,7 +187,7 @@ function yes_or_no () {
     local prompt_msg="$1"
     local y_or_n_input
     while true; do
-        IFS= read -r -p "$prompt_msg"' (y/n) ' y_or_n_input
+        IFS= read -r -p "${prompt_msg} (y/n) " y_or_n_input
         case "$y_or_n_input" in
             y | Y | yes | YES) return 0;;
             n | N | no | NO) return 1;;
@@ -269,19 +269,19 @@ function register_task () {
 # Execute all registered tasks.
 function execute_tasks () {
     local task_count="${#TASK_NAMES[@]}"
-    if [[ $task_count -eq 0 ]]; then
+    if [[ "$task_count" -eq 0 ]]; then
         echo 'No tasks to execute.'
         return
     fi
     for i in $(seq 0 $((task_count - 1))); do
         local task_msg="[ ${TASK_NAMES[$i]} : ${TASK_TYPES[$i]} : ${TASK_MUST_SUCCEED[$i]} ]"
         local task_cmd="${TASK_CMDS[$i]}"
-        style_text bold "Executing task $task_msg"
-        style_text dim "... with command: $task_cmd"
+        style_text bold "Executing task ${task_msg}"
+        style_text dim "... with command: ${task_cmd}"
         if eval "$task_cmd"; then
-            style_text green "Success $task_msg"
+            style_text green "Success ${task_msg}"
         else
-            style_text red "Failed $task_msg"
+            style_text red "Failed ${task_msg}"
             if ${TASK_MUST_SUCCEED[$i]}; then
                 if ! yes_or_no 'Would you like to continue?'; then
                     echo 'Exiting...'
@@ -315,12 +315,12 @@ function reset_params () {
 #     param_is_required: Whether or not the parameter is required.
 function register_param () {
     local param_name="$1"
-    if [[ -z $param_name ]]; then
+    if [[ -z "$param_name" ]]; then
         echo 'Missing required parameter: param_name'
         exit 1
     fi
     local param_is_required="$2"
-    if [[ -z $param_is_required ]]; then
+    if [[ -z "$param_is_required" ]]; then
         echo 'Missing required parameter: param_is_required'
         exit 1
     fi
@@ -342,11 +342,11 @@ function verify_params () {
     reset_params
     local params=("$@")
     for i in "${!param_required[@]}"; do
-        local param_is_required=${param_required[$i]}
-        local param_name=${param_names[$i]}
-        local param_value=${params[$i]}
-        if [[ $param_is_required == true ]]; then
-            if [[ -z $param_value ]]; then
+        local param_is_required="${param_required[$i]}"
+        local param_name="${param_names[$i]}"
+        local param_value="${params[$i]}"
+        if [[ "$param_is_required" == 'true' ]]; then
+            if [[ -z "$param_value" ]]; then
                 echo 'Missing required parameter: '"$param_name"
                 exit 1
             fi
