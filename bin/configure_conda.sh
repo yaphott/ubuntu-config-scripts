@@ -2,7 +2,6 @@
 
 echo '~~~ Configuring Conda'
 
-
 # Add to path if not already
 if [[ ! -x "$(command -v conda)" ]]; then
     export PATH="$PATH:$HOME/miniconda3/bin"
