@@ -27,6 +27,7 @@ sudo ufw status verbose
 # Configure
 sudo ufw disable
 sudo ufw default deny incoming -y
+sudo ufw default deny routed -y
 sudo ufw default allow outgoing -y
 yes | sudo ufw reset
 sudo ufw enable
@@ -36,9 +37,10 @@ sudo ufw reload
 sudo ufw status verbose
 
 # Verify configuration
+UFW_STATUS="$(sudo ufw status numbered)"
 if [[
-    $(sudo ufw status | grep -c '^Status: active$') -ne 1
-    || $(sudo ufw status numbered | grep -c '\[ *[0-9]\]') -ne 0
+    $(echo "$UFW_STATUS"| grep -c '^Status: active$') -ne 1
+    || $(echo "$UFW_STATUS" | grep -c '\[ *[0-9]\]') -ne 0
 ]]; then
     echo 'Unexpected rules for UFW.'
     exit 1
