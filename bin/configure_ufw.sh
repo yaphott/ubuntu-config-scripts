@@ -18,8 +18,11 @@ echo '~~~ Configuring Universal Firewall (UFW)'
 #   sudo ufw enable
 
 # View current firewall status and rules
-# sudo ufw status
+# sudo ufw status verbose
 # cat /etc/default/ufw
+
+# Additional information
+sudo ufw status verbose
 
 # Configure
 sudo ufw disable
@@ -29,9 +32,8 @@ yes | sudo ufw reset
 sudo ufw enable
 sudo ufw reload
 
-# Allow specific ports
-# sudo ufw allow 2222/tcp comment 'SSH access'
-# sudo ufw allow 25565/tcp comment 'Minecraft server'
+# Additional information
+sudo ufw status verbose
 
 # Verify configuration
 if [[
