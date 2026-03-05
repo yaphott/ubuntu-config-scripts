@@ -28,5 +28,6 @@ if ! sdk current java | grep -q " ${latest_version_full}$"; then
     echo 'Failed to set default Java version.'
     exit 1
 fi
+java -version > /dev/null
 
 echo 'Java installed successfully.'
