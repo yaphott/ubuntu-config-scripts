@@ -11,7 +11,7 @@ fi
 
 cuda_version="$1"
 
-echo "+++ Installing NVIDIA CUDA ${cuda_version}"
+echo "+++ Installing NVIDIA CUDA Toolkit ${cuda_version}"
 
 nvidia_ubuntu_ver="ubuntu$(lsb_release -rs | tr -d '.')"
 base_url="https://developer.download.nvidia.com/compute/cuda/repos/$nvidia_ubuntu_ver/$(uname -m)"
@@ -40,4 +40,4 @@ sudo apt-get update && sudo apt-get install -y "$package_name"
 # Verify installation
 "/usr/local/cuda-$cuda_version/bin/nvcc" --version > /dev/null
 
-echo "NVIDIA CUDA ${cuda_version} installed successfully."
+echo "NVIDIA CUDA Toolkit ${cuda_version} installed successfully."
