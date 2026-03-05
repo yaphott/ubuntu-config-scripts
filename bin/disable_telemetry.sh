@@ -1,4 +1,5 @@
-#!/bin/bash -e
+#!/usr/bin/env bash
+set -e
 
 blacklisted_domains=(
     # 'geo.ubuntu.com'

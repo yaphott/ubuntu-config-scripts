@@ -1,4 +1,5 @@
-#!/bin/bash -e
+#!/usr/bin/env bash
+set -e
 
 # NOTE: THIS IS INCOMPLETE
 echo '~~~ Configuring Mozilla Firefox'

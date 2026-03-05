@@ -1,4 +1,5 @@
-#!/bin/bash -e
+#!/usr/bin/env bash
+set -e
 
 export VM_WARM_BOX='ucs-base'
 export VM_USERNAME='vagrant'

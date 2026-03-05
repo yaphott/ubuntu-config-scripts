@@ -1,4 +1,5 @@
-#!/bin/bash -e
+#!/usr/bin/env bash
+set -e
 
 function extract_multiline_values () {
     local start_text="$1"
