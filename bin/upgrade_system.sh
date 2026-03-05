@@ -14,6 +14,10 @@ sudo apt-get dist-upgrade -y
 sudo apt-get autoremove -y
 sudo apt-get autoclean
 
-sudo snap refresh
+if ! sudo snap refresh; then
+    echo 'Failed to refresh snap packages, quitting snap-store and trying again.'
+    snap-store --quit
+    sudo snap refresh
+fi
 
 echo 'System Upgraded successfully.'
