@@ -21,9 +21,6 @@ echo '~~~ Configuring Universal Firewall (UFW)'
 # sudo ufw status verbose
 # cat /etc/default/ufw
 
-# Additional information
-sudo ufw status verbose
-
 # Configure
 sudo ufw disable
 sudo ufw default deny incoming -y
@@ -32,9 +29,6 @@ sudo ufw default allow outgoing -y
 yes | sudo ufw reset
 sudo ufw enable
 sudo ufw reload
-
-# Additional information
-sudo ufw status verbose
 
 # Verify configuration
 UFW_STATUS="$(sudo ufw status numbered)"

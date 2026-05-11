@@ -9,14 +9,8 @@ if [[ ! -x "$(command -v rustc)" ]]; then
     source "$HOME/.cargo/env"
 fi
 
-# Additional information
-rustup show
-
 rustup self update
 rustup update stable
 rustup default stable
-
-# Additional information
-rustup show
 
 echo 'Rust configured successfully.'
