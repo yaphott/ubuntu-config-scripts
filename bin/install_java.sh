@@ -5,11 +5,9 @@ echo '+++ Installing Java'
 
 # Activate if not already
 if [[ ! -x "$(command -v sdk)" ]]; then
+    # shellcheck source=/dev/null
     source "$HOME/.sdkman/bin/sdkman-init.sh"
 fi
-
-# Additional information
-sdk current java
 
 # Install latest Zulu version
 latest_version_full=$(sdk list java | awk '$8 ~ /^[0-9]+\.[0-9]+\.[0-9]+-zulu$/ { print $8 }' | sort -V | tail -n 1)
@@ -19,9 +17,6 @@ if [[ -z "$latest_version_full" ]]; then
 fi
 sdk install java "$latest_version_full"
 sdk default java "$latest_version_full"
-
-# Additional information
-sdk current java
 
 # Verify installation
 if ! sdk current java | grep -q " ${latest_version_full}$"; then

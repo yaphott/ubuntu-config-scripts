@@ -61,7 +61,7 @@ if ! marker_exists waypoint2; then
 fi
 
 reset_tasks
-register_task 'DNS'                      configure  "bash -e '$project_dir/bin/configure_dns.sh' '$PRIMARY_DNS' '$FALLBACK_DNS'" true
+register_task 'DNS'                      configure  "bash -e '$project_dir/bin/configure_dns.sh' '${PRIMARY_DNS[*]}' '${FALLBACK_DNS[*]}'" true
 register_task 'Firewall (UFW)'           configure  "bash -e '$project_dir/bin/configure_ufw.sh'" true
 # register_task 'Canonical Livepatch'      configure  "bash -e ./bin/configure_livepatch.sh '$LIVEPATCH_KEY'" false
 register_task 'Bluetooth'                configure  "bash -e '$project_dir/bin/configure_bluetooth.sh'" true
@@ -127,7 +127,7 @@ delete_marker waypoint2
 
 require_reboot
 echo ''
-echo "$(style_text bold,green 'Done!')"
-echo "$(style_text bold 'System restart is highly recommended.')"
+style_text bold,green 'Done!'
+style_text bold 'System restart is highly recommended.'
 read -r -n1 -s -p 'Press any key to exit...'
 exit 0

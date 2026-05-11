@@ -7,6 +7,7 @@ echo '+++ Installing SDKMAN'
 curl -s "https://get.sdkman.io" | bash
 
 # Verify installation
+# shellcheck source=/dev/null
 source "$HOME/.sdkman/bin/sdkman-init.sh"
 sdk version > /dev/null
 

@@ -6,7 +6,9 @@ echo '+++ Google Firebase CLI'
 # Activate if not already
 if [[ ! -x "$(command -v nvm)" ]]; then
     export NVM_DIR="$HOME/.nvm"
+    # shellcheck source=/dev/null
     source "$NVM_DIR/nvm.sh"
+    # shellcheck source=/dev/null
     source "$NVM_DIR/bash_completion"
 fi
 

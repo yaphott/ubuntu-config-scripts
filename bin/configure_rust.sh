@@ -5,6 +5,7 @@ echo '~~~ Configuring Rust'
 
 # Add to path if not already
 if [[ ! -x "$(command -v rustc)" ]]; then
+    # shellcheck source=/dev/null
     source "$HOME/.cargo/env"
 fi
 
@@ -17,3 +18,5 @@ rustup default stable
 
 # Additional information
 rustup show
+
+echo 'Rust configured successfully.'
