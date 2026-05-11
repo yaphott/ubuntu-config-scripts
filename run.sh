@@ -63,7 +63,6 @@ fi
 reset_tasks
 register_task 'DNS'                      configure  "bash -e '$project_dir/bin/configure_dns.sh' '${PRIMARY_DNS[*]}' '${FALLBACK_DNS[*]}'" true
 register_task 'Firewall (UFW)'           configure  "bash -e '$project_dir/bin/configure_ufw.sh'" true
-# register_task 'Canonical Livepatch'      configure  "bash -e ./bin/configure_livepatch.sh '$LIVEPATCH_KEY'" false
 register_task 'Bluetooth'                configure  "bash -e '$project_dir/bin/configure_bluetooth.sh'" true
 for cuda_version in "${NVIDIA_CUDA_VERSIONS[@]}"; do
     register_task "NVIDIA CUDA Toolkit ${cuda_version}" install "bash -e '$project_dir/bin/install_nvidia_cuda_toolkit.sh' '$cuda_version'" true

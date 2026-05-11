@@ -10,12 +10,6 @@ else
     export USER="$LOGNAME";
 fi
 
-# User-defined variables (if not set prior to executing)
-while ! echo "$LIVEPATCH_KEY" | grep -q -E '\S+'; do
-    echo 'Visit https://ubuntu.com/advantage for a key'
-    IFS= read -r -p 'Enter your Canonical Livepatch key: ' LIVEPATCH_KEY
-done
-
 [[ -z "$SWAPFILE_PATH" ]] && export SWAPFILE_PATH='/swapfile'
 echo "SWAPFILE_PATH: ${SWAPFILE_PATH}"
 
