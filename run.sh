@@ -94,6 +94,8 @@ register_task 'Google Firebase CLI'      install    "bash -e '$project_dir/bin/i
 register_task 'Signal Desktop'           install    "bash -e '$project_dir/bin/install_signal_desktop.sh'" true
 register_task 'Bitwarden'                install    "bash -e '$project_dir/bin/install_bitwarden.sh'" true
 register_task 'Telegram Desktop'         install    "bash -e '$project_dir/bin/install_telegram_desktop.sh'" true
+register_task 'Discord'                  install    "bash -e '$project_dir/bin/install_discord.sh'" true
+register_task 'TradingView'              install    "bash -e '$project_dir/bin/install_tradingview.sh'" true
 register_task 'Spotify'                  install    "bash -e '$project_dir/bin/install_spotify.sh'" true
 register_task 'Oracle VirtualBox'        install    "bash -e '$project_dir/bin/install_oracle_virtualbox.sh'" true
 register_task 'Oracle VirtualBox'        configure  "bash -e '$project_dir/bin/configure_oracle_virtualbox.sh'" true
