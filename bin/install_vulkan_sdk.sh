@@ -1,9 +1,6 @@
 #!/usr/bin/env bash
 set -e
 
-# TODO: WIP
-
-
 echo '+++ Installing Vulkan SDK'
 
 key_url='https://packages.lunarg.com/lunarg-signing-key-pub.asc'
