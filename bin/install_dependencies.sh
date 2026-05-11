@@ -1,4 +1,5 @@
-#!/bin/bash -e
+#!/usr/bin/env bash
+set -e
 
 echo '+++ Dependencies'
 
@@ -25,4 +26,5 @@ PACKAGE_NAMES=(
     ca-certificates
     gnupg
 )
-sudo apt-get update && sudo apt-get install -y "${PACKAGE_NAMES[@]}"
+sudo apt-get update
+sudo apt-get install -y "${PACKAGE_NAMES[@]}"

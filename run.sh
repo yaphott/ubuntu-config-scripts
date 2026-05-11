@@ -1,4 +1,5 @@
-#!/bin/bash -e
+#!/usr/bin/env bash
+set -e
 
 # Prevent running with sudo
 if [ "$EUID" -eq 0 ]; then
@@ -60,14 +61,16 @@ if ! marker_exists waypoint2; then
 fi
 
 reset_tasks
-register_task 'DNS'                      configure  "bash -e '$project_dir/bin/configure_dns.sh' '$PRIMARY_DNS' '$FALLBACK_DNS'" true
+register_task 'DNS'                      configure  "bash -e '$project_dir/bin/configure_dns.sh' '${PRIMARY_DNS[*]}' '${FALLBACK_DNS[*]}'" true
 register_task 'Firewall (UFW)'           configure  "bash -e '$project_dir/bin/configure_ufw.sh'" true
-# register_task 'Canonical Livepatch'      configure  "bash -e ./bin/configure_livepatch.sh '$LIVEPATCH_KEY'" false
 register_task 'Bluetooth'                configure  "bash -e '$project_dir/bin/configure_bluetooth.sh'" true
-register_task 'NVIDIA CUDA'              install    "bash -e '$project_dir/bin/install_nvidia_cuda.sh' '$NVIDIA_CUDA_VERSION'" true
+for cuda_version in "${NVIDIA_CUDA_VERSIONS[@]}"; do
+    register_task "NVIDIA CUDA Toolkit ${cuda_version}" install "bash -e '$project_dir/bin/install_nvidia_cuda_toolkit.sh' '$cuda_version'" true
+done
 register_task 'SSH'                      configure  "bash -e '$project_dir/bin/configure_ssh.sh'" true
 register_task 'Wireshark'                configure  "bash -e '$project_dir/bin/configure_wireshark.sh'" true
 register_task 'General Packages'         install    "bash -e '$project_dir/bin/install_general.sh'" true
+register_task 'ImageMagick'              configure  "bash -e '$project_dir/bin/configure_imagemagick.sh'" true
 register_task 'Python 3'                 install    "bash -e '$project_dir/bin/install_python3.sh'" true
 register_task 'Python 3'                 configure  "bash -e '$project_dir/bin/configure_python3.sh'" true
 register_task 'Miniconda 3'              install    "bash -e '$project_dir/bin/install_miniconda3.sh'" true
@@ -81,6 +84,7 @@ register_task 'Java'                     install    "bash -e '$project_dir/bin/i
 register_task 'Scala'                    install    "bash -e '$project_dir/bin/install_scala.sh'" true
 register_task 'Vulkan SDK'               install    "bash -e '$project_dir/bin/install_vulkan_sdk.sh'" true
 register_task 'Rust'                     install    "bash -e '$project_dir/bin/install_rust.sh'" true
+register_task 'Rust'                     configure  "bash -e '$project_dir/bin/configure_rust.sh'" true
 register_task 'GitHub CLI'               install    "bash -e '$project_dir/bin/install_gh_cli.sh'" true
 register_task 'FiraCode Font'            install    "bash -e '$project_dir/bin/install_firacode_font.sh'" true
 register_task 'Sublime Text'             install    "bash -e '$project_dir/bin/install_sublime_text.sh'" true
@@ -90,6 +94,8 @@ register_task 'Google Firebase CLI'      install    "bash -e '$project_dir/bin/i
 register_task 'Signal Desktop'           install    "bash -e '$project_dir/bin/install_signal_desktop.sh'" true
 register_task 'Bitwarden'                install    "bash -e '$project_dir/bin/install_bitwarden.sh'" true
 register_task 'Telegram Desktop'         install    "bash -e '$project_dir/bin/install_telegram_desktop.sh'" true
+register_task 'Discord'                  install    "bash -e '$project_dir/bin/install_discord.sh'" true
+register_task 'TradingView'              install    "bash -e '$project_dir/bin/install_tradingview.sh'" true
 register_task 'Spotify'                  install    "bash -e '$project_dir/bin/install_spotify.sh'" true
 register_task 'Oracle VirtualBox'        install    "bash -e '$project_dir/bin/install_oracle_virtualbox.sh'" true
 register_task 'Oracle VirtualBox'        configure  "bash -e '$project_dir/bin/configure_oracle_virtualbox.sh'" true
@@ -122,7 +128,7 @@ delete_marker waypoint2
 
 require_reboot
 echo ''
-echo "$(style_text bold,green 'Done!')"
-echo "$(style_text bold 'System restart is highly recommended.')"
+style_text bold,green 'Done!'
+style_text bold 'System restart is highly recommended.'
 read -r -n1 -s -p 'Press any key to exit...'
 exit 0

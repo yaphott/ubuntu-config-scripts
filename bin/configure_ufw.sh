@@ -1,4 +1,5 @@
-#!/bin/bash -e
+#!/usr/bin/env bash
+set -e
 
 echo '~~~ Configuring Universal Firewall (UFW)'
 
@@ -17,25 +18,23 @@ echo '~~~ Configuring Universal Firewall (UFW)'
 #   sudo ufw enable
 
 # View current firewall status and rules
-# sudo ufw status
+# sudo ufw status verbose
 # cat /etc/default/ufw
 
 # Configure
 sudo ufw disable
 sudo ufw default deny incoming -y
+sudo ufw default deny routed -y
 sudo ufw default allow outgoing -y
 yes | sudo ufw reset
 sudo ufw enable
 sudo ufw reload
 
-# Allow specific ports
-# sudo ufw allow 2222/tcp comment 'SSH access'
-# sudo ufw allow 25565/tcp comment 'Minecraft server'
-
 # Verify configuration
+UFW_STATUS="$(sudo ufw status numbered)"
 if [[
-    $(sudo ufw status | grep -c '^Status: active$') -ne 1
-    || $(sudo ufw status numbered | grep -c '\[ *[0-9]\]') -ne 0
+    $(echo "$UFW_STATUS"| grep -c '^Status: active$') -ne 1
+    || $(echo "$UFW_STATUS" | grep -c '\[ *[0-9]\]') -ne 0
 ]]; then
     echo 'Unexpected rules for UFW.'
     exit 1

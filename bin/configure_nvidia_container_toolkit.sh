@@ -1,4 +1,5 @@
-#!/usr/bin/bash -e
+#!/usr/bin/env bash
+set -e
 
 echo "~~~ Configuring NVIDIA Container Toolkit"
 

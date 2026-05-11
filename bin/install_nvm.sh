@@ -1,4 +1,5 @@
-#!/bin/bash -e
+#!/usr/bin/env bash
+set -e
 
 tmp_dir="$(mktemp -d)"
 
@@ -22,7 +23,9 @@ tar -xzf "${tmp_dir}/${latest_file_name}" -C "${tmp_dir}"
 
 # Verify installation
 export NVM_DIR="$HOME/.nvm"
+# shellcheck source=/dev/null
 source "$NVM_DIR/nvm.sh"
+# shellcheck source=/dev/null
 source "$NVM_DIR/bash_completion"
 nvm --version > /dev/null
 

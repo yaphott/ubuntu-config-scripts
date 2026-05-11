@@ -1,9 +1,11 @@
-#!/bin/bash -e
+#!/usr/bin/env bash
+set -e
 
 echo '+++ Installing Scala'
 
 # Activate if not already
 if [[ ! -x "$(command -v sdk)" ]]; then
+    # shellcheck source=/dev/null
     source "$HOME/.sdkman/bin/sdkman-init.sh"
 fi
 

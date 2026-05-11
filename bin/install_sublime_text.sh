@@ -1,4 +1,5 @@
-#!/bin/bash -e
+#!/usr/bin/env bash
+set -e
 
 echo '+++ Installing Sublime Text'
 
@@ -18,7 +19,8 @@ bash ./bin/utils/add_keyring.sh "${key_url}" "${key_file_path}"
 bash ./bin/utils/add_repository.sh "${repo_options}" "${repo_uri}" "${repo_suite}" "${repo_components}" "${repo_file_path}"
 
 # Update package database and install
-sudo apt-get update && sudo apt-get install -y sublime-text
+sudo apt-get update
+sudo apt-get install -y sublime-text
 
 # Verify installation
 subl --version > /dev/null

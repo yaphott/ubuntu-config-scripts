@@ -1,9 +1,11 @@
-#!/bin/bash -e
+#!/usr/bin/env bash
+set -e
 
 echo '+++ Installing Java'
 
 # Activate if not already
 if [[ ! -x "$(command -v sdk)" ]]; then
+    # shellcheck source=/dev/null
     source "$HOME/.sdkman/bin/sdkman-init.sh"
 fi
 
@@ -21,5 +23,6 @@ if ! sdk current java | grep -q " ${latest_version_full}$"; then
     echo 'Failed to set default Java version.'
     exit 1
 fi
+java -version > /dev/null
 
 echo 'Java installed successfully.'

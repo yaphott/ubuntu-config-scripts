@@ -1,4 +1,5 @@
-#!/bin/bash -e
+#!/usr/bin/env bash
+set -e
 
 echo '+++ General Packages'
 
@@ -22,12 +23,14 @@ PACKAGE_NAMES=(
     nmap
     nomacs
     ntfs-3g
+    nvme-cli
     php
     protobuf-compiler
     qgis
     qgis-plugin-grass
     postgresql-client
     ruby-full
+    smartmontools
     sqlitebrowser
     ssh-askpass
     synaptic
@@ -40,4 +43,5 @@ PACKAGE_NAMES=(
     zstd
 )
 # Update package database and install
-sudo apt-get update -y && sudo apt-get install -y "${PACKAGE_NAMES[@]}"
+sudo apt-get update
+sudo apt-get install -y "${PACKAGE_NAMES[@]}"

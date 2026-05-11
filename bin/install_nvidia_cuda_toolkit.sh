@@ -1,4 +1,5 @@
-#!/bin/bash -e
+#!/usr/bin/env bash
+set -e
 
 if [[ $# -ne 1 ]]; then
     echo 'Missing expected input parameter(s).'
@@ -10,7 +11,7 @@ fi
 
 cuda_version="$1"
 
-echo "+++ Installing NVIDIA CUDA ${cuda_version}"
+echo "+++ Installing NVIDIA CUDA Toolkit ${cuda_version}"
 
 nvidia_ubuntu_ver="ubuntu$(lsb_release -rs | tr -d '.')"
 base_url="https://developer.download.nvidia.com/compute/cuda/repos/$nvidia_ubuntu_ver/$(uname -m)"
@@ -32,11 +33,12 @@ bash ./bin/utils/add_repository.sh "${repo_options}" "${repo_uri}" "${repo_suite
 
 # Update package database and install
 package_name="cuda-toolkit-${cuda_version//./-}"
-sudo apt-get update && sudo apt-get install -y "$package_name"
+sudo apt-get update
+sudo apt-get install -y "$package_name"
 
 # sudo apt-get install libcudnn8 libcudnn8-dev
 
 # Verify installation
 "/usr/local/cuda-$cuda_version/bin/nvcc" --version > /dev/null
 
-echo "NVIDIA CUDA ${cuda_version} installed successfully."
+echo "NVIDIA CUDA Toolkit ${cuda_version} installed successfully."

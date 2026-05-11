@@ -1,7 +1,7 @@
-#!/bin/bash -e
+#!/usr/bin/env bash
+set -e
 
 echo '~~~ Configuring Conda'
-
 
 # Add to path if not already
 if [[ ! -x "$(command -v conda)" ]]; then

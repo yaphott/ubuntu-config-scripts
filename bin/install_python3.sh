@@ -1,10 +1,13 @@
-#!/bin/bash -e
+#!/usr/bin/env bash
+set -e
 
 echo '+++ Installing Python 3.x'
 
 # Update package database and install
-sudo apt-get update \
-    && sudo apt-get install -y python3 \
-    && sudo apt-get install -y python3-venv \
-    && sudo apt-get install -y python3-dev \
-    && sudo apt-get install -y python3-pip
+sudo apt-get update
+sudo apt-get install -y python3
+sudo apt-get install -y python3-venv
+sudo apt-get install -y python3-dev
+sudo apt-get install -y python3-pip
+
+echo 'Python 3.x installed successfully.'
