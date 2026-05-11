@@ -23,12 +23,14 @@ PACKAGE_NAMES=(
     nmap
     nomacs
     ntfs-3g
+    nvme-cli
     php
     protobuf-compiler
     qgis
     qgis-plugin-grass
     postgresql-client
     ruby-full
+    smartmontools
     sqlitebrowser
     ssh-askpass
     synaptic
