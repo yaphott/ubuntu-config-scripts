@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-echo '~~~ Configuring Image Magick'
+echo '~~~ Configuring ImageMagick'
 
 # Change the port and limit outside access
 sudo sed -E -e 's|^( *)<policy +domain="resource" +name="width" +value="[^"]+"/>$|\1<policy domain="resource" name="width" value="32KP"/>|' \
@@ -15,8 +15,8 @@ if ! grep -q -E '^ *<policy +domain="resource" +name="width" +value="32KP"/>$' /
     || ! grep -q -E '^ *<policy +domain="resource" +name="height" +value="32KP"/>$' /etc/ImageMagick-6/policy.xml \
     || ! grep -q -E '^ *<policy +domain="resource" +name="memory" +value="8192MiB"/>$' /etc/ImageMagick-6/policy.xml \
     || ! grep -q -E '^ *<policy +domain="resource" +name="disk" +value="8192MiB"/>$' /etc/ImageMagick-6/policy.xml; then
-    echo 'Failed to configure Image Magick.'
+    echo 'Failed to configure ImageMagick.'
     exit 1
 fi
 
-echo 'Image Magick configured successfully.'
+echo 'ImageMagick configured successfully.'
