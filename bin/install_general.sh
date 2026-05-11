@@ -43,4 +43,5 @@ PACKAGE_NAMES=(
     zstd
 )
 # Update package database and install
-sudo apt-get update -y && sudo apt-get install -y "${PACKAGE_NAMES[@]}"
+sudo apt-get update
+sudo apt-get install -y "${PACKAGE_NAMES[@]}"

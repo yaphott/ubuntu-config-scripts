@@ -21,7 +21,8 @@ bash ./bin/utils/add_keyring.sh "${key_url}" "${key_file_path}"
 bash ./bin/utils/add_repository.sh "${repo_options}" "${repo_uri}" "${repo_suite}" "${repo_components}" "${repo_file_path}"
 
 # Update package database and install
-sudo apt-get update && sudo apt-get install -y "virtualbox-${VBOX_VERSION}"
+sudo apt-get update
+sudo apt-get install -y "virtualbox-${VBOX_VERSION}"
 
 # Verify installation
 if [[ ! -x "$(command -v virtualbox)" ]]; then

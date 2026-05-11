@@ -33,7 +33,8 @@ bash ./bin/utils/add_repository.sh "${repo_options}" "${repo_uri}" "${repo_suite
 
 # Update package database and install
 package_name="cuda-toolkit-${cuda_version//./-}"
-sudo apt-get update && sudo apt-get install -y "$package_name"
+sudo apt-get update
+sudo apt-get install -y "$package_name"
 
 # sudo apt-get install libcudnn8 libcudnn8-dev
 

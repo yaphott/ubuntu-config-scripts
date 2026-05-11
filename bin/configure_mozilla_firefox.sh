@@ -16,7 +16,8 @@ if [[ ! -d "$HOME/snap/firefox" ]]; then
     # Start Firefox in thread
     firefox &
     # TODO: Add loop that checks for process, and then a add a pause
-    sleep 10 && skill --command firefox
+    sleep 10
+    skill --command firefox
 fi
 
 # inotifywatch -e modify,create,delete -r ~/snap/firefox/common/.mozilla
