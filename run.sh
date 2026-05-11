@@ -71,6 +71,7 @@ done
 register_task 'SSH'                      configure  "bash -e '$project_dir/bin/configure_ssh.sh'" true
 register_task 'Wireshark'                configure  "bash -e '$project_dir/bin/configure_wireshark.sh'" true
 register_task 'General Packages'         install    "bash -e '$project_dir/bin/install_general.sh'" true
+register_task 'Image Magick'             configure  "bash -e '$project_dir/bin/configure_image_magick.sh'" true
 register_task 'Python 3'                 install    "bash -e '$project_dir/bin/install_python3.sh'" true
 register_task 'Python 3'                 configure  "bash -e '$project_dir/bin/configure_python3.sh'" true
 register_task 'Miniconda 3'              install    "bash -e '$project_dir/bin/install_miniconda3.sh'" true
