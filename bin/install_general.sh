@@ -6,7 +6,6 @@ echo '+++ General Packages'
 PACKAGE_NAMES=(
     btop
     bzip2
-    evince
     exfatprogs
     ffmpeg
     file-roller
@@ -19,6 +18,7 @@ PACKAGE_NAMES=(
     jq
     libreoffice
     linssid
+    minicom
     net-tools
     nmap
     nomacs
